@@ -12,7 +12,7 @@ The incorporation of gamification is subtle yet impactful, with interactions and
 Nimbus is built using Vue.js, a progressive JavaScript framework for building user interfaces. Vue.js provides a reactive and flexible front-end architecture, allowing for a dynamic and responsive user interface.
 
 - Weather Forecasting API:
-Nimbus leverages a powerful Weather Forecasting API to provide real-time and accurate weather information. This ensures that users receive up-to-date and reliable data for their location.
+Nimbus leverages a powerful Weather Forecasting API to provide real-time and accurate weather information. This ensures that users receive up-to-date and reliable data for their location. [Link to the API](https://openweathermap.org)
 
 ## Features
 Integrated and Customizable Experience: Nimbus offers a fully integrated and customizable dashboard, allowing users to tailor the interface to their preferences and needs.
