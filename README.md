@@ -31,7 +31,7 @@ Accessible to a Wide Range of Users: Nimbus caters to a broad audience, from out
 # Getting Started
 To get started with Nimbus on your local machine, follow these steps:
 
-1. Clone the repository: git clone [link](git@github.com:pistashioz/Nimbus.git)
+1. Clone the repository: git clone [git@github.com:pistashioz/Nimbus.git](git@github.com:pistashioz/Nimbus.git)
 2. Install dependencies: npm install
 3. Run the development server: npm run serve
    
