@@ -26,9 +26,9 @@ export default {
 
 <template>
   <nav>
-    <span v-if="!isUser" id = 'unlogged'>
+      <span v-if="!isUser" id = 'unlogged'>
       <div id = 'leftNav'>
-        <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img src = '../assets/logo.svg' alt = 'logo' width="70" height="70" id = 'logoImg'> nimbus</RouterLink>
+        <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img src = '../assets/logo.svg' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
         <RouterLink :to="{ name: 'login' }"  id  ='login'>Login</RouterLink>
       </div>
       <div id = 'rightNav'>
@@ -53,21 +53,26 @@ a{
   font-family: 'Asap';
   font-size:1.2vw;
   }
-nav{
+
+#unlogged {
   background-color: red;
-  height: 12vh;
+  height: 20vh;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
+  padding-left: 2vw;
+  padding-right: 2vw;
+  max-width: 100vw; 
+  margin: 0 auto; 
+  padding: 0 2vw; 
 }
+
 #leftNav{
-  background-color: beige;
+  background-color: #ADD8FB;
+  display: flex;
   width: 30vw;
   height: 12vh;
   border-radius: 20vh;
-  display: flex;
   justify-content: space-between;
   align-items: center;
   padding-left: 2vw;
@@ -84,12 +89,28 @@ nav{
   align-items: center;
   width: 18vw;
 }
-
+#logoImg{
+  width: 5vw; 
+  height: auto;
+  margin-right: 1vw; 
+}
 #signUp{
-  background-color: beige;
-  width: 30vw;
-  height: 12vh;
-  border-radius: 20vh;
+  background-color: #F5CB5B;
+  display: flex;
+  height: 10vh;
+  border-radius: 20vh; 
+  align-items: center;
+  padding: 0 2vw;
+  font-family: 'Recoleta';
+  font-weight: bold;
+  font-size: 1.5vw;
+  max-width: 10vw;
+}
+
+#login{
+  font-family: 'Recoleta';
+  font-weight: bold;
+  font-size: 1.5vw;
 }
 
 </style>
