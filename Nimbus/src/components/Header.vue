@@ -55,7 +55,6 @@ a{
   }
 
 #unlogged {
-  background-color: red;
   height: 20vh;
   display: flex;
   justify-content: space-between;
