@@ -39,7 +39,7 @@ export default {
     <span v-else id = 'logged'>
       
         <RouterLink :to="{ name: 'basicModeDashboard' }"></RouterLink>
-        <RouterLink :to="{ name: 'advancedModeDashboard' }"></RouterLink>
+        <RouterLink :to="{ name: 'advancedModeDashboard' }">Access to Dashboard</RouterLink>
         <RouterLink :to="{ name: 'helpAndSupport' }">Help & Support</RouterLink>
       <button @click="logout">logout</button>
     </span>
@@ -55,7 +55,7 @@ a{
   }
 
 #unlogged {
-  background-color: red;
+  /* background-color: red; */
   height: 20vh;
   display: flex;
   justify-content: space-between;

@@ -11,8 +11,12 @@ export default {
 <template>
   <v-app>
     <Header />
-    <v-main class="d-flex align-center justify-center" >
+    <v-main>
       <RouterView />
     </v-main>
   </v-app>
 </template>
+
+<style scoped>
+
+</style>
