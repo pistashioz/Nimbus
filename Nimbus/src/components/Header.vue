@@ -32,7 +32,7 @@ export default {
         <RouterLink :to="{ name: 'login' }"  id  ='login'>Login</RouterLink>
       </div>
       <div id = 'rightNav'>
-        <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>SignUp</RouterLink>
+        <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>Sign Up</RouterLink>
       </div>
     </span>
   
@@ -53,7 +53,6 @@ a{
   font-family: 'Asap';
   font-size:1.2vw;
   }
-
 #unlogged {
   height: 20vh;
   display: flex;
@@ -76,6 +75,7 @@ a{
   align-items: center;
   padding-left: 2vw;
   padding-right: 2vw;
+  border: solid #303030 0.5;
 }
 
 #logo{
@@ -96,7 +96,7 @@ a{
 #signUp{
   background-color: #F5CB5B;
   display: flex;
-  height: 10vh;
+  height: 8vh;
   border-radius: 20vh; 
   align-items: center;
   padding: 0 2vw;
@@ -104,6 +104,7 @@ a{
   font-weight: bold;
   font-size: 1.5vw;
   max-width: 10vw;
+  border: solid #303030 0.5;
 }
 
 #login{
