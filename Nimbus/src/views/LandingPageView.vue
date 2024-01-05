@@ -421,24 +421,30 @@ hr.solid {
 
 
 .cardContainer{
-  display: flex;
-  gap: 1rem; 
-  padding-block: 1rem;
-  border-radius: 30px;
-  background: #F2E6DD;
-  overflow: hidden; 
-  scroll-snap-align: start; 
+  margin-left:auto;
+  margin-right:auto;
+  position:relative;
+  overflow:hidden;
+  list-style:none;
+  padding:0;
+  z-index:1;
+  padding-block: 5rem;
 }
 
 .cardContent{
-  margin-inline: 1rem;
+  margin-inline: 1.75rem;
+  border-radius: 1.25rem;
   overflow: hidden;
 }
 
 .cardArticle{
-  width: 300px;
-  flex-shrink: 0;
-  margin-right: 1rem;
+  border-radius: 20px;
+background: #F2E6DD;
+  flex-shrink:0;
+  width:100%;
+  height:100%;
+  position:relative;
+  transition-property:transform;
 }
 
 .cardImage{
@@ -449,7 +455,6 @@ margin-bottom: -0.75rem;
 .swipper-wrapper {
   display: grid;
   grid-auto-flow: column;
-  gap: 1rem; 
   overflow: auto; 
 }
 
