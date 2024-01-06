@@ -8,15 +8,65 @@
         <!-- info do clima aqui (iamgem, cidade e data do dia) -->
       </div>
       <div id = 'containerWeatherInfoToday'>
-        <div id = 'feelsLikeContainer'></div>
-        <div id = 'expectedContainer'></div>
-        <div id = 'humidityContainer'></div>
-        <div id = 'rainContainer'></div>
-        <div id = 'windContainer'></div>
+        <div id = 'feelsLikeContainer'>
+          <p id = 'feelsLikeTitle'>Feels Like</p>
+          <p id = 'feelsLikeData'>23º</p>
+          <p id = 'ColdOrWarm'>Warm</p>
+        </div>
+        <div id = 'expectedContainer'>
+          <p id = 'expectedTitle'>Expected</p>
+          <p id = 'expectedData'>Cloudy Afternoon</p>
+        </div>
+        <div id = 'humidityContainer'>
+          <div id = 'humidityContainerHeader'>
+            <img src = '../assets/img/humidityIcon.svg' id = 'humidityIcon'>
+          <p id = 'humidityTitle'>Humidity</p>
+          </div>
+          <div id = 'humidityData'>
+            <p id = 'humidityPercentage'>85%</p>
+            <p id = 'refreshingOrDry'>Refreshing</p>
+          </div>
+        </div>
+        <div id = 'rainContainer'>
+          <div id = 'rainContainerHeader'>
+            <img src = '../assets/img/rainIcon.svg' id = 'rainIcon'>
+            <p id = 'rainTitle'>Rain</p>
+          </div>
+          <p id = 'rainData'>15% Chance</p>
+        </div>
+        <div id = 'windContainer'>
+          <div id = 'windContainerHeader'>
+            <img src = '../assets/img/windIcon.svg' id = 'windIcon'>
+            <p id = 'windTitle'>Wind</p>
+          </div>
+          <p id = 'windData'>Gentle Breeze</p>
+        </div>
         <RouterLink :to="{ name: 'advancedModeDashboard' }" id = 'seeMoreBtn'>See more</RouterLink>
       </div>
       <div id = 'containerNimbusNudges'>
-
+        <div id = 'headerNimbusNudges'>
+          <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
+          <div id = 'buttonsHeaderNimbusNudges'>
+            <button id = 'leftNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-left " style="color: #1e1e1e;"  /></button>
+            <button id = 'rightNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #1e1e1e;" /></button>
+          </div>
+        </div>
+         <div id = 'nimbusNudgesData'></div>
+         <div id = 'buttonsOptionsNimbusNudges'>
+          <button id = 'allClearBtn'>ALL CLEAR!</button>
+          <button id = 'quietTheSkiesBtn'>QUIET THE SKIES</button>
+         </div>
+        <p></p>
+      </div>
+      <div id = 'degreesContainer'>
+          <h1 id = 'degreesValue'>23</h1>
+          <p id = 'degrees'>degrees</p>
+          <p id = 'degreesType'>celsius</p>
+      </div>
+      <div id = 'temperatureGraphContainer'></div>
+      <div id = 'airQualityContainer'>
+        <div id = 'airQualityHeader'>AirQuality</div>
+        <div id = 'circleAirQuality'></div>
       </div>
     </div>
   </main>
@@ -27,7 +77,7 @@
 }
 #containerWeatherToday{
   position: absolute;
-  left: 5.43em;
+  left: 11.43em;
   top: 10em;
   width: 245px;
   height: 248px;
@@ -38,7 +88,7 @@
 }
 #containerWeatherInfoToday{
   position: absolute;
-  left: 22.88em;
+  left: 28.88em;
   top: 10em;
   width: 34.5625rem;
   height: 15.5rem;
@@ -57,6 +107,8 @@
   border-radius: 3.125rem;
   border: 1px solid #303030;
   background: #D9D5EE;
+  display: flex;
+  align-items: center;
 }
 #expectedContainer{
   position: absolute;
@@ -68,6 +120,8 @@
   border-radius: 3.125rem;
   border: 1px solid #303030;
   background: #D9D5EE;
+  display: flex;
+  align-items: center;
 }
 #humidityContainer{
   position: absolute;
@@ -113,5 +167,246 @@
   font-weight: 600;
   line-height: normal;
   text-decoration-line: underline;
+}
+#containerNimbusNudges{
+  position: absolute;
+  left: 65em;
+  top: 10em;
+  width: 15.5rem;
+  height: 15.5rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
+}
+#headerNimbusNudges{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-left: 1.12em;
+  padding-right: 0.94em;
+}
+#titleNimbusNudges{
+  color: #303030;
+  font-family: Asap;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+
+#buttonsHeaderNimbusNudges{
+  width: 5em;
+  height: 2em;
+  display: flex;
+  justify-content: space-around;
+}
+#buttonsHeaderNimbusNudges button{
+  width: 1.4375rem;
+  height: 1.4375rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #FAF8ED;
+  border: solid 0.05em #303030;
+}
+#buttonsOptionsNimbusNudges{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding-right: 0.94em;
+  padding-bottom: 0.94em;
+}
+
+#allClearBtn{
+  display: inline-flex;
+  padding: 0.375rem 0.625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 1.25rem;
+  border: 1px solid #000;
+  background: var(--Secondary-Color-Palette-Spring-Bud, #DFE287);
+  color: var(--Textual-Elements-Midnight-Onyx, #303030);
+  text-align: right;
+  font-family: Asap;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 250;
+  line-height: normal;
+  text-transform: uppercase;
+}
+#quietTheSkiesBtn{
+  display: inline-flex;
+  padding: 0.375rem 0.625rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 1.25rem;
+  border: 1px solid #000;
+  background: var(--Secondary-Color-Palette-Orchid-Flush, #E18AD1);
+  color: var(--Textual-Elements-Midnight-Onyx, #303030);
+  text-align: right;
+  font-family: Asap;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 250;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+#feelsLikeTitle, #expectedTitle, #humidityTitle, #rainTitle, #windTitle{
+  color: #303030;
+  position: absolute;
+  left: 1.44em;
+  text-align: right;
+  font-family: Asap;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  position: absolute;
+}
+#feelsLikeData, #ColdOrWarm, #expectedData{
+  color: var(--Textual-Elements-Stormcloud-Grey, #858585);
+  font-family: Asap;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+
+}
+
+#humidityIcon, #rainIcon, #windIcon{
+  position: absolute;
+  left: 1.25em;
+  top: 1em;
+}
+
+#humidityTitle, #rainTitle, #windTitle{
+  left: 4.25em;
+}
+#feelsLikeData{
+  left: 6em;
+}
+#ColdOrWarm{
+  left: 7.5em;
+}
+
+#expectedTitle{
+  left: 1.75em;
+}
+
+#expectedData{
+  left:6.5em;
+}
+
+#rainData, #humidityData, #windData{
+  display: flex;
+  align-items: center;
+  color: var(--Textual-Elements-Stormcloud-Grey, #858585);
+  text-align: right;
+  font-family: Asap;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  bottom: 0.05em;
+  left: 1.19em;
+}
+#humidityData{
+  width: 7em;
+  display: flex;
+  justify-content: space-around;
+}
+
+#degreesContainer{
+  width: 10rem;
+  height: 8.625rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid #000;
+  background: rgba(156, 200, 161, 0.80);
+  position: absolute;
+  top:27.81em;
+  left:11.44em;
+}
+#degreesValue{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 6.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  position: absolute;
+  right: 0.21em;
+  bottom: -0.5em;
+}
+#degreesType, #degrees{
+  color: var(--textual-elements-20-saturation-midnight-onyx-20-sat, #302727);
+  font-family: Asap;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  position: absolute;
+}
+#degrees{
+  bottom:1.19em;
+  left:2.5em;
+}
+#degreesType{
+  bottom:1.19em;
+  right:2.5em;
+}
+
+#temperatureGraphContainer{
+  width: 38.9375rem;
+  height: 8.5625rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid #000;
+  background: #F2E6DD;
+  position: absolute;
+  left: 24.5em;
+  top:27.94em;
+}
+
+#airQualityContainer{
+  width: 15.4375rem;
+  height: 8.75rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: #FF87AB;
+  position: absolute;
+  right: 11.44em;
+  top: 27.81em;
+}
+#airQualityHeader{
+  color: #303030;
+  font-family: Asap;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  position: absolute;
+  left: 1.18em;
+  top:0.69em;
+}
+
+#circleAirQuality{
+  width: 5.0625rem;
+  height: 5.0625rem;
+  flex-shrink: 0;
+  background-color: #FFECA7;
+  border-radius: 50%;
+  display: inline-block;
+  position: absolute;
+  bottom: 1.2em ;
+  left:1em;
 }
 </style>
