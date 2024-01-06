@@ -6,6 +6,13 @@
     <div id="basicModeContainer">
       <div id = 'containerWeatherToday'>
         <!-- info do clima aqui (iamgem, cidade e data do dia) -->
+        <h3 id = 'date'>Sunday, 26 Nov</h3>
+        <div id = 'location'>
+          <font-awesome-icon icon="location-dot" style="color: #303030;" />
+          <h2 id = 'locationCity'>Porto</h2>
+        </div>
+
+
       </div>
       <div id = 'containerWeatherInfoToday'>
         <div id = 'feelsLikeContainer'>
@@ -47,8 +54,8 @@
         <div id = 'headerNimbusNudges'>
           <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
           <div id = 'buttonsHeaderNimbusNudges'>
-            <button id = 'leftNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-left " style="color: #1e1e1e;"  /></button>
-            <button id = 'rightNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #1e1e1e;" /></button>
+            <button id = 'leftNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-left " style="color: #303030;"  /></button>
+            <button id = 'rightNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #303030;" /></button>
           </div>
         </div>
          <div id = 'nimbusNudgesData'></div>
@@ -68,6 +75,65 @@
         <div id = 'airQualityHeader'>AirQuality</div>
         <div id = 'circleAirQuality'></div>
       </div>
+      <section id = 'thisWeekSection'>
+        <div id = 'thisWeekContainer'><p>This Week</p></div>
+        <div id = 'mondayContainer'>
+          <h3 id = 'monday'>MON</h3>
+          <img id = 'mondayImg' src = ''>
+          <div id = 'mondayTemp'>
+            <p id = 'minTempMonday'>10°</p>
+            <p id = 'maxTempMonday'>22°</p>
+          </div>
+        </div>
+        <div id = 'tuesdayContainer'>
+          <h3 id = 'tuesday'>TUE</h3>
+          <img id = 'tuesdayImg' src = ''>
+          <div id = 'tuesdayTemp'>
+            <p id = 'minTempTuesday'>10°</p>
+            <p id = 'maxTempTuesday'>21°</p>
+          </div>
+        </div>
+        <div id = 'wednesdayContainer'>
+          <h3 id = 'wednesday'>WED</h3>
+          <img id = 'wednesdayImg' src = ''>
+          <div id = 'wednesdayTemp'>
+            <p id = 'minTempWednesday'>08°</p>
+            <p id = 'maxTempWednesday'>22°</p>
+          </div>
+        </div>
+        <div id = 'thursdayContainer'>
+          <h3 id = 'thursday'>THU</h3>
+          <img id = 'thursdayImg' src = ''>
+          <div id = 'thursdayTemp'>
+            <p id = 'minTempThursday'>10°</p>
+            <p id = 'maxTempThursday'>21°</p>
+          </div>
+        </div>
+        <div id = 'fridayContainer'>
+          <h3 id = 'friday'>FRI</h3>
+          <img id = 'fridayImg' src = ''>
+          <div id = 'fridayTemp'>
+            <p id = 'minTempFriday'>10°</p>
+            <p id = 'maxTempFriday'>23°</p>
+          </div>
+        </div>
+        <div id = 'saturdayContainer'>
+          <h3 id = 'saturday'>SAT</h3>
+          <img id = 'saturdayImg' src = ''>
+          <div id = 'saturdayTemp'>
+            <p id = 'minTempSaturday'>11°</p>
+            <p id = 'maxTempSaturday'>25°</p>
+          </div>
+        </div>
+        <div id = 'sundayContainer'>
+          <h3 id = 'sunday'>SUN</h3>
+          <img id = 'sundayImg' src = ''>
+          <div id = 'sundayTemp'>
+            <p id = 'minTempSunday'>10°</p>
+            <p id = 'maxTempSunday'>21°</p>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 </template>
@@ -78,18 +144,46 @@
 #containerWeatherToday{
   position: absolute;
   left: 11.43em;
-  top: 10em;
+  top: 7em;
   width: 245px;
   height: 248px;
   flex-shrink: 0;
   border-radius: 20px;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: #C3C3C3;
+  display: flex;
+  justify-content: center;
+}
+#date{
+  color: #F8FAFB;
+  font-family: Asap;
+  font-size: 1.5625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+
+}
+#location{
+  width: 40%;
+  height: 1em;
+  position: absolute;
+  bottom: 0em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  color: #303030;
+  font-family: Asap;
+  font-size: 2.75rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 #containerWeatherInfoToday{
   position: absolute;
   left: 28.88em;
-  top: 10em;
+  top: 7em;
   width: 34.5625rem;
   height: 15.5rem;
   flex-shrink: 0;
@@ -171,7 +265,7 @@
 #containerNimbusNudges{
   position: absolute;
   left: 65em;
-  top: 10em;
+  top: 7em;
   width: 15.5rem;
   height: 15.5rem;
   flex-shrink: 0;
@@ -331,7 +425,7 @@
   border: 1px solid #000;
   background: rgba(156, 200, 161, 0.80);
   position: absolute;
-  top:27.81em;
+  top:24.81em;
   left:11.44em;
 }
 #degreesValue{
@@ -372,7 +466,7 @@
   background: #F2E6DD;
   position: absolute;
   left: 24.5em;
-  top:27.94em;
+  top:24.94em;
 }
 
 #airQualityContainer{
@@ -384,7 +478,7 @@
   background: #FF87AB;
   position: absolute;
   right: 11.44em;
-  top: 27.81em;
+  top: 24.81em;
 }
 #airQualityHeader{
   color: #303030;
@@ -408,5 +502,92 @@
   position: absolute;
   bottom: 1.2em ;
   left:1em;
+}
+
+#thisWeekSection{
+  display: flex;
+  width: 55rem;
+  height: 8.3125rem;
+  position: absolute;
+  left: 11.44em;
+  bottom: 1em;
+  justify-content: space-around;
+}
+#thisWeekContainer{
+  width: 2.3125rem;
+  height: 8.3125rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem 0.3125rem 0.3125rem 1.25rem;
+  border: 1px solid #000;
+  background: #E18AD1;
+  display: flex;
+  align-items: center;
+}
+
+#thisWeekContainer p{
+  color: #01542C;
+  font-family: Recoleta;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  transform-origin: bottom left;
+  white-space: nowrap; 
+  transform:  translate(38%, 125%) rotate(-90deg);;
+}
+
+#mondayContainer, #tuesdayContainer, #wednesdayContainer, #thursdayContainer, #fridayContainer, #saturdayContainer, #sundayContainer{
+  width: 5.9375rem;
+  height: 8.3125rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid #000;
+  background: #F2E6DD;
+  display: flex;
+  align-items: center;
+
+  
+
+}
+
+#mondayContainer h3, #tuesdayContainer h3, #wednesdayContainer h3, #thursdayContainer h3, #fridayContainer h3, #saturdayContainer h3, #sundayContainer h3{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 1.5625rem;
+  font-style: normal;
+  font-weight: 700;
+  margin: 0;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  align-self: flex-start;
+  margin-top: 0.2em;
+  text-align: center;
+}
+
+#sundayTemp, #mondayTemp, #tuesdayTemp, #thursdayTemp, #saturdayTemp, #wednesdayTemp, #fridayTemp{
+  align-self: flex-end;
+  background-color: red;
+  width:100%;
+  height: 2em;
+  margin: 0;
+  margin-bottom: 0.5em;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center; 
+  margin-right: 5em;
+}
+
+#sundayTemp p,
+#mondayTemp p,
+#tuesdayTemp p,
+#thursdayTemp p,
+#saturdayTemp p,
+#wednesdayTemp p,
+#fridayTemp p {
+  margin: 0;
+  text-align: center;
 }
 </style>
