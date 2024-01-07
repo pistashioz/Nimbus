@@ -109,12 +109,12 @@
             <p id = 'maxTempThursday'>21°</p>
           </div>
         </div>
-        <div id = 'fridayContainer'>
-          <h3 id = 'friday'>FRI</h3>
-          <img id = 'fridayImg' src = ''>
-          <div id = 'fridayTemp'>
-            <p id = 'minTempFriday'>10°</p>
-            <p id = 'maxTempFriday'>23°</p>
+        <div id="fridayContainer">
+          <h3 id="friday">FRI</h3>
+          <img id="fridayImg" src="">
+          <div id="fridayTemp">
+            <p id="minTempFriday">10°</p>
+            <p id="maxTempFriday">23°</p>
           </div>
         </div>
         <div id = 'saturdayContainer'>
@@ -134,10 +134,35 @@
           </div>
         </div>
       </section>
+      <div id = 'sunshineInfo'>
+        <span id = 'sunriseSunsetContainer'>
+          <div id = 'sunriseContainer'>
+            <p id = 'sunrise'>Sunrise</p>
+            <p id = 'sunriseTime'>6:42 am</p>
+          </div>
+          <div id = 'sunriseSunsetIllustration'>
+            <div id = 'sunriseSunsetLine'></div>
+            <div id = 'sunsireSunsetCircle'></div>
+          </div>
+          <div id = 'sunsetContainer'>
+            <p id = 'sunset'>Sunset</p>
+            <p id = 'sunsetTime'>8:12 pm</p>
+          </div>
+        </span>
+        <span id = 'uvLightContainer'>
+          <h3 id = 'uv'>UV</h3>
+          <p id = 'uvRec'>Cover up, stay in shade.</p>
+          <div id = 'uvIllustration'>
+            <div id = 'uvLine'></div>
+            <div id = 'uvCircle'></div>
+          </div>
+        </span>
+      </div>
     </div>
   </main>
 </template>
 <style>
+
 :root{
   background-color: #EDDED4;
 }
@@ -546,8 +571,6 @@
   display: flex;
   align-items: center;
 
-  
-
 }
 
 #mondayContainer h3, #tuesdayContainer h3, #wednesdayContainer h3, #thursdayContainer h3, #fridayContainer h3, #saturdayContainer h3, #sundayContainer h3{
@@ -555,11 +578,12 @@
   font-family: Recoleta;
   font-size: 1.5625rem;
   font-style: normal;
+  background-color: red;
   font-weight: 700;
   margin: 0;
   line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 0.7em; 
+  margin-right: 1em;
   align-self: flex-start;
   margin-top: 0.2em;
   text-align: center;
@@ -568,16 +592,15 @@
 #sundayTemp, #mondayTemp, #tuesdayTemp, #thursdayTemp, #saturdayTemp, #wednesdayTemp, #fridayTemp{
   align-self: flex-end;
   background-color: red;
-  width:100%;
-  height: 2em;
+  width: 100%;
   margin: 0;
   margin-bottom: 0.5em;
   white-space: nowrap;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: center; 
-  margin-right: 5em;
+  margin-right: 1em
+
 }
 
 #sundayTemp p,
@@ -589,5 +612,105 @@
 #fridayTemp p {
   margin: 0;
   text-align: center;
+}
+
+#minTempMonday, #minTempTuesday, #minTempWedday, #minTempThursday, #minTempFriday, #minTempSaturday, #minTempSunday{
+  color: #303030;
+  text-align: right;
+  font-family: Asap;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+#maxTempMonday, #maxTempTuesday, #maxTempWedday, #maxTempThursday, #maxTempFriday, #maxTempSaturday, #maxTempSunday{
+  color: #303030;
+  text-align: right;
+  font-family: Asap;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#sunshineInfo{
+  width: 14.25rem;
+  height: 8.3125rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid #303030;
+  background: var(--primary-color-palette-40-saturation-sunbeam-gold-40-sat, #FAE3AF);
+  position: absolute;
+  left: 66.31em;
+  bottom: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+}
+#sunriseSunsetContainer, #uvLightContainer{
+  width: 12.0625rem;
+  height: 2.875rem;
+  flex-shrink: 0;
+  border-radius: 1.875rem;
+  border: 1px solid #303030;
+  background: #F2E6DD;
+}
+
+
+#sunrise,#sunset{
+  color: #303030;
+  font-family: Asap;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+#sunsriseSunsetBigLine{
+  width: 6.125rem;
+  height: 0.25rem;
+  flex-shrink: 0;
+  border-radius: 0.625rem;
+  background: #D9D9D9;
+}
+#sunsriseSunsetSmallLine{
+  width: 6.125rem;
+  height: 0.25rem;
+  flex-shrink: 0;
+  border-radius: 0.625rem;
+  background: #D9D9D9;
+}
+#sunsireSunsetCircle{
+  width: 0.6875rem;
+height: 0.6875rem;
+flex-shrink: 0;
+fill: #FABE32;
+}
+#sunriseTime,#sunsetTime{
+  color: var(--Textual-Elements-Stormcloud-Grey, #858585);
+  font-family: Asap;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+
+#uvInfo{
+  color: var(--Textual-Elements-Stormcloud-Grey, #858585);
+  font-family: Asap;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#uv{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
 }
 </style>
