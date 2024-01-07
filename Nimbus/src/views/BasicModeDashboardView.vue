@@ -79,58 +79,58 @@
         <div id = 'thisWeekContainer'><p>This Week</p></div>
         <div id = 'mondayContainer'>
           <h3 id = 'monday'>MON</h3>
-          <img id = 'mondayImg' src = ''>
+          <img id = 'mondayImg' src = '../assets/img/sunnyImg.svg'>
           <div id = 'mondayTemp'>
             <p id = 'minTempMonday'>10°</p>
-            <p id = 'maxTempMonday'>22°</p>
+            <p id = 'maxTempMonday'>/22°</p>
           </div>
         </div>
         <div id = 'tuesdayContainer'>
           <h3 id = 'tuesday'>TUE</h3>
-          <img id = 'tuesdayImg' src = ''>
+          <img id = 'tuesdayImg' src = '../assets/img/sunnyImg.svg'>
           <div id = 'tuesdayTemp'>
             <p id = 'minTempTuesday'>10°</p>
-            <p id = 'maxTempTuesday'>21°</p>
+            <p id = 'maxTempTuesday'>/21°</p>
           </div>
         </div>
         <div id = 'wednesdayContainer'>
           <h3 id = 'wednesday'>WED</h3>
-          <img id = 'wednesdayImg' src = ''>
+          <img id = 'wednesdayImg' src = '../assets/img/sunnyImg.svg'>
           <div id = 'wednesdayTemp'>
             <p id = 'minTempWednesday'>08°</p>
-            <p id = 'maxTempWednesday'>22°</p>
+            <p id = 'maxTempWednesday'>/22°</p>
           </div>
         </div>
         <div id = 'thursdayContainer'>
           <h3 id = 'thursday'>THU</h3>
-          <img id = 'thursdayImg' src = ''>
+          <img id = 'thursdayImg' src = '../assets/img/sunnyImg.svg'>
           <div id = 'thursdayTemp'>
             <p id = 'minTempThursday'>10°</p>
-            <p id = 'maxTempThursday'>21°</p>
+            <p id = 'maxTempThursday'>/21°</p>
           </div>
         </div>
         <div id="fridayContainer">
           <h3 id="friday">FRI</h3>
-          <img id="fridayImg" src="">
+          <img id="fridayImg" src="../assets/img/sunnyImg.svg">
           <div id="fridayTemp">
             <p id="minTempFriday">10°</p>
-            <p id="maxTempFriday">23°</p>
+            <p id="maxTempFriday">/23°</p>
           </div>
         </div>
         <div id = 'saturdayContainer'>
           <h3 id = 'saturday'>SAT</h3>
-          <img id = 'saturdayImg' src = ''>
+          <img id = 'saturdayImg' src = '../assets/img/sunnyImg.svg'>
           <div id = 'saturdayTemp'>
             <p id = 'minTempSaturday'>11°</p>
-            <p id = 'maxTempSaturday'>25°</p>
+            <p id = 'maxTempSaturday'>/25°</p>
           </div>
         </div>
         <div id = 'sundayContainer'>
           <h3 id = 'sunday'>SUN</h3>
-          <img id = 'sundayImg' src = ''>
+          <img id = 'sundayImg' src = '../assets/img/sunnyImg.svg'>
           <div id = 'sundayTemp'>
             <p id = 'minTempSunday'>10°</p>
-            <p id = 'maxTempSunday'>21°</p>
+            <p id = 'maxTempSunday'>/21°</p>
           </div>
         </div>
       </section>
@@ -140,10 +140,12 @@
             <p id = 'sunrise'>Sunrise</p>
             <p id = 'sunriseTime'>6:42 am</p>
           </div>
-          <div id = 'sunriseSunsetIllustration'>
-            <div id = 'sunriseSunsetLine'></div>
-            <div id = 'sunsireSunsetCircle'></div>
-          </div>
+            <div id = 'sunriseSunsetIllustration'>
+              <div id = 'sunriseSunsetBigLine'></div>
+              <div id = 'sunriseSunsetSmallLine'></div>
+              <div id = 'sunsireSunsetCircle'></div>
+            </div>
+       
           <div id = 'sunsetContainer'>
             <p id = 'sunset'>Sunset</p>
             <p id = 'sunsetTime'>8:12 pm</p>
@@ -153,7 +155,10 @@
           <h3 id = 'uv'>UV</h3>
           <p id = 'uvRec'>Cover up, stay in shade.</p>
           <div id = 'uvIllustration'>
-            <div id = 'uvLine'></div>
+            <div id = 'uvLine'>
+              <div id = 'uvBigLine'></div>
+              <div id = 'uvSmallLine'></div>
+            </div>
             <div id = 'uvCircle'></div>
           </div>
         </span>
@@ -558,7 +563,7 @@
   line-height: normal;
   transform-origin: bottom left;
   white-space: nowrap; 
-  transform:  translate(38%, 125%) rotate(-90deg);;
+  transform:  translate(38%, 125%) rotate(-90deg);
 }
 
 #mondayContainer, #tuesdayContainer, #wednesdayContainer, #thursdayContainer, #fridayContainer, #saturdayContainer, #sundayContainer{
@@ -569,38 +574,21 @@
   border: 1px solid #000;
   background: #F2E6DD;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  margin: 0.5rem;
 
 }
 
 #mondayContainer h3, #tuesdayContainer h3, #wednesdayContainer h3, #thursdayContainer h3, #fridayContainer h3, #saturdayContainer h3, #sundayContainer h3{
-  color: #303030;
-  font-family: Recoleta;
-  font-size: 1.5625rem;
-  font-style: normal;
-  background-color: red;
-  font-weight: 700;
-  margin: 0;
-  line-height: normal;
-  margin-left: 0.7em; 
-  margin-right: 1em;
-  align-self: flex-start;
-  margin-top: 0.2em;
-  text-align: center;
+  margin-top: 0.5em;
 }
 
 #sundayTemp, #mondayTemp, #tuesdayTemp, #thursdayTemp, #saturdayTemp, #wednesdayTemp, #fridayTemp{
-  align-self: flex-end;
-  background-color: red;
-  width: 100%;
-  margin: 0;
-  margin-bottom: 0.5em;
-  white-space: nowrap;
+  margin-top: auto; 
   display: flex;
-  flex-direction: row;
-  align-items: center; 
-  margin-right: 1em
-
+  justify-content: space-around;
+  align-items: flex-end;
 }
 
 #sundayTemp p,
@@ -610,27 +598,28 @@
 #saturdayTemp p,
 #wednesdayTemp p,
 #fridayTemp p {
-  margin: 0;
-  text-align: center;
+  margin: 0; 
+  margin-bottom: 0.5em;
 }
 
-#minTempMonday, #minTempTuesday, #minTempWedday, #minTempThursday, #minTempFriday, #minTempSaturday, #minTempSunday{
+#minTempMonday, #minTempTuesday, #minTempWednesday, #minTempThursday, #minTempFriday, #minTempSaturday, #minTempSunday{
   color: #303030;
-  text-align: right;
-  font-family: Asap;
-  font-size: 1.125rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+text-align: right;
+font-family: Asap;
+font-size: 1.125rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
 }
-#maxTempMonday, #maxTempTuesday, #maxTempWedday, #maxTempThursday, #maxTempFriday, #maxTempSaturday, #maxTempSunday{
+#maxTempMonday, #maxTempTuesday, #maxTempWednesday, #maxTempThursday, #maxTempFriday, #maxTempSaturday, #maxTempSunday{
+  
   color: #303030;
-  text-align: right;
-  font-family: Asap;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+text-align: right;
+font-family: Asap;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 }
 
 #sunshineInfo{
@@ -655,6 +644,11 @@
   border-radius: 1.875rem;
   border: 1px solid #303030;
   background: #F2E6DD;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 0.2em;
+  padding-right: 0.8em;
 }
 
 
@@ -665,26 +659,52 @@
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  margin: 0;
 }
-#sunsriseSunsetBigLine{
-  width: 6.125rem;
+#sunriseContainer{
+  width: 4em;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 1em;
+  margin: 0;
+}
+#sunriseSunsetIllustration{
+  width: 5em;
+  height: 2em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+#sunriseSunsetBigLine{
+  width: 4.5rem;
   height: 0.25rem;
   flex-shrink: 0;
   border-radius: 0.625rem;
   background: #D9D9D9;
+  z-index: 2;
 }
-#sunsriseSunsetSmallLine{
-  width: 6.125rem;
+#sunriseSunsetSmallLine{
+  width: 1.5rem;
   height: 0.25rem;
   flex-shrink: 0;
+  z-index: 4;
   border-radius: 0.625rem;
-  background: #D9D9D9;
+  background: var(--secondary-color-palette-40-saturation-sky-wash-40-sat, #49ABFB);
+  position: absolute;
+  left: 0;
 }
 #sunsireSunsetCircle{
   width: 0.6875rem;
-height: 0.6875rem;
-flex-shrink: 0;
-fill: #FABE32;
+  height: 0.6875rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: #FABE32;
+  z-index: 5;
+  position: absolute;
+  left: 1.2em;
 }
 #sunriseTime,#sunsetTime{
   color: var(--Textual-Elements-Stormcloud-Grey, #858585);
@@ -693,16 +713,17 @@ fill: #FABE32;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin: 0;
 }
 
 
-#uvInfo{
+#uvRec{
   color: var(--Textual-Elements-Stormcloud-Grey, #858585);
-  font-family: Asap;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+font-family: Asap;
+font-size: 0.75rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
 }
 
 #uv{
