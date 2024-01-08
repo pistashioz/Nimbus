@@ -140,6 +140,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </template>
 <style>
+body{
+  animation: transitionIn 1.25s;
+}
+@keyframes transitionIn{
+  from {
+    opacity: 0;
+    transform: rotateX('-10deg');
+  }
+  to{
+    opacity: 1;
+    transform: rotateX('0');
+  }
+}
 html {
   scroll-behavior: smooth;
 }
