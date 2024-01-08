@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <template>
   <main>
     <div id = 'introText' class = 'text'>Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.</div>
-    <RouterLink id = 'accDashboardBtn'>Access the Dashboard</RouterLink>
+    <button id = 'accDashboardBtn'><RouterLink :to="{ name: 'basicModeDashboard' }">Access the Dashboard</RouterLink></button>
     <span id = 'AboutSection'>
       <div id = 'aboutTitle'>
         <h1 id = 'forecasting'>Forecasting</h1>
@@ -142,6 +142,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </template>
 <style>
+body{
+  animation: transitionIn 1.25s;
+}
+@keyframes transitionIn{
+  from {
+    opacity: 0;
+    transform: rotateX('-10deg');
+  }
+  to{
+    opacity: 1;
+    transform: rotateX('0');
+  }
+}
 html {
   scroll-behavior: smooth;
 }
@@ -423,24 +436,30 @@ hr.solid {
 
 
 .cardContainer{
-  display: flex;
-  gap: 1rem; 
-  padding-block: 1rem;
-  border-radius: 30px;
-  background: #F2E6DD;
-  overflow: hidden; 
-  scroll-snap-align: start; 
+  margin-left:auto;
+  margin-right:auto;
+  position:relative;
+  overflow:hidden;
+  list-style:none;
+  padding:0;
+  z-index:1;
+  padding-block: 5rem;
 }
 
 .cardContent{
-  margin-inline: 1rem;
+  margin-inline: 1.75rem;
+  border-radius: 1.25rem;
   overflow: hidden;
 }
 
 .cardArticle{
-  width: 300px;
-  flex-shrink: 0;
-  margin-right: 1rem;
+  border-radius: 20px;
+background: #F2E6DD;
+  flex-shrink:0;
+  width:100%;
+  height:100%;
+  position:relative;
+  transition-property:transform;
 }
 
 .cardImage{
@@ -451,7 +470,6 @@ margin-bottom: -0.75rem;
 .swipper-wrapper {
   display: grid;
   grid-auto-flow: column;
-  gap: 1rem; 
   overflow: auto; 
 }
 
