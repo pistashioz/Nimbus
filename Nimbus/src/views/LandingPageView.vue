@@ -1,4 +1,6 @@
 <script>
+const { RouterLink } = require('vue-router');
+
 
 
 document.addEventListener('DOMContentLoaded', function () {
