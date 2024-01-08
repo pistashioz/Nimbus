@@ -1,4 +1,6 @@
 <script>
+const { RouterLink } = require('vue-router');
+
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <template>
   <main>
     <div id = 'introText' class = 'text'>Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.</div>
-    <button id = 'accDashboardBtn'>Access the Dashboard</button>
+    <RouterLink id = 'accDashboardBtn'>Access the Dashboard</RouterLink>
     <span id = 'AboutSection'>
       <div id = 'aboutTitle'>
         <h1 id = 'forecasting'>Forecasting</h1>
