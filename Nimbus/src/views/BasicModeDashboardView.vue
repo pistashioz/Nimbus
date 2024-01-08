@@ -152,14 +152,14 @@
           </div>
         </span>
         <span id = 'uvLightContainer'>
-          <h3 id = 'uv'>UV</h3>
-          <p id = 'uvRec'>Cover up, stay in shade.</p>
+          <div id = 'uvHeader'>
+            <h3 id = 'uv'>UV</h3>
+            <p id = 'uvRec'>Cover up, stay in shade.</p>
+          </div>
           <div id = 'uvIllustration'>
-            <div id = 'uvLine'>
               <div id = 'uvBigLine'></div>
               <div id = 'uvSmallLine'></div>
-            </div>
-            <div id = 'uvCircle'></div>
+              <div id = 'uvCircle'></div>
           </div>
         </span>
       </div>
@@ -542,6 +542,7 @@
   left: 11.44em;
   bottom: 1em;
   justify-content: space-around;
+  align-items: center;
 }
 #thisWeekContainer{
   width: 2.3125rem;
@@ -715,7 +716,21 @@ line-height: normal;
   line-height: normal;
   margin: 0;
 }
+#uvLightContainer{
+  display: flex;
 
+}
+#uvHeader{
+  align-self:baseline;
+  width: 10.5rem;
+  height: 1rem;
+  padding-top: 0.4em;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1em;
+}
 
 #uvRec{
   color: var(--Textual-Elements-Stormcloud-Grey, #858585);
@@ -723,6 +738,7 @@ font-family: Asap;
 font-size: 0.75rem;
 font-style: normal;
 font-weight: 400;
+margin: 0;
 line-height: normal;
 }
 
@@ -733,5 +749,47 @@ line-height: normal;
   font-style: normal;
   font-weight: 900;
   line-height: normal;
+
+}
+
+#uvIllustration{
+  align-self: center;
+  width: 2em;
+  height:1em;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 75%;
+  left: 10%;
+
+}
+#uvBigLine{
+  width: 10.5rem;
+  height: 0.25rem;
+  flex-shrink: 0;
+  border-radius: 0.625rem;
+  background: #D9D9D9;
+  z-index: 2;
+}
+#uvSmallLine{
+  width: 8.8125rem;
+  height: 0.25rem;
+  flex-shrink: 0;
+  z-index: 4;
+  border-radius: 0.625rem;
+  background: var(--secondary-color-palette-20-saturation-autumn-blaze-20-sat, #E64000);
+  position: absolute;
+  left: 0;
+}
+#uvCircle{
+  width: 0.6875rem;
+  height: 0.6875rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: #FABE32;
+  z-index: 5;
+  position: absolute;
+  left: 8.5em;
 }
 </style>
