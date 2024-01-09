@@ -26,13 +26,13 @@ export default {
   transform: translateX(100px);
 }
 .route-enter-active{
-  transition: all 0.3s ease-out;
+  transition: all 0.5s ease-out;
 }
 .router-leave-to{
   opacity: 0;
   transform: translateX(-100px);
 }
 .route-leave-active{
-  transition: all 0.3s ease-in;
+  transition: all 0.5s ease-in;
 }
 </style>
