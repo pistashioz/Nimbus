@@ -7,7 +7,7 @@
       <div id = 'containerWeatherToday'>
         <!-- info do clima aqui (iamgem, cidade e data do dia) -->
         <h3 id = 'date'>Sunday, 26 Nov</h3>
-        <div id = 'location'>
+        <div id = 'locationBasicMode'>
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
           <h2 id = 'locationCity'>Porto</h2>
         </div>
@@ -70,7 +70,7 @@
           <p id = 'degrees'>degrees</p>
           <p id = 'degreesType'>celsius</p>
       </div>
-      <div id = 'temperatureGraphContainer'></div>
+      <div id = 'temperatureGraphContainerBasicMode'></div>
       <div id = 'airQualityContainer'>
         <div id = 'airQualityHeader'>AirQuality</div>
         <div id = 'circleAirQuality'></div>
@@ -194,12 +194,13 @@
   position: absolute;
 
 }
-#location{
-  width: 40%;
-  height: 1em;
+#locationBasicMode{
+  width: 100%;
+  height: 2em;
   position: absolute;
   bottom: 0em;
   margin-bottom: 1em;
+  padding-left: 3em;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -455,7 +456,7 @@
   border: 1px solid #000;
   background: rgba(156, 200, 161, 0.80);
   position: absolute;
-  top:24.81em;
+  top:24em;
   left:11.44em;
 }
 #degreesValue{
@@ -487,7 +488,7 @@
   right:2.5em;
 }
 
-#temperatureGraphContainer{
+#temperatureGraphContainerBasicMode{
   width: 38.9375rem;
   height: 8.5625rem;
   flex-shrink: 0;
@@ -496,7 +497,7 @@
   background: #F2E6DD;
   position: absolute;
   left: 24.5em;
-  top:24.94em;
+  top:24em;
 }
 
 #airQualityContainer{
@@ -508,7 +509,7 @@
   background: #FF87AB;
   position: absolute;
   right: 11.44em;
-  top: 24.81em;
+  top:24em;
 }
 #airQualityHeader{
   color: #303030;

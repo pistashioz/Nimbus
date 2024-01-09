@@ -10,17 +10,17 @@
           <h1 id = 'currentTemperatureHeader'>23°</h1>
           <h2 id = 'degreeTypeHeader'>c</h2>
           <div id = 'locationAdvancedMode'>
-            <font-awesome-icon icon="location-dot" style="color: #303030;" />
-            <h2 id = 'locationCity'>Porto</h2>
+            <font-awesome-icon icon="location-dot" style="color: #303030;" id ='locationIconAdvancedMode' />
+            <h2 id = 'locationCityAdvancedMode'>Porto</h2>
             <p id = 'time'>16:44</p>
           </div>
         </div>
       </div>
       <div id = 'containerTodayCalendar'>
         <div id = 'month'>NOV</div>
-        <div id = 'dateAndDay'>
-          <h2 id = 'date'>26</h2>
-          <h3 id = 'day'>SUNDAY</h3>
+        <div id = 'dateAndDayAdvancedMode'>
+          <h2 id = 'dateAdvancedMode'>26</h2>
+          <h3 id = 'dayAdvancedMode'>SUNDAY</h3>
         </div>
       </div>
     </section>
@@ -85,7 +85,7 @@
          </div>
         <p></p>
       </section>
-      <section id = 'temperatureGraphContainer'></section>
+      <section id = 'temperatureGraphContainerAdvancedMode'></section>
       <section id = 'weatherInfoAdvancedModeContainer'>
         <div id = 'windContainerAdvancedMode'></div>
         <div id = 'rainContainerAdvancedMode'></div>
@@ -187,7 +187,7 @@ display: flex;
   justify-content: space-around;
   align-items: center;
 }
-#locationCity, location-dot{
+#locationCityAdvancedMode, #locationIconAdvancedMode{
   align-items: center;
   color: #303030;
   font-family: Asap;
@@ -238,16 +238,15 @@ display: flex;
   font-weight: 800;
   line-height: normal;
 }
-#dateAndDay{
+#dateAndDayAdvancedMode{
   width: 7.875em;
   height: 7em;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   margin: 0;
-  margin-top: 5em;
 }
-#date{
+#dateAdvancedMode{
   color: #303030;
   font-family: Recoleta;
   font-size: 3.75rem;
@@ -255,17 +254,15 @@ display: flex;
   font-weight: 700;
   line-height: normal;
   margin: 0;
-  margin-bottom: 1.8em;
 }
-#day{
+#dayAdvancedMode{
   color: #303030;
   font-family: Asap;
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin: 0;
-  margin-bottom: 4.5em;  
+  margin: 0;  
 }
 #basicInfoToday{
   width: 35.4375rem;
@@ -368,7 +365,7 @@ margin: 0;
 margin-left: -0.5em;
 margin-bottom: -0.5em;
 }
-#temperatureGraphContainer{
+#temperatureGraphContainerAdvancedMode{
   width: 34.125rem;
   height: 17.9375rem;
   flex-shrink: 0;
