@@ -24,7 +24,52 @@
         </div>
       </div>
     </section>
-    <section id = 'citiesContainer'></section>
+    <section id = 'citiesContainer'>
+      <div class = 'cityContainer'>
+        <div class = 'cityContainerHeader'>
+          <div class = 'cityName'>Lisbon</div> 
+          <div class = 'countryName'>Portugal</div>
+        </div>
+        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
+        <div class = 'cityContainerTemperature'>
+          <h2 class = 'currentTempCityContainer'>19°</h2>
+          <h3 class = 'maxTempCityContainer'>/23°</h3>
+        </div>
+      </div>
+      <div class = 'cityContainer'>
+        <div class = 'cityContainerHeader'>
+          <div class = 'cityName'>Cape Town</div> 
+          <div class = 'countryName'>South Africa</div>
+        </div>
+        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
+        <div class = 'cityContainerTemperature'>
+          <h2 class = 'currentTempCityContainer'>36°</h2>
+          <h3 class = 'maxTempCityContainer'>/41°</h3>
+        </div>
+      </div>
+      <div class = 'cityContainer'>
+        <div class = 'cityContainerHeader'>
+          <div class = 'cityName'>Bogotá</div> 
+          <div class = 'countryName'>Colombia</div>
+        </div>
+        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
+        <div class = 'cityContainerTemperature'>
+          <h2 class = 'currentTempCityContainer'>24°</h2>
+          <h3 class = 'maxTempCityContainer'>/31°</h3>
+        </div>
+      </div>
+      <div class = 'cityContainer'>
+        <div class = 'cityContainerHeader'>
+          <div class = 'cityName'>Madrid</div> 
+          <div class = 'countryName'>Spain</div>
+        </div>
+        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
+        <div class = 'cityContainerTemperature'>
+          <h2 class = 'currentTempCityContainer'>18°</h2>
+          <h3 class = 'maxTempCityContainer'>/21°</h3>
+        </div>
+      </div>
+    </section>
     <section id = 'containerNimbusNudgesAdvancedMode'>
         <div id = 'headerNimbusNudges'>
           <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
@@ -95,9 +140,10 @@ top:2.37em;
 display: flex;
 }
 #todaysWeatherIconAdvacedMode{
-  max-width: 11.9375rem;
+  max-width: 10.5rem;
   height: auto;
   z-index: 2;
+  margin-left: 2em;
 }
 #currentTemperatureHeader{
   color: #303030;
@@ -242,9 +288,86 @@ display: flex;
   position: absolute;
   left:45.75em;
   top:7em;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
   
 }
+.cityContainer{
+  width:6rem;
+  height:6rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: #F2E6DD;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.cityContainerHeader{
+  width: 100%;
+  margin-top: 0.5em;
+  justify-self: flex-start;
+  height: 1.55625rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 5;
+}
 
+.cityName{
+  color: #E65E2A;
+  font-family: Asap;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.countryName{
+  color: #303030;
+  font-family: Asap;
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.cityWeatherIcon{
+  max-width: 4em;
+  height: auto;
+  z-index: 2;
+}
+.cityContainerTemperature{
+  display: flex;
+  flex-direction: row ;
+  align-items: center;
+  height: 1em;
+}
+.currentTempCityContainer{
+  color: #303030;
+text-align: right;
+font-family: Asap;
+font-size: 1.5625rem;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
+
+.maxTempCityContainer{
+  color: #303030;
+text-align: right;
+font-family: Asap;
+font-size: 0.9rem;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+margin: 0;
+margin-left: -0.5em;
+margin-bottom: -0.5em;
+}
 #temperatureGraphContainer{
   width: 34.125rem;
   height: 17.9375rem;
