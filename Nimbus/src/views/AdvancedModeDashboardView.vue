@@ -5,11 +5,11 @@
     <RouterLink :to="{ name: 'basicModeDashboard' }" id = 'backBtn'><font-awesome-icon icon="fa-solid fa-chevron-left" id = 'backIcon'/></RouterLink>
     <section id = 'basicInfoToday'>
       <div id = 'containerBasicWeatherInfo'>
-        <img src = '../assets/img/cloudImg.svg'>
+        <img src = '../assets/img/cloudImg.svg' id = 'todaysWeatherIconAdvacedMode'>
         <div id = 'headerBasicWeatherInfo'>
           <h1 id = 'currentTemperatureHeader'>23°</h1>
           <h2 id = 'degreeTypeHeader'>c</h2>
-          <div id = 'location'>
+          <div id = 'locationAdvancedMode'>
             <font-awesome-icon icon="location-dot" style="color: #303030;" />
             <h2 id = 'locationCity'>Porto</h2>
             <p id = 'time'>16:44</p>
@@ -25,7 +25,7 @@
       </div>
     </section>
     <section id = 'citiesContainer'></section>
-    <section id = 'containerNimbusNudges'>
+    <section id = 'containerNimbusNudgesAdvancedMode'>
         <div id = 'headerNimbusNudges'>
           <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
           <div id = 'buttonsHeaderNimbusNudges'>
@@ -40,6 +40,15 @@
          </div>
         <p></p>
       </section>
+      <section id = 'temperatureGraphContainer'></section>
+      <section id = 'weatherInfoAdvancedModeContainer'>
+        <div id = 'windContainerAdvancedMode'></div>
+        <div id = 'rainContainerAdvancedMode'></div>
+        <div id = 'humidityContainerAdvancedMode'></div>
+        <div id = 'wavesContainerAdvancedMode'></div>
+        <div id = 'visibilityContainerAdvancedMode'></div>
+        <div id = 'pressureContainerAdvancedMode'></div>
+      </section> 
 
   </main>
 </template>
@@ -62,20 +71,170 @@ width: 3.125rem;
 #backIcon{
   font-size: 1.5em;
 }
+#containerNimbusNudgesAdvancedMode{
+  position: absolute;
+  left: 63em;
+  top: 7em;
+  width: 15.5rem;
+  height: 14.312rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
+}
+#containerBasicWeatherInfo{
+  width: 21.0625rem;
+height: 10.0625rem;
+flex-shrink: 0;
+border-radius: 1.25rem;
+border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+background: var(--secondary-color-palette-20-saturation-sky-wash-20-sat, #DFEFFB);
+position: absolute;
+left: 2em;
+top:2.37em;
+display: flex;
+}
+#todaysWeatherIconAdvacedMode{
+  max-width: 11.9375rem;
+  height: auto;
+  z-index: 2;
+}
+#currentTemperatureHeader{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 6rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  align-self: start;
+  margin: 0;
+  margin-bottom: 0.2em;
+}
+#degreeTypeHeader{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 3.125rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  position: absolute;
+  left:2.44em;
+  top: -0.38em;
+}
+#headerBasicWeatherInfo{
+  width: 10.3125rem;
+  height: 8.1875rem;
+  position: absolute;
+  top:1.5em;
+  right:1.25em;
+  z-index: 3;
+  display: flex;
+  flex-direction: column-reverse;
+}
+#locationAdvancedMode{
+  width: 100%;
+  height: 2em;
+  position: absolute;
+  bottom: 0em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#locationCity, location-dot{
+  align-items: center;
+  color: #303030;
+  font-family: Asap;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+#locationCity{
+  margin-right: 2em;
+}
+#time{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+#containerTodayCalendar{
+  width: 7.875rem;
+  height: 9.625rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: #F2E6DD;
+  position: absolute;
+  top:2.37em;
+  right:2.19em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#month{
+  width: 7.875rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem 1.25rem 0rem 0rem;
+  border: 1px solid #000;
+  background: #E74727;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #303030;
+  font-family: Asap;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+}
+#dateAndDay{
+  width: 7.875em;
+  height: 7em;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  margin: 0;
+  margin-top: 5em;
+}
+#date{
+  color: #303030;
+  font-family: Recoleta;
+  font-size: 3.75rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin: 0;
+  margin-bottom: 1.8em;
+}
+#day{
+  color: #303030;
+  font-family: Asap;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+  margin-bottom: 4.5em;  
+}
 #basicInfoToday{
   width: 35.4375rem;
-  height: 15.5rem;
+  height: 14.312rem;
   flex-shrink: 0;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: var(--Primary-Color-Palette-Sunbeam-Gold, #FAC54B);
   position: absolute;
-  left: 5.44em;
+  left: 8.44em;
   top:7em;
 }
 #citiesContainer{
   width: 15.5rem;
-  height: 15.5rem;
+  height:14.312rem;
   flex-shrink: 0;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
@@ -86,4 +245,68 @@ width: 3.125rem;
   
 }
 
+#temperatureGraphContainer{
+  width: 34.125rem;
+  height: 17.9375rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: #F2E6DD;
+  position: absolute;
+  left: 8.44em;
+  top:23.62em;
+}
+
+#weatherInfoAdvancedModeContainer{
+  display: flex;
+  width: 11.25rem;
+  height: 19.6875rem;
+  flex-shrink: 0;
+  position: absolute;
+  left: 45.75em;
+  top:23.62em;
+  flex-direction: column;
+}
+
+
+
+
+
+#windContainerAdvancedMode, #rainContainerAdvancedMode, #humidityContainerAdvancedMode,#wavesContainerAdvancedMode, #visibilityContainerAdvancedMode, #pressureContainerAdvancedMode{
+  width: 11.25rem;
+  height: 8rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+}
+#windContainerAdvancedMode{
+  background: #C8BDFF;
+}
+#rainContainerAdvancedMode{
+  background: #43AA8B;
+  position: absolute;
+  top:2.50em;
+}
+#humidityContainerAdvancedMode{
+  background: #FFEA8A;
+  position: absolute;
+  top:5em;
+}
+#wavesContainerAdvancedMode{
+  background: #F4F4F4;
+  position: absolute;
+  top:7.50em;
+}
+#visibilityContainerAdvancedMode{
+  background: #FFA646;
+  position: absolute;
+  top:10em;
+}
+
+#pressureContainerAdvancedMode{
+  background: #FFBEED;
+  position: absolute;
+  top:13.50em;
+  height: 5rem;
+}
 </style>
