@@ -8,16 +8,16 @@
     <!-- Login form wrapper -->
     <main class="login-form">
       <!-- Form element with submit event handler -->
-      <form @submit.prevent="login">
+      <form @submit.prevent="signUp">
         <!-- Title for the login form -->
         <h1>Create Account</h1>
         <!-- Input container for email -->
         <div class="input-container">
-          <input id="email" type="text" v-model="identifier" placeholder="email" required>
+          <input id="email" type="text" v-model="email" placeholder="email" required>
         </div>
         <!-- Input container for username -->
         <div class="input-container">
-          <input id="username" type="text" v-model="identifier" placeholder="username" required>
+          <input id="username" type="text" v-model="email" placeholder="username" required>
         </div>
         <!-- Input container for password -->
         <div class="input-container">
@@ -52,9 +52,9 @@
 
         <div class="sign-up-wrapper">
         <!-- Login submission button -->
-        <button type="submit" class="login-button">Sign Up</button>
-                <!-- Social login options -->
-                <div class="social-login">
+        <button type="submit" class="sign-up-button">Sign Up</button>
+          <!-- Social login options -->
+          <div class="social-login">
           <!-- Google login button -->
           <button type="button" class="google-login">
             <img src="@/assets/icons/google.svg" alt="Google logo" class="icon" />
@@ -90,7 +90,8 @@ import eyeClosedIcon from '@/assets/icons/eye-closed.svg';
 export default {
   data() {
     return {
-      identifier: "", // Bound to username input
+      email: "", // Bound to email input
+      username: "", // Bound to username input
       password: "", // Bound to password input
       passwordConfirmation: "", // Bound to password confirmation input
       errorMessage: "", // Used to display login error messages
@@ -107,7 +108,10 @@ export default {
     }
   },
   watch: {
-    identifier() {
+    email() {
+      this.clearErrorMessage(); // Clear error message when email changes
+    },
+    username() {
       this.clearErrorMessage(); // Clear error message when username changes
     },
     password() {
@@ -125,16 +129,8 @@ export default {
   // Methods of the component
   methods: {
     // Function to handle login
-    async login() {
-      try {
-        // Attempting to log in with provided credentials
-        await this.store.login(this.identifier, this.password);
-        // On successful login, redirect to the landing page
-        this.$router.push({ name: "landingPage" });
-      } catch (error) {
-        // If login fails, set the error message
-        this.errorMessage = error.message;
-      }
+    async signUp() {
+      console.log(this.identifier, this.password, this.passwordConfirmation);
     },
     clearErrorMessage() {
        // Clear error message and cancel timer
@@ -247,7 +243,7 @@ input:focus {
   justify-content: space-between;
   width: 100%;
 }
-.login-button {
+.sign-up-button {
   width: 14rem;
   height: fit-content;
 
@@ -265,8 +261,8 @@ input:focus {
   align-items: center;
   justify-content: space-between;
   width: 30%;
-
 }
+
 .social-login button {
   font-family: 'Asap Black', sans-serif; 
   font-size: 0.75rem;
