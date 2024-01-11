@@ -45,6 +45,12 @@
             class="password-toggle" 
           />
         </div>
+        <div class="terms-checkbox">
+  <input type="checkbox" id="terms" v-model="agreedToTerms" required>
+  <label for="terms">
+    I agree to Nimbu's <a href="/terms" target="_blank">Terms & Conditions</a> and acknowledge the <a href="/privacy" target="_blank">Privacy Policy</a>.
+  </label>
+</div>
 
         <div class="sign-up-wrapper">
         <!-- signup submission button -->
@@ -93,6 +99,7 @@ export default {
       errorMessage: "", // Used to display signUp error messages
       passwordVisible: false, // Tracks password visibility state
       passwordConfirmationVisible: false, // Tracks password visibility state
+      agreedToTerms: false, // Tracks whether the terms checkbox is checked
       eyeOpenIcon, // Eye open icon for password visibility
       eyeClosedIcon, // Eye closed icon for password visibility
     };
@@ -118,7 +125,7 @@ export default {
       if (newValue) {
         setTimeout(() => {
           this.clearErrorMessage();
-        }, 30000);
+        }, 3000);
       }
     },
   },
@@ -150,6 +157,10 @@ export default {
     if (this.password!== this.passwordConfirmation) {
       this.errorMessage = 'Passwords do not match.';
       return;
+    }
+    if (!this.agreedToTerms) {
+    this.errorMessage = 'You must agree to the Terms & Conditions and Privacy Policy.';
+    return;
     }
       try {
         // Attempting to sign up with provided credentials
@@ -195,11 +206,13 @@ export default {
 
 
 <style scoped>
-.sign-up-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
+
+.sign-up-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .sign-up-form {
@@ -211,7 +224,7 @@ export default {
   border-radius: 30px;
   border: 1px solid #303030;
   text-align: center;
-  width: 350px;
+  width: 360px;
 }
 
 h1 {
@@ -258,15 +271,37 @@ input:focus {
   top: 50%;
   transform: translateY(-45%);
 }
-
-.forgot-password {
-  text-align: left;
-  font-size: 0.94rem;
-  text-decoration: underline;
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   margin-bottom: 1rem;
-  color: #858585;
-  cursor: pointer;
 }
+
+.terms-checkbox input[type="checkbox"] {
+  margin-right: 0.6rem;
+  width: 5%;
+}
+
+.terms-checkbox label {
+  font-size: 0.9rem;
+  color: #303030;
+  text-align: left;
+  word-break: keep-all; /* Prevents breaking words at character level */
+  hyphens: auto; /* Allows breaking words at appropriate hyphenation points */
+}
+
+.terms-checkbox a {
+  color: #0000EE; /* Standard link color */
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.terms-checkbox a:hover {
+  text-decoration: underline;
+}
+
+
 
 .sign-up-wrapper {
   display: flex;
@@ -291,7 +326,7 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 30%;
+  width: 28%;
 }
 
 .social-sign-up button {
