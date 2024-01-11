@@ -32,6 +32,19 @@ export const useUserStore = defineStore("user", {
                 throw Error("Invalid credentials!");
             }
         },
+        // Action to register a new user
+        register(email, username, password) {
+            // Find the user by username and email
+            const user = this.users.find(
+                (user) => (user.username === username && user.email === email && user.password === password)
+            );
+            if (user) {
+                console.log(user);
+                throw Error("User already exists!");
+            } else {
+                this.users.push({ username: username, password: password, email: email });
+            }
+        },
         // Action to log out the current user
         logout() {
             this.isUserAuthenticated = false;

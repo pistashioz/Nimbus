@@ -1,15 +1,11 @@
-- Adicionar a animação de obter mais informação a cada dia da semana.
-
-
-
 <template>
-  <!-- Main container for the login form -->
-  <div class="login-container">
-    <!-- Login form wrapper -->
-    <main class="login-form">
+  <!-- Main container for the signup form -->
+  <div class="sign-up-container">
+    <!-- signup form wrapper -->
+    <main class="sign-up-form">
       <!-- Form element with submit event handler -->
       <form @submit.prevent="signUp">
-        <!-- Title for the login form -->
+        <!-- Title for the signup form -->
         <h1>Create Account</h1>
         <!-- Input container for email -->
         <div class="input-container">
@@ -17,7 +13,7 @@
         </div>
         <!-- Input container for username -->
         <div class="input-container">
-          <input id="username" type="text" v-model="email" placeholder="username" required>
+          <input id="username" type="text" v-model="username" placeholder="username" required>
         </div>
         <!-- Input container for password -->
         <div class="input-container">
@@ -51,16 +47,16 @@
         </div>
 
         <div class="sign-up-wrapper">
-        <!-- Login submission button -->
+        <!-- signup submission button -->
         <button type="submit" class="sign-up-button">Sign Up</button>
-          <!-- Social login options -->
-          <div class="social-login">
-          <!-- Google login button -->
-          <button type="button" class="google-login">
+          <!-- Social signup options -->
+          <div class="social-sign-up">
+          <!-- Google signup button -->
+          <button type="button" class="google-sign-up">
             <img src="@/assets/icons/google.svg" alt="Google logo" class="icon" />
           </button>
-          <!-- Apple login button -->
-          <button type="button" class="apple-login">
+          <!-- Apple sign button -->
+          <button type="button" class="apple-sign-up">
             <img src="@/assets/icons/apple.svg" alt="Apple logo" class="icon" />
           </button>
         </div>
@@ -94,7 +90,7 @@ export default {
       username: "", // Bound to username input
       password: "", // Bound to password input
       passwordConfirmation: "", // Bound to password confirmation input
-      errorMessage: "", // Used to display login error messages
+      errorMessage: "", // Used to display signUp error messages
       passwordVisible: false, // Tracks password visibility state
       passwordConfirmationVisible: false, // Tracks password visibility state
       eyeOpenIcon, // Eye open icon for password visibility
@@ -122,15 +118,50 @@ export default {
       if (newValue) {
         setTimeout(() => {
           this.clearErrorMessage();
-        }, 3000);
+        }, 30000);
       }
     },
   },
   // Methods of the component
-  methods: {
-    // Function to handle login
+    methods: {
+    // Regexes for form validation
+      isValidEmail(email) {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailRegex.test(email);
+    },
+    isValidPassword(password) {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  },
+  isValidUsername(username) {
+    const usernameRegex = /^[a-zA-Z0-9]{3,15}$/;
+    return usernameRegex.test(username);
+  },
+    // Function to handle SignUp
     async signUp() {
-      console.log(this.identifier, this.password, this.passwordConfirmation);
+      if (!this.isValidEmail(this.email)) {
+      this.errorMessage = 'Please enter a valid email address.';
+      return;
+    }
+    if (!this.isValidPassword(this.password)) {
+      this.errorMessage = 'Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, one number, and one special character.';;
+      return;
+    }
+    if (this.password!== this.passwordConfirmation) {
+      this.errorMessage = 'Passwords do not match.';
+      return;
+    }
+      try {
+        // Attempting to sign up with provided credentials
+        console.log(this.store);
+    
+        await this.store.register(this.email, this.username, this.password);
+        // On successful sign up, redirect to the landing page
+        this.$router.push({ name: "landingPage" });
+      } catch (error) {
+        console.log(error);
+        this.errorMessage = error.message;
+      }
     },
     clearErrorMessage() {
        // Clear error message and cancel timer
@@ -164,14 +195,14 @@ export default {
 
 
 <style scoped>
-.login-container {
+.sign-up-container {
   display: flex;
   justify-content: center;
   align-items: center;
 
 }
 
-.login-form {
+.sign-up-form {
   background: #F2CAAC;
   display: flex;
   flex-direction: column;
@@ -252,40 +283,37 @@ input:focus {
   border-radius: 20px;
   background-color: #A4B8E4; 
   color: white;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   cursor: pointer;
 }
 
-.social-login {
+.social-sign-up {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 30%;
 }
 
-.social-login button {
+.social-sign-up button {
   font-family: 'Asap Black', sans-serif; 
   font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #303030;
-
   padding: 0.55rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   border: 1px solid #303030;
   border-radius: 20px;
   cursor: pointer;
 }
 
 /* Style for the icons inside the buttons */
-.social-login .icon {
+.social-sign-up .icon {
   width: 24px; /* Example size, adjust as needed */
   height: auto;
 }
 
-.google-login {
-}
 
 .error-container {
   max-height: 0; /* initially hide the error message */
@@ -294,7 +322,7 @@ input:focus {
 /* When an error is present, increase the max-height */
 .error-container.error-present {
   transition: max-height 0.08s ease-in; 
-  max-height: 32px; /* set to the maximum height the error message could have */
+  max-height: 62px; /* set to the maximum height the error message could have */
 }
 
 
@@ -302,6 +330,7 @@ input:focus {
   color: red;
   font-family: 'Asap ExtraBold', sans-serif;
   margin-top: 0;
+  margin-bottom: 0.2rem;
 }
 
 .log-in-link-wrapper {
