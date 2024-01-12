@@ -1,6 +1,6 @@
 <template>
   <!-- Main container for the login form -->
-  <div class="login-container">
+  <div class="form-wrapper">
     <!-- Login form wrapper -->
     <main class="login-form">
       <!-- Form element with submit event handler -->
@@ -13,7 +13,6 @@
         </div>
         <!-- Input container for password -->
         <div class="input-container">
-    
           <input
             ref="passwordInput" 
             :type="passwordVisible ? 'text' : 'password'"
@@ -132,11 +131,13 @@ export default {
 
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
 }
+
 
 .login-form {
   background: #F2CAAC;

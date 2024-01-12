@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LandingPageView from '../views/LandingPageView.vue'
 import LoginView from '../views/LoginView.vue'
 import SignUpView from '../views/SignUpView.vue'
+import SignUpViewTest from '../views/SignUpViewTest.vue'
 import LegalResourcesView from '../views/LegalResourcesView.vue'
 import AdditionalInformationView from '../views/AdditionalInformationView.vue'
 import BasicModeDashboardView from '../views/BasicModeDashboardView.vue'
@@ -25,6 +26,11 @@ const router = createRouter({
       path: '/signUp',
       name: 'signUp',
       component: SignUpView
+    },
+    {
+      path: '/signUpTest',
+      name: 'signUpTest',
+      component: SignUpViewTest
     },
     {
       path: '/legalResources',

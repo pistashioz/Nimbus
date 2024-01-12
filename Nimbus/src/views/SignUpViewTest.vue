@@ -7,44 +7,33 @@
       <form @submit.prevent="signUp">
         <!-- Title for the signup form -->
         <h1>Create Account</h1>
-        <!-- Input container for email -->
-        <div class="input-container">
-          <input id="email" type="text" v-model="email" placeholder="email" required>
-        </div>
-        <!-- Input container for username -->
-        <div class="input-container">
-          <input id="username" type="text" v-model="username" placeholder="username" required>
-        </div>
-        <!-- Input container for password -->
-        <div class="input-container">
-          <input
-            ref="passwordInput" 
-            :type="passwordVisible ? 'text' : 'password'"
-            v-model="password" 
-            placeholder="password" 
-            required
-          >
-          <img
-            :src="passwordVisible ? eyeOpenIcon : eyeClosedIcon" 
-            @click="togglePasswordVisibility" 
-            class="password-toggle" 
-          />
-        </div>
-        <!-- Input container for password confirmation -->
-        <div class="input-container">
-          <input
-            ref="passwordInputConfirmation" 
-            :type="passwordConfirmationVisible ? 'text' : 'password'"
-            v-model="passwordConfirmation" 
-            placeholder="confirm password"  
-            required
-          >
-          <img
-            :src="passwordConfirmationVisible ? eyeOpenIcon : eyeClosedIcon" 
-            @click="togglePasswordConfirmationVisibility" 
-            class="password-toggle" 
-          />
-        </div>
+        <InputField
+          id="email"
+          placeholder="email"
+          v-model="email"
+          required
+        />
+        <InputField
+          id="username"
+          placeholder="username"
+          v-model="username"
+          required
+        />
+        <InputField
+          id="password"
+          type="password"
+          placeholder="password"
+          v-model="password"
+          required
+        />
+        <InputField
+          id="password"
+          type="password"
+          placeholder="confirm password"
+          v-model="passwordConfirmation"
+          required
+        />
+       
         <div class="terms-checkbox">
           <input type="checkbox" id="terms" v-model="agreedToTerms" required>
           <label for="terms">
@@ -83,11 +72,9 @@
 </template>
 
 <script>
+import InputField from '@/components/InputField.vue';
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
-// Import SVG icons for password visibility toggle
-import eyeOpenIcon from '@/assets/icons/eye-open.svg';
-import eyeClosedIcon from '@/assets/icons/eye-closed.svg';
 
 export default {
   data() {
@@ -97,15 +84,11 @@ export default {
       password: "", // Bound to password input
       passwordConfirmation: "", // Bound to password confirmation input
       errorMessage: "", // Used to display signUp error messages
-      passwordVisible: false, // Tracks password visibility state
-      passwordConfirmationVisible: false, // Tracks password visibility state
       agreedToTerms: false, // Tracks whether the terms checkbox is checked
-      eyeOpenIcon, // Eye open icon for password visibility
-      eyeClosedIcon, // Eye closed icon for password visibility
     };
   },
   components: {
-    
+    InputField,
   },
   computed: {
     // Access to Pinia user store
