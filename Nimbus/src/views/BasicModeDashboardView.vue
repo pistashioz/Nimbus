@@ -277,9 +277,11 @@ export default {
     <input type = 'text' class = 'search-bar' placeholder="search..." v-model="query" @keypress = 'fetchWeather'>
     <div id="basicModeContainer" v-if="(typeof weather.main != 'undefined')">
       <div id = 'containerWeatherToday'>
+
         <h3 id = 'date'>{{dateBuilder()}}</h3>
         <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration' :alt="getWeatherAltText" >
         <div id = 'location' :style="{ fontSize: computeFontSize(weather.name.length) }">
+
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
           <h2 id = 'locationCity' >{{ weather.name }}</h2>
         </div>
@@ -340,12 +342,14 @@ export default {
           <p id = 'degrees'>degrees</p>
           <p id = 'degreesType'>celsius</p>
       </div>
+
       <div id = 'temperatureGraphContainer'>
         <Bar
           id="my-chart-id"
           :data="chartData"
         />
       </div>
+
       <div id = 'airQualityContainer'>
         <div id = 'airQualityHeader'>AirQuality</div>
         <div id = 'airQualityData'>
@@ -463,12 +467,15 @@ export default {
   position: absolute;
 
 }
+
 #location{
   width: 100%;
   margin: 0;
+
   position: absolute;
   bottom: -2em;
   margin-bottom: 1em;
+  padding-left: 3em;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -769,7 +776,7 @@ export default {
   right:2.5em;
 }
 
-#temperatureGraphContainer{
+#temperatureGraphContainerBasicMode{
   width: 38.9375rem;
   height: 8.5625rem;
   flex-shrink: 0;
@@ -794,7 +801,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-}
+
 #airQualityHeader{
   color: #303030;
   font-family: Asap;
