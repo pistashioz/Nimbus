@@ -82,27 +82,7 @@
         placeholder="search location"
         v-model="email"
         style="margin: 1rem;"
-        required
-        />
-        <InputField
-        id="username"
-        placeholder="username"
-        v-model="username"
-        required
-        />
-        <InputField
-        id="passwordInput"
-        type="password"
-        placeholder="confirm password"
-        v-model="passwordConfirmation"
-        required
-        />
-
-        <InputField
-        id="passwordInput"
-        type="password"
-        placeholder="confirm password"
-        v-model="passwordConfirmation"
+        @add="handleAdd"
         required
         />
       </div>
@@ -154,7 +134,7 @@ export default {
       passwordConfirmation: "", // Bound to password confirmation input
       errorMessage: "", // Used to display signUp error messages
       agreedToTerms: false, // Tracks whether the terms checkbox is checked
-      isPersonalizationFormVisible: false, // New property to toggle between forms
+      searchQuery: '', // Bound to search input
     };
   },
   components: {
@@ -228,6 +208,9 @@ export default {
     },
     handleClearError() {
       this.errorMessage = "";
+    },
+    handleAdd() {
+      // Logic to handle the Add action
     },
     goToLogIn(event) {
       if (event.target.classList.contains('main-text')) {
