@@ -4,6 +4,7 @@ import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 //import { useWeatherStore } from '@/stores/weather'
+
 export default {
   name: 'basicMode',
   data() {
@@ -15,6 +16,11 @@ export default {
       five_day_forecast: {},
       air_quality: {},
     };
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.calculateSunPosition();
+    });
   },
   methods: {
     fetchWeather(e){
@@ -115,47 +121,38 @@ export default {
       return formattedTime;
     },
     calculateSunPosition(){
-      const currentTime = new Date();
-      const smallLine = document.getElementById('sunriseSunsetSmallLine');
-      const sunCircle = document.getElementById('sunsireSunsetCircle');
-  
-  console.log('smallLine:', smallLine);
-  console.log('sunCircle:', sunCircle);
+        const currentTime = new Date();
 
-  if (this.weather && this.weather.timezone) {
-    const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
-    const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
-    const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-    const sunriseTime = this.weather.sys.sunrise;
-    const sunsetTime = this.weather.sys.sunset;
-    const timeStampCurrentTime = Math.round(cityTime / 1000);
 
-    console.log('formattedTime:', formattedTime);
-    console.log('sunriseTime:', sunriseTime);
-    console.log('sunsetTime:', sunsetTime);
+      const smallLine = document.getElementById('ssSmallLine');
+      const sunCircle = document.getElementById('ssCircle');
     
-    if (smallLine && sunCircle) {
-      if (formattedTime > sunriseTime && formattedTime < sunsetTime) {
-        const daylightDuration = sunsetTime - sunriseTime;
-        const timeSinceSunrise = timeStampCurrentTime * 100;
-        let percentageOfDaylight = (timeSinceSunrise / daylightDuration);
-        console.log('Percentage of daylight:', percentageOfDaylight);
+        const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
+        const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
+        const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        const formattedsunriseTime = this.formatTime(this.weather.sys.sunrise, this.weather.timezone)
+        const formattedsunsetTime =this.formatTime(this.weather.sys.sunset, this.weather.timezone)
+        const timeStampCurrentTime = Math.round(cityTime / 1000);
+        const sunriseTime = this.weather.sys.sunrise
+        const sunsetTime = this.weather.sys.sunset
 
-        smallLine.style.width = `${percentageOfDaylight / 100000}%`;
-        sunCircle.style.left = `${percentageOfDaylight / 100000}%`;
-      } else {
-        smallLine.style.width = '0';
-        sunCircle.style.left = '0';
-      }
-    } else {
-      console.error('Either smallLine or sunCircle is null');
-    }
+        
+          if (formattedTime > formattedsunriseTime && formattedTime < formattedsunsetTime) {
 
-    return formattedTime;
-  } else {
-    // Handle the case where timezone information is not available
-    return 'N/A';
-  }
+            const daylightDuration = sunsetTime - sunriseTime;
+            const timeSinceSunrise = timeStampCurrentTime * 100;
+            let percentageOfDaylight = (timeSinceSunrise / daylightDuration) / 100000;
+            console.log('Percentage of daylight:', percentageOfDaylight);
+
+            smallLine.style.width = `${percentageOfDaylight}%`;
+            sunCircle.style.left = `${percentageOfDaylight}%`;
+          } else {
+            smallLine.style.width = '0';
+            sunCircle.style.left = '0';
+          }
+
+        return formattedTime;
+      
     },
     getMinAndMaxTemp(index, property){
       const start = index * 8
@@ -380,8 +377,9 @@ export default {
           </div>
             <div id = 'sunriseSunsetIllustration'>
               <div id = 'sunriseSunsetBigLine'></div>
-              <div id = 'sunriseSunsetSmallLine'></div>
-              <div id = 'sunsireSunsetCircle'></div>
+              <div id='sunriseSunsetBigLine'></div>
+              <div id='ssSmallLine'></div>
+              <div id='ssCircle'></div>
             </div>
        
           <div id = 'sunsetContainer'>
@@ -975,14 +973,14 @@ line-height: normal;
   position: relative;
 }
 #sunriseSunsetBigLine{
-  width: 4.5rem;
+  width: 2.4rem;
   height: 0.25rem;
   flex-shrink: 0;
   border-radius: 0.625rem;
   background: #D9D9D9;
   z-index: 2;
 }
-#sunriseSunsetSmallLine{
+#ssSmallLine{
   width: 1.5rem;
   height: 0.25rem;
   flex-shrink: 0;
@@ -993,7 +991,7 @@ line-height: normal;
   left: 0;
   transform: translatex(0%);
 }
-#sunsireSunsetCircle{
+#ssCircle{
   width: 0.6875rem;
   height: 0.6875rem;
   border-radius: 50%;
