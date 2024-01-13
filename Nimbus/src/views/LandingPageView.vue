@@ -24,8 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <template>
   <main>
-    <div id = 'introText' class = 'text'>Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.</div>
-    <button id = 'accDashboardBtn'>Access the Dashboard</button>
+    <span id = 'intro'>
+      <div id = 'introText' class = 'text'>Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.</div>
+      <img id = 'sunLandingPage' src = '../assets/img/sunLandingPage.svg'>
+      <img id = 'cloud1LandingPage' src = '../assets/img/cloud1LandingPage.svg'>
+      <img id = 'cloud2LandingPage' src = '../assets/img/cloud2LandingPage.svg'> 
+      <button id = 'accDashboardBtn'>Access the Dashboard</button>
+    </span>
     <span id = 'AboutSection'>
       <div id = 'aboutTitle'>
         <h1 id = 'forecasting'>Forecasting</h1>
@@ -63,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </span>
     </section>
-    <hr class="solid">
+    <hr class="solid" id = 'divisionReviews'>
     <section id = 'reviews'>
       <h3 id = 'subHeadingReviews'>Beyond the forecast</h3>
       <h2 id = 'headingReviews'>Nimbus awaits</h2>
@@ -155,6 +160,7 @@ body{
 }
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 :root{
   background-color: #EDDED4;
@@ -162,13 +168,56 @@ html {
 button{
   cursor: pointer;
 }
+#intro{
+  width: 100%;
+  height: 832px;
+  margin:0;
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#sunLandingPage{
+  width: 25em;
+  height: auto;
+  z-index: 2;
+  position: absolute;
+  left: 5em;
+  
+}
+@keyframes drift {
+  from {
+    transform: translateX(300px);
+  }
+  to {
+    transform: translateX(-1350px);
+  }
+}
 
+#cloud1LandingPage{
+  width: 28em;
+  height: auto;
+  z-index: 3;
+  position: absolute;
+  right: 5em;
+  animation: drift 50s ease infinite;
+}
+#cloud2LandingPage{
+  width: 35em;
+  height: auto;
+  z-index: 2;
+  position: absolute;
+  right: -7em;
+  top: 15em;
+  animation: drift 90s ease infinite;
+}
 #introText{
-  position: relative;
-  top:5vh;
   max-width: 30vw;
-  margin-left: auto;
-  margin-right: auto;
+  z-index: 5;
+  position: absolute;
+  top: 11em
 }
 
 .text{
@@ -197,10 +246,11 @@ button{
   font-family: 'Recoleta';
   font-weight: bold;
   font-size: 1.3vw;
-  top: 18vh;
   max-width: 30vw;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 18em;
+  color: #303030;
 }
 #AboutSection{
   background-color: #F2E6DD;
@@ -208,7 +258,7 @@ button{
   height: 800px;
   flex-shrink: 0;
   position: relative;
-  top: 28vh;
+  top: 80vh;
   display: flex;
   align-items: center;
   justify-content: center; 
@@ -314,7 +364,7 @@ button{
   height: 800px;
   flex-shrink: 0;
   position: relative;
-  top: -18vh;
+  top: 32vh;
   align-items: center;
   justify-content: center;
 }
@@ -398,9 +448,18 @@ button{
 hr.solid {
   border-top: 0.1em solid #303030;
   position: relative;
-  top: -10em;
+  top: 10em;
 }
 
+#reviews{
+  width: 100%;
+  height: 25em;
+  flex-shrink: 0;
+  position: relative;
+  top: 40vh;
+  align-items: center;
+  justify-content: center;
+}
 #subHeadingReviews{
   color: #303030;
   text-align: center;
@@ -429,7 +488,7 @@ hr.solid {
   justify-content: center;
   align-items: center;
   position: relative;
-  top: -10em;
+  top: -17em;
 }
 
 
@@ -497,7 +556,7 @@ small{
 #secondDivider{
   border-top: 0.1em solid #303030;
   position: relative;
-  top: -4em;
+  top: 20em;
 }
 
 footer{
@@ -505,12 +564,14 @@ footer{
   display: flex;
   justify-content: space-around;
   width: 20em;
+  height: 4em;
   font-size: 25px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
   position: relative;
-  top: -1em;
+  padding-top: 1em;
+  top: 11em;
 }
 
 #legalRsrc,
