@@ -1,32 +1,126 @@
 <script>
 export default {
-  created() {
-    const city = this.$route.params.city;
-    console.log('City:', city);
+  name: 'advancedMode',
+  data(){
+    return{
+      api_key: '39d7058ef12ab5dae395f420fd79ec5a',
+      url_base: 'http://api.openweathermap.org/data/2.5/',
+      isWeatherLoaded: false,
+      currentTime: '',
+      currentDay: "",
+      currentDate: "",
+      currentMonth: "",
+    }
   },
-};
+  created() {
+    this.fetchWeather()
+    this.startUpdatingTime();
+  },
+  methods:{
+        
+    async fetchWeather(){
+      try {
+        const response = await fetch(`${this.url_base}weather?q=${this.$route.params.city}&units=metric&APPID=${this.api_key}`);
+        const results = await response.json();
+        this.setResults(results);
+        await this.fetchFiveDayForecast();
+        await this.fetchAirQuality();
+        this.isWeatherLoaded = true;
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      }
+    },
+    fetchFiveDayForecast(){
+      const { lat, lon } = this.weather.coord;
+      fetch(`${this.url_base}forecast?lat=${lat}&lon=${lon}&appid=${this.api_key}`)
+        .then(res => res.json()) 
+        .then(response => {
+          console.log('respuesta',response);
+          this.setFiveDayForecastResults(response);
+        })
+        .catch(error => {
+          console.error('Error fetching 5 day weather forecast:', error);
+        });
+    },
+    fetchAirQuality(){
+      const { lat, lon } = this.weather.coord;
+      fetch(`${this.url_base}air_pollution?lat=${lat}&lon=${lon}&appid=${this.api_key}`)
+        .then(res => res.json()) 
+        .then(response => {
+          console.log('respuesta',response);
+          this.setAirQualityResults(response);
+        })
+        .catch(error => {
+          console.error('Error fetching air pollution data:', error);
+        });
+    },
+    setResults (results){
+      this.weather = results;
+      console.log('clima', this.weather.main)
+    },
+    setFiveDayForecastResults(response){
+      this.five_day_forecast = response
+      console.log('five day forecast', this.five_day_forecast)
+      //console.log(this.five_day_forecast.list[0].pop)
+    },
+    setAirQualityResults(response){
+      this.air_quality = response
+      console.log('air quality', this.air_quality)
+      //console.log(this.air_quality.list[0].main.aqi)
+    },
+    updateCurrentTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      this.currentTime = `${hours}:${minutes}`;
+      const daysOfWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+      const dayIndex = now.getDay();
+      this.currentDay = daysOfWeek[dayIndex];
+
+      const date = now.getDate();
+      this.currentDate = date < 10 ? `0${date}` : date.toString();
+
+      const monthIndex = now.getMonth();
+      const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+      this.currentMonth = months[monthIndex];
+    },
+    startUpdatingTime() {
+      this.updateCurrentTime();
+
+    
+      setInterval(() => {
+        this.updateCurrentTime();
+      }, 1000);
+    },
+
+
+  }
+  
+}
 </script>
 <template>
   <main>
     <RouterLink :to="{ name: 'basicModeDashboard' }" id = 'backBtn'><font-awesome-icon icon="fa-solid fa-chevron-left" id = 'backIcon'/></RouterLink>
-    <section id = 'basicInfoToday'>
+    <section v-if="isWeatherLoaded" id="basicInfoToday">
+    </section>
+    <section v-if="weather" id='basicInfoToday'>
       <div id = 'containerBasicWeatherInfo'>
         <img src = '../assets/img/cloudImg.svg' id = 'todaysWeatherIconAdvacedMode'>
         <div id = 'headerBasicWeatherInfo'>
-          <h1 id = 'currentTemperatureHeader'>23°</h1>
+          <h1 id = 'currentTemperatureHeader'>{{Math.round(weather.main.temp)}}°</h1>
           <h2 id = 'degreeTypeHeader'>c</h2>
           <div id = 'locationAdvancedMode'>
             <font-awesome-icon icon="location-dot" style="color: #303030;" id ='locationIconAdvancedMode' />
-            <h2 id = 'locationCityAdvancedMode'>Porto</h2>
-            <p id = 'time'>16:44</p>
+            <h2 id = 'locationCityAdvancedMode'>{{ weather.name }}</h2>
+            <p v-if="weather.main" id='time'>{{ currentTime }}</p>
           </div>
         </div>
       </div>
       <div id = 'containerTodayCalendar'>
-        <div id = 'month'>NOV</div>
+        <div id = 'month'>{{ currentMonth }}</div>
         <div id = 'dateAndDayAdvancedMode'>
-          <h2 id = 'dateAdvancedMode'>26</h2>
-          <h3 id = 'dayAdvancedMode'>SUNDAY</h3>
+          <h2 id = 'dateAdvancedMode'>{{ currentDate }}</h2>
+          <h3 id = 'dayAdvancedMode'>{{ currentDay }}</h3>
         </div>
       </div>
     </section>
@@ -93,12 +187,50 @@ export default {
       </section>
       <section id = 'temperatureGraphContainerAdvancedMode'></section>
       <section id = 'weatherInfoAdvancedModeContainer'>
-        <div id = 'windContainerAdvancedMode'></div>
-        <div id = 'rainContainerAdvancedMode'></div>
-        <div id = 'humidityContainerAdvancedMode'></div>
-        <div id = 'wavesContainerAdvancedMode'></div>
-        <div id = 'visibilityContainerAdvancedMode'></div>
-        <div id = 'pressureContainerAdvancedMode'></div>
+        <div id = 'windContainerAdvancedMode'>
+          <div class = 'headerContainers'>
+            <h2 class = 'weatherInfoContainerHeader' id = 'windTitle' >Wind</h2>
+            <img class = 'weatherInfoIllustrations' alt = 'Wind' src = '../assets/img/windIcon.svg'>
+          </div>
+          <h3 class = 'dataContainers'>{{ weather.wind.speed }} m/s</h3>
+          
+        </div>
+        <div id = 'rainContainerAdvancedMode'>
+          <div class = 'headerContainers'>
+            <h2 class = 'weatherInfoContainerHeader' id = 'rainTitle'>Rain</h2>
+            <img class = 'weatherInfoIllustrations' alt = 'Rain' src = '../assets/img/rainIcon.svg'>
+          </div>
+          <h3 class = 'dataContainers'> {{ five_day_forecast && five_day_forecast.list ? Math.round(five_day_forecast.list[0].pop * 100) : Math.round(five_day_forecast.list[0].pop * 100) }}  %</h3>
+        </div>
+        <div id = 'humidityContainerAdvancedMode'>
+          <div class = 'headerContainers'>
+            <h2 class = 'weatherInfoContainerHeader' id = 'humidityTitle'>Humidity</h2>
+            <img class = 'weatherInfoIllustrations' alt = 'Humidity' src = '../assets/img/humidityIcon.svg'>
+          </div>
+          <h3 class = 'dataContainers'>{{ weather.main.humidity }} %</h3>
+        </div>
+        <div id = 'wavesContainerAdvancedMode'>
+          <div class = 'headerContainers'>
+            <h2 class = 'weatherInfoContainerHeader' id = 'wavesTitle'>Sea Levels</h2>
+            <img class = 'weatherInfoIllustrations' alt = 'Waves' src = '../assets/img/wavesIcon.png'>
+          </div>
+          <h3 class='dataContainers' v-if="weather.main && weather.main.sea_level">{{ weather.main.sea_level }} hPa</h3>
+          <h3 class='dataContainers' v-else>N/A</h3>
+        </div>
+        <div id = 'visibilityContainerAdvancedMode'>
+          <div class = 'headerContainers'>
+            <h2 class = 'weatherInfoContainerHeader' id = 'visibilityTitle'>Visibility</h2>
+            <img class = 'weatherInfoIllustrations' alt = 'Visibility' src = '../assets/img/visibilityIcon.png'>
+          </div>
+          <h3 class = 'dataContainers'>{{ weather.visibility / 1000 }} km</h3>
+        </div>
+        <div id = 'pressureContainerAdvancedMode'>
+          <div class = 'headerContainers'>
+            <h2 class = 'weatherInfoContainerHeader' id ='pressureTitle'>Pressure</h2>
+            <img class = 'weatherInfoIllustrations' alt = 'Pressure' src = '../assets/img/pressureIcon.svg'>
+          </div>
+          <h3 class = 'dataContainers'>{{weather.main.pressure}}hPa</h3>
+        </div>
       </section> 
 
   </main>
@@ -395,6 +527,11 @@ margin-bottom: -0.5em;
 }
 
 
+#weatherInfoAdvancedModeContainer > div:not(#pressureContainerAdvancedMode):hover {
+  transform: translateY(-1.5em); 
+  transition: transform 0.3s ease-in-out;
+}
+
 
 
 
@@ -404,6 +541,9 @@ margin-bottom: -0.5em;
   flex-shrink: 0;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
 }
 #windContainerAdvancedMode{
   background: #C8BDFF;
@@ -432,7 +572,66 @@ margin-bottom: -0.5em;
 #pressureContainerAdvancedMode{
   background: #FFBEED;
   position: absolute;
-  top:13.50em;
+  top:13em;
   height: 5rem;
 }
+
+.headerContainers{
+  display: flex;
+  width: 80%;
+  justify-content: space-between;
+  height: 2em;
+  align-items: center;
+  padding-left: 1.13em;
+  padding-right: 0.81em;
+  color: #303030;
+  font-family: Asap;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding-top: 0.40em;
+  flex-direction: row;
+}
+#pressureTitle{
+  color: #B21C29;
+}
+#windTitle{
+  color: #685E9A;
+}
+#rainTitle{
+  color: #185850;
+}
+#humidityTitle{
+  color: #826022;
+}
+#wavesTitle{
+  color: #303030;
+}
+#visibilityTitle{
+  color: #9B4F19;
+}
+
+.dataContainers{
+  width: auto;
+  height: auto;
+  flex-shrink: 0;
+    color: #7B7B7B;
+  font-family: Asap;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  margin-top: 0.2em;
+  margin-left: 1.13em;
+}
+/*
+.weatherInfoIllustrations{
+  background-color: red;
+  position: absolute;
+  right: 1.6em;
+}*/
 </style>

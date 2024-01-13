@@ -3,7 +3,6 @@ import moment from 'moment';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-//import { useWeatherStore } from '@/stores/weather'
 
 export default {
   name: 'basicMode',
@@ -16,6 +15,9 @@ export default {
       five_day_forecast: {},
       air_quality: {},
     };
+  },
+  created(){
+    
   },
   mounted() {
     this.$nextTick(() => {
@@ -169,8 +171,8 @@ export default {
           if (formattedTime > formattedsunriseTime && formattedTime < formattedsunsetTime) {
 
             const daylightDuration = sunsetTime - sunriseTime;
-            const timeSinceSunrise = timeStampCurrentTime * 100;
-            let percentageOfDaylight = (timeSinceSunrise / daylightDuration) / 100000;
+            const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
+            let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
             console.log('Percentage of daylight:', percentageOfDaylight);
 
             smallLine.style.width = `${percentageOfDaylight}%`;
@@ -298,8 +300,8 @@ export default {
         </div>
         <div id = 'humidityContainer'>
           <div id = 'humidityContainerHeader'>
-            <img src = '../assets/img/humidityIcon.svg' id = 'humidityIcon'>
-          <p id = 'humidityTitle'>Humidity</p>
+            <img src = '../assets/img/humidityIconBasicMode.svg' id = 'humidityIcon'>
+          <p id = 'humidityTitleBasicMode'>Humidity</p>
           </div>
           <div id = 'humidityData'>
             <p id = 'humidityPercentage'>{{ weather.main.humidity}}%</p>
@@ -308,15 +310,15 @@ export default {
         </div>
         <div id = 'rainContainer'>
           <div id = 'rainContainerHeader'>
-            <img src = '../assets/img/rainIcon.svg' id = 'rainIcon'>
-            <p id = 'rainTitle'>Rain</p>
+            <img src = '../assets/img/rainIconBasicMode.svg' id = 'rainIcon'>
+            <p id = 'rainTitleBasicMode'>Rain</p>
           </div>
           <p id = 'rainData'>{{ Math.round(this.five_day_forecast.list[0].pop * 100) }} % Chance</p>
         </div>
         <div id = 'windContainer'>
           <div id = 'windContainerHeader'>
-            <img src = '../assets/img/windIcon.svg' id = 'windIcon'>
-            <p id = 'windTitle'>Wind</p>
+            <img src = '../assets/img/windIconBasicMode.svg' id = 'windIcon'>
+            <p id = 'windTitleBasicMode'>Wind</p>
           </div>
           <p id = 'windData'>{{ windSpeed() }}</p>
         </div>
@@ -343,7 +345,7 @@ export default {
           <p id = 'degreesType'>celsius</p>
       </div>
 
-      <div id = 'temperatureGraphContainer'>
+      <div id = 'temperatureGraphContainerBasicMode'>
         <Bar
           id="my-chart-id"
           :data="chartData"
@@ -665,7 +667,7 @@ export default {
   text-transform: uppercase;
 }
 
-#feelsLikeTitle, #expectedTitle, #humidityTitle, #rainTitle, #windTitle{
+#feelsLikeTitle, #expectedTitle, #humidityTitleBasicMode, #rainTitleBasicMode, #windTitleBasicMode{
   color: #303030;
   position: absolute;
   left: 1.44em;
@@ -695,7 +697,7 @@ export default {
   top: 1em;
 }
 
-#humidityTitle, #rainTitle, #windTitle{
+#humidityTitleBasicMode, #rainTitleBasicMode, #windTitleBasicMode{
   left: 4.25em;
 }
 #feelsLikeData{
@@ -801,7 +803,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-
+}
 #airQualityHeader{
   color: #303030;
   font-family: Asap;
