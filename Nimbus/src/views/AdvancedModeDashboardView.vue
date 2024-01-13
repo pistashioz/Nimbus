@@ -56,7 +56,6 @@ export default {
     },
     setResults (results){
       this.weather = results;
-      console.log('clima', this.weather.main)
     },
     setFiveDayForecastResults(response){
       this.five_day_forecast = response
@@ -92,6 +91,20 @@ export default {
         this.updateCurrentTime();
       }, 1000);
     },
+    getWeatherIcon() {
+    const weatherMain = this.weather.weather[0].main.toLowerCase();
+    
+    const iconMap = {
+      'clear': '../assets/img/sunnyImg.svg',
+      'clouds': '../assets/img/cloudImg.svg',
+      'rain': '../assets/img/rainImg.svg',
+      'thunderstorm':'../assets/img/thunderImg.png',
+      'snow':'../assets/img/snowImg.png',
+      'mist':'../assets/img/mistImg.png',
+    };
+
+    return iconMap[weatherMain] || '../assets/img/sunnyImg.svg';
+  }
 
 
   }
@@ -105,10 +118,10 @@ export default {
     </section>
     <section v-if="weather" id='basicInfoToday'>
       <div id = 'containerBasicWeatherInfo'>
-        <img src = '../assets/img/cloudImg.svg' id = 'todaysWeatherIconAdvacedMode'>
+        <img :src="getWeatherIcon()" id = 'todaysWeatherIconAdvacedMode'>
         <div id = 'headerBasicWeatherInfo'>
           <h1 id = 'currentTemperatureHeader'>{{Math.round(weather.main.temp)}}°</h1>
-          <h2 id = 'degreeTypeHeader'>c</h2>
+          <h2 id = 'degreeTypeHeader'>C</h2>
           <div id = 'locationAdvancedMode'>
             <font-awesome-icon icon="location-dot" style="color: #303030;" id ='locationIconAdvancedMode' />
             <h2 id = 'locationCityAdvancedMode'>{{ weather.name }}</h2>
@@ -200,7 +213,7 @@ export default {
             <h2 class = 'weatherInfoContainerHeader' id = 'rainTitle'>Rain</h2>
             <img class = 'weatherInfoIllustrations' alt = 'Rain' src = '../assets/img/rainIcon.svg'>
           </div>
-          <h3 class = 'dataContainers'> {{ five_day_forecast && five_day_forecast.list ? Math.round(five_day_forecast.list[0].pop * 100) : Math.round(five_day_forecast.list[0].pop * 100) }}  %</h3>
+          <h3 class = 'dataContainers'> {{ five_day_forecast && five_day_forecast.list ? Math.round(five_day_forecast.list[0].pop * 100) :'' }}  %</h3>
         </div>
         <div id = 'humidityContainerAdvancedMode'>
           <div class = 'headerContainers'>
@@ -297,16 +310,16 @@ display: flex;
 #degreeTypeHeader{
   color: #303030;
   font-family: Recoleta;
-  font-size: 3.125rem;
+  font-size:3rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   position: absolute;
-  left:2.44em;
-  top: -0.38em;
+  left:2em;
+  top: -0.2em
 }
 #headerBasicWeatherInfo{
-  width: 10.3125rem;
+  width: 8rem;
   height: 8.1875rem;
   position: absolute;
   top:1.5em;
@@ -616,7 +629,7 @@ margin-bottom: -0.5em;
   width: auto;
   height: auto;
   flex-shrink: 0;
-    color: #7B7B7B;
+    color: #484848;
   font-family: Asap;
   font-size: 1.25rem;
   font-style: normal;
