@@ -9,7 +9,11 @@ body, html {
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Recoleta Black', serif; /* headings font */
   }
-  
+  form h1 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
 /* Style for input placeholders */
 input::placeholder {
     font-family: 'Asap Regular', sans-serif; /* default text font */
@@ -22,6 +26,20 @@ button {
     font-size: 25px; /* default font size for placeholder */
     color: #A6A6A6; 
 }
+
+.form {
+  background: #F2CAAC;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 2rem 2rem 2rem 2rem;
+  border-radius: 30px;
+  border: 1px solid #303030;
+  text-align: center;
+  width: 350px;
+}
+
+
 
 .form-wrapper {
   position: absolute;

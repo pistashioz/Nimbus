@@ -177,6 +177,7 @@ export default {
         this.errorMessage = error.message;
       }
     },
+    
     clearErrorMessage() {
        // Clear error message and cancel timer
       this.errorMessage = '';

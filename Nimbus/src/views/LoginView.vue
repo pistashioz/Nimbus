@@ -88,7 +88,7 @@ export default {
       if (newValue) {
         setTimeout(() => {
           this.clearErrorMessage();
-        }, 3000);
+        }, 30000);
       }
     },
   },

@@ -1,78 +1,140 @@
 <template>
-  <!-- Main container for the signup form -->
-  <div class="form-wrapper">
+  <!-- Main container for the forms -->
+  <div class="form-wrapper" ref="formWrapper">
     <!-- signup form wrapper -->
-    <main class="sign-up-form">
+    <!-- Conditionally render the first or second form -->
+    <main class="sign-up form" ref="signUpForm">
       <!-- Form element with submit event handler -->
       <form @submit.prevent="signUp">
         <!-- Title for the signup form -->
         <h1>Create Account</h1>
         <InputField
-          id="email"
-          placeholder="email"
-          v-model="email"
-          required
+        id="email"
+        placeholder="email"
+        v-model="email"
+        required
         />
         <InputField
-          id="username"
-          placeholder="username"
-          v-model="username"
-          required
+        id="username"
+        placeholder="username"
+        v-model="username"
+        required
         />
         <InputField
-          id="password"
-          type="password"
-          placeholder="password"
-          v-model="password"
-          required
+        id="passwordInput"
+        type="password"
+        placeholder="password"
+        v-model="password"
+        required
         />
         <InputField
-          id="password"
-          type="password"
-          placeholder="confirm password"
-          v-model="passwordConfirmation"
-          required
+        id="passwordInput"
+        type="password"
+        placeholder="confirm password"
+        v-model="passwordConfirmation"
+        required
         />
-       
         <div class="terms-checkbox">
-          <input type="checkbox" id="terms" v-model="agreedToTerms" required>
+          <input type="checkbox" id="terms" v-model="agreedToTerms" >
           <label for="terms">
             I agree to Nimbu's <a href="/terms" target="_blank">Terms & Conditions</a> and acknowledge the <a href="/privacy" target="_blank">Privacy Policy</a>.
           </label>
         </div>
-
         <div class="sign-up-wrapper">
-        <!-- signup submission button -->
-        <button type="submit" class="sign-up-button">Sign Up</button>
+          <!-- signup submission button -->
+          <CustomButton
+          buttonType="submit"
+          buttonText="Sign Up"
+          />
           <!-- Social signup options -->
-          <div class="social-sign-up">
-          <!-- Google signup button -->
-          <button type="button" class="google-sign-up">
-            <img src="@/assets/icons/google.svg" alt="Google logo" class="icon" />
-          </button>
-          <!-- Apple sign button -->
-          <button type="button" class="apple-sign-up">
-            <img src="@/assets/icons/apple.svg" alt="Apple logo" class="icon" />
-          </button>
+          <div class="social-sign-up-wrapper">
+            <!-- Google signup button -->
+            <CustomButton
+            buttonClass="google social-sign-up"
+            iconSrc="google"
+            />
+            <!-- Apple sign button -->
+            <CustomButton
+            buttonClass="apple social-sign-up"
+            iconSrc="apple"
+            />
+          </div>
         </div>
-      </div>
         <!-- Container for error messages -->
-        <div class="error-container" :class="{ 'error-present': errorMessage }">
-          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        </div>
-
+        <ErrorMessage :message="errorMessage" @clear-error="handleClearError" />
         <!-- Link to log-in page -->
-        <div class="log-in-link-wrapper">
-          <p>Already have an account?</p>
-          <div class="log-in-link" @click="goToLogIn"> Log In</div>
-        </div>
+        <ActionLink preText="Already have an account?" text="Log In" @handleClick="goToLogIn" />
       </form>
+    </main>
+    <!-- personalization form wrapper -->
+    <main class="personalization form" ref="personalizationForm">
+      
+      
+      <!-- Form element with submit event handler -->
+      <form @submit.prevent="signUp">
+        <!-- Title for the signup form -->
+        <h1>Make</h1>
+        <InputField
+        id="email"
+        placeholder="email"
+        v-model="email"
+        required
+        />
+        <InputField
+        id="username"
+        placeholder="username"
+        v-model="username"
+        required
+        />
+        <InputField
+        id="passwordInput"
+        type="password"
+        placeholder="confirm password"
+        v-model="passwordConfirmation"
+        required
+        />
+        <div class="terms-checkbox">
+          <input type="checkbox" id="terms" v-model="agreedToTerms" >
+          <label for="terms">
+            I agree to Nimbu's <a href="/terms" target="_blank">Terms & Conditions</a> and acknowledge the <a href="/privacy" target="_blank">Privacy Policy</a>.
+          </label>
+        </div>
+        <div class="sign-up-wrapper">
+          <!-- signup submission button -->
+          <CustomButton
+          buttonType="submit"
+          buttonText="Sign Up"
+          />
+          <!-- Social signup options -->
+          <div class="social-sign-up-wrapper">
+            <!-- Google signup button -->
+            <CustomButton
+            buttonClass="google social-sign-up"
+            iconSrc="google"
+            />
+            <!-- Apple sign button -->
+            <CustomButton
+            buttonClass="apple social-sign-up"
+            iconSrc="apple"
+            />
+          </div>
+        </div>
+        <!-- Container for error messages -->
+        <ErrorMessage :message="errorMessage" @clear-error="handleClearError" />
+        <!-- Link to log-in page -->
+        <ActionLink preText="Already have an account?" text="Log In" @handleClick="goToLogIn" />
+      </form>
+      
     </main>
   </div>
 </template>
 
 <script>
 import InputField from '@/components/InputField.vue';
+import CustomButton from '@/components/CustomButton.vue';
+import ErrorMessage from '@/components/ErrorMessage.vue';
+import ActionLink from '@/components/ActionLink.vue';
+import { validateEmail, validatePassword, validateUsername, validatePasswordMatch  } from "@/utils.js";
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
 
@@ -85,10 +147,14 @@ export default {
       passwordConfirmation: "", // Bound to password confirmation input
       errorMessage: "", // Used to display signUp error messages
       agreedToTerms: false, // Tracks whether the terms checkbox is checked
+      isPersonalizationFormVisible: false, // New property to toggle between forms
     };
   },
   components: {
     InputField,
+    CustomButton,
+    ErrorMessage,
+    ActionLink,
   },
   computed: {
     // Access to Pinia user store
@@ -98,94 +164,67 @@ export default {
   },
   watch: {
     email() {
-      this.clearErrorMessage(); // Clear error message when email changes
+      this.handleClearError(); // Clear error message when email changes
     },
     username() {
-      this.clearErrorMessage(); // Clear error message when username changes
+      this.handleClearError(); // Clear error message when username changes
     },
-    password() {
-      this.clearErrorMessage(); // Clear error message when password changes
+    passwordInput() {
+      this.handleClearError(); // Clear error message when password changes
     },
-    errorMessage(newValue) {
-      // Set a timer to clear the error message after 3 seconds
-      if (newValue) {
-        setTimeout(() => {
-          this.clearErrorMessage();
-        }, 3000);
-      }
-    },
+    agreedToTerms() {
+      this.handleClearError(); // Clear error message when terms checkbox changes
+    }
+  },
+  mounted() {
+    this.adjustFormWrapperHeight();
   },
   // Methods of the component
-    methods: {
-    // Regexes for form validation
-      isValidEmail(email) {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      return emailRegex.test(email);
+  methods: {
+    adjustFormWrapperHeight() {
+      const activeFormHeight = this.$refs.signUpForm.clientHeight;
+
+      // Set the height of the form wrapper
+      this.$refs.formWrapper.style.maxHeight = `${activeFormHeight}px`;
     },
-    isValidPassword(password) {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
-  },
-  isValidUsername(username) {
-    const usernameRegex = /^[a-zA-Z0-9]{3,15}$/;
-    return usernameRegex.test(username);
-  },
     // Function to handle SignUp
-    async signUp() {
-      if (!this.isValidEmail(this.email)) {
-      this.errorMessage = 'Please enter a valid email address.';
-      return;
-    }
-    if (!this.isValidPassword(this.password)) {
-      this.errorMessage = 'Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, one number, and one special character.';;
-      return;
-    }
-    if (this.password!== this.passwordConfirmation) {
-      this.errorMessage = 'Passwords do not match.';
-      return;
-    }
-    if (!this.agreedToTerms) {
-    this.errorMessage = 'You must agree to the Terms & Conditions and Privacy Policy.';
-    return;
-    }
+    async signUp() {      
+      if (!this.agreedToTerms) {
+        this.errorMessage = 'You must agree to the Terms & Conditions and Privacy Policy.';
+        return;
+      } 
       try {
+
+        // If successful, display the personalization form
+        this.$refs.signUpForm.classList.add('concluded');
+        setTimeout(() => {
+          this.$refs.personalizationForm.classList.add('active');
+        }, 100);
         // Attempting to sign up with provided credentials
-        console.log(this.store);
-    
+
+/*         validateEmail(this.email);
+        validatePassword(this.password);
+        validateUsername(this.username);
+        validatePasswordMatch(this.password, this.passwordConfirmation);
+        
         await this.store.register(this.email, this.username, this.password);
         // On successful sign up, redirect to the landing page
-        this.$router.push({ name: "landingPage" });
+        this.$router.push({ name: "landingPage" }); */
+
+
       } catch (error) {
         console.log(error);
         this.errorMessage = error.message;
+        return;
       }
     },
-    clearErrorMessage() {
-       // Clear error message and cancel timer
-      this.errorMessage = '';
-      if (this.errorTimeout) {
-        clearTimeout(this.errorTimeout);
-        this.errorTimeout = null;
+    handleClearError() {
+      this.errorMessage = "";
+    },
+    goToLogIn(event) {
+      if (event.target.classList.contains('main-text')) {
+        this.$router.push({ name: 'login' });
       }
-    },
-    goToLogIn() {
-      // Redirect to the sign-up page
-      this.$router.push({ name: 'login' });
-    },
-      togglePasswordVisibility() {
-      // Toggle password visibility
-      this.passwordVisible = !this.passwordVisible;
-
-      // Focus the password input
-      this.$refs.passwordInput.focus();
-    },
-    togglePasswordConfirmationVisibility() {
-      // Toggle password visibility
-      this.passwordConfirmationVisible =!this.passwordConfirmationVisible;
-      
-      // Focus the password input
-      this.$refs.passwordInputConfirmation.focus();
-      this.$refs.passwordInputConfirmation.classList.toggle('password-hidden');
     },
   },
 };
@@ -194,73 +233,35 @@ export default {
 
 <style scoped>
 
-.sign-up-form {
-  background: #F2CAAC;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 2rem 2rem 2rem 2rem;
-  border-radius: 30px;
-  border: 1px solid #303030;
-  text-align: center;
-  width: 360px;
+.form-wrapper {
   overflow: hidden;
 }
 
-.sign-up-form form {
-  position: relative;
-  top: 0px;
+.sign-up.form {
+  width: 360px;
+  transform: translateY(0%);
+  opacity: 1;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-out;
 }
 
-.sign-up-form form .concluded {
-  position: relative;
-  top: 500px;
+.sign-up.form.concluded {
+  transform: translateY(100%);
+  opacity: 0;
 }
 
-h1 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  text-align: left;
+.personalization.form {
+  width: 360px;
+  transform: translateY(0%);
+  opacity: 0;
+  transition: transform 0.3s ease-in-out, opacity 0.5s ease-in;
 }
 
-.input-container {
-  margin-bottom: 1rem;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.personalization.form.active {
+  width: 360px;
+  transform: translateY(-100%);
+  opacity: 1;
 }
 
-/* .input-container:nth-child(4){
-  justify-content: space-between;
-}
-
-.input-container:nth-child(4) input{
-  width: 40%;
-}
- */
-input {
-  width: 100%;
-  font-family: 'Asap Regular', sans-serif; 
-  font-size: 1.25rem; 
-  color: #303030;
-  padding: 0.8rem;
-  border: 1px solid white;
-  border-radius: 10px;
-  outline: none; /* remove the default focus outline */
-}
-
-input:focus {
-  border: 1px solid #303030; /* subtle border for focus */
-}
-
-.password-toggle {
-  cursor: pointer;
-  position: absolute;
-  right: 1rem; /* Adjust as necessary */
-  top: 50%;
-  transform: translateY(-45%);
-}
 .terms-checkbox {
   display: flex;
   align-items: flex-start;
@@ -291,93 +292,18 @@ input:focus {
   text-decoration: underline;
 }
 
-
-
 .sign-up-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 }
-.sign-up-button {
-  width: 14rem;
-  height: fit-content;
 
-  padding: 0.75rem;
-  border: 1px solid #303030;
-  border-radius: 20px;
-  background-color: #A4B8E4; 
-  color: white;
-  margin-bottom: 0.8rem;
-  cursor: pointer;
-}
-
-.social-sign-up {
+.social-sign-up-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 28%;
-}
-
-.social-sign-up button {
-  font-family: 'Asap Black', sans-serif; 
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #303030;
-  padding: 0.55rem;
-  margin-bottom: 0.8rem;
-  border: 1px solid #303030;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-/* Style for the icons inside the buttons */
-.social-sign-up .icon {
-  width: 24px; /* Example size, adjust as needed */
-  height: auto;
-}
-
-
-.error-container {
-  max-height: 0; /* initially hide the error message */
-}
-
-/* When an error is present, increase the max-height */
-.error-container.error-present {
-  transition: max-height 0.08s ease-in; 
-  max-height: 62px; /* set to the maximum height the error message could have */
-}
-
-
-.error-message {
-  color: red;
-  font-family: 'Asap ExtraBold', sans-serif;
-  margin-top: 0;
-  margin-bottom: 0.2rem;
-}
-
-.log-in-link-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transform: translateX(-1%);
-  width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 0;
-}
-
-.log-in-link-wrapper p {
-  margin: 0;
-  padding-right: 0.5rem;
-}
-
-.log-in-link {
-  text-decoration: underline;
-  font-size: 0.94rem;
-  color: #858585; 
-  cursor: pointer;
 }
 
 </style>   

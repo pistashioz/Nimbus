@@ -2,9 +2,12 @@
     <div class="input-container">
       <input
         :id="id"
+        :ref="inputRef"
         :type="computedInputType"
         :placeholder="placeholder"
         :required="required"
+        :value="modelValue"
+        @input="updateValue($event.target.value)"
       />
       <!-- Conditionally render the password toggle if type is 'password' -->
       <img
@@ -27,6 +30,7 @@
         type: String,
         default: 'text'
       },
+      modelValue: String,
       placeholder: String,
       required: {
         type: Boolean,
@@ -44,12 +48,24 @@
       computedInputType() {
         // Using 'text' type when password visibility is toggled, else use provided type
         return this.type === 'password' && this.isPasswordVisible ? 'text' : this.type;
-      }
+      },
+      inputRef() {
+      // Return the id if it's provided, otherwise return null
+      return this.id ? this.id : null;
+    }
     },
     methods: {
       togglePasswordVisibility() {
-        this.isPasswordVisible = !this.isPasswordVisible;
-      }
+      this.isPasswordVisible = !this.isPasswordVisible;
+      this.$nextTick(() => {
+        if (this.inputRef && this.$refs[this.inputRef]) {
+          this.$refs[this.inputRef].focus();
+        }
+      });
+    },
+    updateValue(value) {
+      this.$emit('update:modelValue', value); // Emit event for v-model binding to parent component
+    },
     },
   };
   </script>
