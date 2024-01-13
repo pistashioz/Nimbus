@@ -318,7 +318,7 @@ export default {
           </div>
           <p id = 'windData'>{{ windSpeed() }}</p>
         </div>
-        <RouterLink :to="{ name: 'advancedModeDashboard' }" id = 'seeMoreBtn'>See more</RouterLink>
+        <RouterLink :to="{ name: 'advancedModeDashboard', params: { city: weather.name }} " id = 'seeMoreBtn'>See more</RouterLink>
       </div>
       <div id = 'containerNimbusNudges'>
         <div id = 'headerNimbusNudges'>
