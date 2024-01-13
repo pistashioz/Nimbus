@@ -22,7 +22,58 @@ export default {
       this.calculateSunPosition();
     });
   },
+  computed: {
+    getWeatherAltText() {
+    const weatherMain = this.weather.weather[0].main.toLowerCase();
+
+    // You can customize the alt text based on the weather main
+    switch (weatherMain) {
+      case 'clear':
+        return 'Clear Sky';
+      case 'clouds':
+        return 'Cloudy';
+      case 'rain':
+        return 'Rainy';
+      case 'thunderstorm':
+        return 'Thunderstorm';
+      case 'snow':
+        return 'Snowy';
+      case 'mist':
+        return 'Misty';
+      default:
+        return 'Unknown Weather';
+    }
+  },
+    getWeatherTodayIllustration(){
+      console.log(this.weather.weather[0].main.toLowerCase())
+      const weatherImg = this.weather.weather[0].main.toLowerCase()
+      switch (weatherImg) {
+      case 'clear':
+        console.log('a')
+        return '../assets/img/sunnyImg.png';
+      case 'clouds':
+      console.log('b')
+        return '../assets/img/cloudyImg.png';
+      case 'rain':
+      console.log('c')
+        return '../assets/img/rainImg.png';
+      case 'thunderstorm':
+      console.log('d')
+        return '../assets/img/thunderImg.png';
+      case 'snow':
+      console.log('e')
+        return '../assets/img/snowImg.png';
+      case 'mist':
+      console.log('f')
+        return '../assets/img/mistImg.png';
+      default:
+      console.log('g')
+        return '../assets/img/sunnyImg.png';
+    }
+  }
+},
   methods: {
+    
     fetchWeather(e){
       if (e.key == 'Enter'){
         fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
@@ -92,29 +143,7 @@ export default {
 
       return dayOfWeek;
     },
-    getWeatherTodayIllustration(){
-      //console.log(this.weather.weather[0].description)
-      switch (this.weather.weather[0].description) {
-        case 'clear sky':
-          return '../assets/img/sunnyImg.svg';
-        case 'few clouds':
-          return '../assets/img/cloudyImg.svg';
-        case 'scattered clouds':
-          return '../assets/img/cloud.svg';
-        case 'broken clouds':
-          return '../assets/img/cloud.svg';
-        case 'shower rain':
-          return '../assets/img/rainImg.svg'
-        case 'thunderstorm':
-          return '../assets/img/thunderImg.svg'
-        case 'snow':
-          return '../assets/img/snowImg.svg'
-        case 'mist':
-          return '../assets/img/mistImg.svg'
-        default:
-          return '../assets/img/sunnyImg.svg';
-     }
-    },
+
     formatTime(timestamp, timezoneOffset) {
       const date = new Date(timestamp * 1000 + timezoneOffset * 1000); 
       const formattedTime = date.toISOString().slice(11, 16);
@@ -249,7 +278,7 @@ export default {
     <div id="basicModeContainer" v-if="(typeof weather.main != 'undefined')">
       <div id = 'containerWeatherToday'>
         <h3 id = 'date'>{{dateBuilder()}}</h3>
-        <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration'>
+        <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration' :alt="getWeatherAltText" >
         <div id = 'location' :style="{ fontSize: computeFontSize(weather.name.length) }">
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
           <h2 id = 'locationCity' >{{ weather.name }}</h2>
