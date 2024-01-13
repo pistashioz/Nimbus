@@ -3,7 +3,7 @@
   <div class="form-wrapper" ref="formWrapper">
     <!-- signup form wrapper -->
     <!-- Conditionally render the first or second form -->
-    <main class="sign-up form" ref="signUpForm">
+    <main class="sign-up form concluded" ref="signUpForm">
       <!-- Form element with submit event handler -->
       <form @submit.prevent="signUp">
         <!-- Title for the signup form -->
@@ -67,17 +67,21 @@
       </form>
     </main>
     <!-- personalization form wrapper -->
-    <main class="personalization form" ref="personalizationForm">
+    <main class="personalization form active" ref="personalizationForm">
       
       
       <!-- Form element with submit event handler -->
       <form @submit.prevent="signUp">
         <!-- Title for the signup form -->
-        <h1>Make</h1>
+        <h1>Make Nimbus truly yours!</h1>
+        <div class="personalization-form-wrapper">
+        <div class="personalization-area">
         <InputField
-        id="email"
-        placeholder="email"
+        id="search"
+        type="search"
+        placeholder="search location"
         v-model="email"
+        style="margin: 1rem;"
         required
         />
         <InputField
@@ -93,36 +97,38 @@
         v-model="passwordConfirmation"
         required
         />
-        <div class="terms-checkbox">
-          <input type="checkbox" id="terms" v-model="agreedToTerms" >
-          <label for="terms">
-            I agree to Nimbu's <a href="/terms" target="_blank">Terms & Conditions</a> and acknowledge the <a href="/privacy" target="_blank">Privacy Policy</a>.
-          </label>
-        </div>
-        <div class="sign-up-wrapper">
+
+        <InputField
+        id="passwordInput"
+        type="password"
+        placeholder="confirm password"
+        v-model="passwordConfirmation"
+        required
+        />
+      </div>
+
+        <div class="button-wrapper">
+          <div class="arrow-button-wrapper">
+          <ArrowButton direction="up" button-class="personalization-arrow" @click="handleUpClick" />
+<ArrowButton direction="down" button-class="personalization-arrow" @click="handleDownClick" />
+          </div>
+          <div class="s-button-wrapper">
           <!-- signup submission button -->
           <CustomButton
           buttonType="submit"
-          buttonText="Sign Up"
+          buttonText="Save"
           />
-          <!-- Social signup options -->
-          <div class="social-sign-up-wrapper">
-            <!-- Google signup button -->
-            <CustomButton
-            buttonClass="google social-sign-up"
-            iconSrc="google"
-            />
-            <!-- Apple sign button -->
-            <CustomButton
-            buttonClass="apple social-sign-up"
-            iconSrc="apple"
-            />
+          <CustomButton
+          buttonType="submit"
+          buttonText="Skip"
+          />
           </div>
         </div>
-        <!-- Container for error messages -->
-        <ErrorMessage :message="errorMessage" @clear-error="handleClearError" />
+      </div>
+        <!-- Container for error messages
+        <ErrorMessage :message="errorMessage" @clear-error="handleClearError" /> -->
         <!-- Link to log-in page -->
-        <ActionLink preText="Already have an account?" text="Log In" @handleClick="goToLogIn" />
+        <ActionLink preText="Prefer to dive in now? " text="Skip this form" @handleClick="goToLogIn" />
       </form>
       
     </main>
@@ -134,6 +140,7 @@ import InputField from '@/components/InputField.vue';
 import CustomButton from '@/components/CustomButton.vue';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import ActionLink from '@/components/ActionLink.vue';
+import ArrowButton from '@/components/ArrowButton.vue';
 import { validateEmail, validatePassword, validateUsername, validatePasswordMatch  } from "@/utils.js";
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
@@ -155,6 +162,7 @@ export default {
     CustomButton,
     ErrorMessage,
     ActionLink,
+    ArrowButton,
   },
   computed: {
     // Access to Pinia user store
@@ -237,6 +245,20 @@ export default {
   overflow: hidden;
 }
 
+.personalization-form-wrapper {
+  display: flex;
+flex-direction: row;
+}
+
+.personalization-area {
+  width: auto;
+height: auto;
+flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid #303030;
+background: #F2E6DD;
+}
+
 .sign-up.form {
   width: 360px;
   transform: translateY(0%);
@@ -249,16 +271,16 @@ export default {
   opacity: 0;
 }
 
+
 .personalization.form {
-  width: 360px;
+  width: 400px;
   transform: translateY(0%);
   opacity: 0;
   transition: transform 0.3s ease-in-out, opacity 0.5s ease-in;
 }
 
 .personalization.form.active {
-  width: 360px;
-  transform: translateY(-100%);
+  transform: translateY(-101%);
   opacity: 1;
 }
 
@@ -298,6 +320,44 @@ export default {
   justify-content: space-between;
   width: 100%;
 }
+
+.button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.arrow-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.personalization-arrow:first-child {
+  margin-bottom: 1rem;
+}
+.personalization-arrow {
+  fill: #49ABFB;
+}
+
+.s-button-wrapper button:first-child {
+ color: #303030;
+background: #F2E6DD;
+width: 5rem;
+  border-radius: 10px;
+}
+
+.s-button-wrapper button:nth-child(2) {
+ color: #F2E6DD;
+ background: #B21C29;
+ margin-bottom: 0;
+   width: 5rem;
+  border-radius: 10px;
+}
+
 
 .social-sign-up-wrapper {
   display: flex;

@@ -9,6 +9,7 @@
         :value="modelValue"
         @input="updateValue($event.target.value)"
       />
+
       <!-- Conditionally render the password toggle if type is 'password' -->
       <img
         v-if="type === 'password'"
