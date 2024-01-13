@@ -776,7 +776,7 @@ export default {
   right:2.5em;
 }
 
-#temperatureGraphContainerBasicMode{
+#temperatureGraphContainer{
   width: 38.9375rem;
   height: 8.5625rem;
   flex-shrink: 0;
@@ -801,7 +801,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-
+}
 #airQualityHeader{
   color: #303030;
   font-family: Asap;
