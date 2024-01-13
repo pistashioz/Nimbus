@@ -43,7 +43,7 @@ const router = createRouter({
       component: BasicModeDashboardView
     },
     {
-      path: '/advancedModeDashboard',
+      path: '/advancedModeDashboard/:city',
       name: 'advancedModeDashboard',
       component: AdvancedModeDashboardView
     },
