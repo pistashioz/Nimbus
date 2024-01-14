@@ -31,3 +31,11 @@ export function validatePasswordMatch(password, confirmPassword) {
     component.errorMessage = '';
   }
   
+  export function loadScript(src, callback) {
+    let script = document.createElement('script');
+    script.async = true;
+    script.src = src;
+    script.onload = () => callback();
+    document.head.appendChild(script);
+  }
+  

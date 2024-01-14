@@ -75,36 +75,43 @@
         <!-- Title for the signup form -->
         <h1>Make Nimbus truly yours!</h1>
         <div class="personalization-form-wrapper">
-        <div class="personalization-area">
-        <InputField
-        id="search"
-        type="search"
-        placeholder="search location"
-        v-model="email"
-        style="margin: 1rem;"
-        @add="handleAdd"
-        required
-        />
-      </div>
-
-        <div class="button-wrapper">
-          <div class="arrow-button-wrapper">
-          <ArrowButton direction="up" button-class="personalization-arrow" @click="handleUpClick" />
-<ArrowButton direction="down" button-class="personalization-arrow" @click="handleDownClick" />
+          <div class="personalization-area">
+            <InputField
+            id="search"
+            type="search"
+            placeholder="search location"
+            v-model="searchQuery"
+            style="margin: 1rem;"
+            @focus="handleSearchBoxFocus"
+            @add="handleAdd"
+            required
+            />
+            <!-- Display search results -->
+            <ul v-if="searchResults.length">
+              <li v-for="result in searchResults" :key="result.name">
+                {{ result.name }}
+              </li>
+            </ul>
           </div>
-          <div class="s-button-wrapper">
-          <!-- signup submission button -->
-          <CustomButton
-          buttonType="submit"
-          buttonText="Save"
-          />
-          <CustomButton
-          buttonType="submit"
-          buttonText="Skip"
-          />
+          
+          <div class="button-wrapper">
+            <div class="arrow-button-wrapper">
+              <ArrowButton direction="up" button-class="personalization-arrow" @click="handleUpClick" />
+              <ArrowButton direction="down" button-class="personalization-arrow" @click="handleDownClick" />
+            </div>
+            <div class="s-button-wrapper">
+              <!-- signup submission button -->
+              <CustomButton
+              buttonType="submit"
+              buttonText="Save"
+              />
+              <CustomButton
+              buttonType="submit"
+              buttonText="Skip"
+              />
+            </div>
           </div>
         </div>
-      </div>
         <!-- Container for error messages
         <ErrorMessage :message="errorMessage" @clear-error="handleClearError" /> -->
         <!-- Link to log-in page -->
@@ -122,6 +129,8 @@ import ErrorMessage from '@/components/ErrorMessage.vue';
 import ActionLink from '@/components/ActionLink.vue';
 import ArrowButton from '@/components/ArrowButton.vue';
 import { validateEmail, validatePassword, validateUsername, validatePasswordMatch  } from "@/utils.js";
+import { LocationService, loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
+
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
 
@@ -135,6 +144,9 @@ export default {
       errorMessage: "", // Used to display signUp error messages
       agreedToTerms: false, // Tracks whether the terms checkbox is checked
       searchQuery: '', // Bound to search input
+      searchResults: [], // Used to display search results
+      timeoutID: null, // Used to throttle the api call not to overwhelm it
+      target: null, // Used to track the target of the click event
     };
   },
   components: {
@@ -162,6 +174,12 @@ export default {
     },
     agreedToTerms() {
       this.handleClearError(); // Clear error message when terms checkbox changes
+    },
+    searchQuery(newValue, oldValue) {
+      console.log(oldValue.length, newValue.length);
+      console.log(`searchQuery changed from ${oldValue} to ${newValue}`);
+        this.handleSearchInput();
+      // handleSearchInput(newValue);
     }
   },
   mounted() {
@@ -174,6 +192,37 @@ export default {
 
       // Set the height of the form wrapper
       this.$refs.formWrapper.style.maxHeight = `${activeFormHeight}px`;
+    },
+    handleSearchBoxFocus(target) {
+      loadGoogleMapsAPI();
+      this.target = target;
+      /* ProvidesLocation(target); */
+    },
+    handleSearchInput() {
+      console.log(this.target);
+      clearTimeout(this.timeoutID);
+      this.timeoutID = setTimeout(() => {
+        this.fetchSearchResults(this.target);
+      }, 300);
+    },
+     fetchSearchResults(target) {
+      try{
+        if (target.value.length >= 3) { //Setting a minimum of 3 characters to start searching for
+   ProvidesLocation(target);
+      }
+      } catch (error) {
+        console.log(error);
+      }	
+/*     async fetchSearchResults(query) {
+      try{
+        if (query.length >= 3) { //Setting a minimum of 3 characters to start searching for
+        this.searchResults = await LocationService.search(query);
+        console.log(this.searchResults);
+      }
+      } catch (error) {
+        console.log(error);
+      }	 */
+
     },
     // Function to handle SignUp
     async signUp() {      

@@ -73,9 +73,10 @@ export default {
         }
       });
     },
-    handleInputFocus() {
+    handleInputFocus(event) {
       if (this.type === 'search') {
         this.$refs.addButton.style = 'border: 1px solid #303030;';
+        this.$emit('focus', event.target);
       }
     },
     handleInputBlur() {
