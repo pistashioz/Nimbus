@@ -166,15 +166,12 @@ export default {
         const timeStampCurrentTime = Math.round(cityTime / 1000);
         const sunriseTime = this.weather.sys.sunrise
         const sunsetTime = this.weather.sys.sunset
-
+        const daylightDuration = sunsetTime - sunriseTime;
+        const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
+        let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
+        console.log('Percentage of daylight:', percentageOfDaylight);
         
-          if (formattedTime > formattedsunriseTime && formattedTime < formattedsunsetTime) {
-
-            const daylightDuration = sunsetTime - sunriseTime;
-            const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
-            let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
-            console.log('Percentage of daylight:', percentageOfDaylight);
-
+          if (percentageOfDaylight < 100) {
             smallLine.style.width = `${percentageOfDaylight}%`;
             sunCircle.style.left = `${percentageOfDaylight}%`;
           } else {

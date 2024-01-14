@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <nav>
+  <nav> 
       <span v-if="!isUser" id = 'unlogged'>
       <div id = 'leftNav'>
         <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img src = '../assets/logo.svg' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
@@ -34,14 +34,14 @@ export default {
       <div id = 'rightNav'>
         <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>Sign Up</RouterLink>
       </div>
-    </span>
+    </span> 
   
     <span v-else id = 'logged'>
-      
-        <RouterLink :to="{ name: 'basicModeDashboard' }"></RouterLink>
-        <RouterLink :to="{ name: 'advancedModeDashboard' }"></RouterLink>
-        <RouterLink :to="{ name: 'helpAndSupport' }">Help & Support</RouterLink>
-      <button @click="logout">logout</button>
+      <div id = 'nimbusLogo'>nimbus</div>
+      <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
+      <RouterLink :to="{name: 'myAccount'}" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
+      <RouterLink :to="{ name: 'helpAndSupport' }" id='helpAndSupportBtn' :class="{ active: $route.name === 'helpAndSupport' }">HELP & SUPPORT</RouterLink>
+      <button @click="logout" id = 'logoutBtn'>LOG OUT</button>
     </span>
   </nav>
 </template>
@@ -112,7 +112,82 @@ a{
   font-weight: bold;
   font-size: 1.5vw;
 }
+#logged{
+  width: 69.125rem;
+  height: 3.125rem;
+  flex-shrink: 0;
+  border-radius: 3.125rem 3.125rem 0.625rem 0.625rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: var(--Primary-Color-Palette-Dawn-Blush, #F2E6DD);
+  margin: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+#nimbusLogo{
+  width: 5.37075rem;
+  color: #E65E2A;
+  font-family: Recoleta;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
 
+#todayBtn, #myAccBtn, #helpAndSupportBtn, #logoutBtn{
+  display: flex;
+  padding: 0.4375rem 1.1875rem;
+  color: #9E9E9E;
+  font-family: Asap;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#todayBtn.active {
+  
+  color: #303030;
+  background: var(--todayBtn-active-background-color, #E15CC8);
+}
+
+
+#myAccBtn.active {
+  
+  color: #303030;
+  background: var(--myAccBtn-active-background-color, #8874E3);
+}
+
+#helpAndSupportBtn.active {
+  
+  color: #303030;
+  background: var(--helpAndSupportBtn-active-background-color, #F5CB5B);
+}
+
+.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+}
+button{
+  color: #9E9E9E;
+  font-family: Asap;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+  }
 </style>
 
 

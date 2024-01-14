@@ -7,7 +7,7 @@ import AdditionalInformationView from '../views/AdditionalInformationView.vue'
 import BasicModeDashboardView from '../views/BasicModeDashboardView.vue'
 import AdvancedModeDashboardView from '../views/AdvancedModeDashboardView.vue'
 import HelpAndSupportView from '../views/HelpAndSupportView.vue'
-
+import MyAccountView from '../views/myAccountView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -51,7 +51,12 @@ const router = createRouter({
       path: '/helpAndSupport',
       name: 'helpAndSupport',
       component: HelpAndSupportView
-    }
+    },
+    {
+      path: '/Account',
+      name: 'myAccount',
+      component: MyAccountView
+    },
     
   ]
 })

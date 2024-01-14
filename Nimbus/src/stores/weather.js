@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-/*
+
 const WEATHER_API_BASE_URL = 'http://api.openweathermap.org/data/2.5/';
 
 export const useWeatherStore = defineStore('weather', {
@@ -51,7 +51,4 @@ export const useWeatherStore = defineStore('weather', {
     },
   },
 });
-*/
-
-//functions
 
