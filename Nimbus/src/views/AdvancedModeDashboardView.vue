@@ -7,15 +7,33 @@ export default {
       url_base: 'http://api.openweathermap.org/data/2.5/',
       isWeatherLoaded: false,
       currentTime: '',
-      currentDay: "",
+      currentDay: 0,
       currentDate: "",
       currentMonth: "",
+      daysOfWeek: ["M", "T", "W", "T", "F", "S", "S"],
+      currentYear: new Date().getFullYear(),
+      currentMonth: "",
+      currentDay: "",
     }
   },
   created() {
     this.fetchWeather()
     this.startUpdatingTime();
+    this.currentMonth = this.getMonthName(this.monthIndex);
+    this.currentDay = new Date().getDate();
   },
+  computed: {
+      firstDayOfMonth(){
+      const firstDay = new Date(this.currentYear, this.monthIndex, 1).getDate()
+      return firstDay === 0 ? 6 : firstDay - 1
+    },
+    daysInMonth(){
+      return new Date(this.currentYear, this.monthIndex + 1, 0).getDate()
+    },
+    monthIndex(){
+      return new Date().getMonth()
+    }
+    },
   methods:{
         
     async fetchWeather(){
@@ -78,7 +96,6 @@ export default {
 
       const date = now.getDate();
       this.currentDate = date < 10 ? `0${date}` : date.toString();
-
       const monthIndex = now.getMonth();
       const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
       this.currentMonth = months[monthIndex];
@@ -91,6 +108,11 @@ export default {
         this.updateCurrentTime();
       }, 1000);
     },
+    getMonthName(index) {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return months[index];
+    },
+
     getWeatherIcon() {
     const weatherMain = this.weather.weather[0].main.toLowerCase();
     
@@ -198,7 +220,9 @@ export default {
          </div>
         <p></p>
       </section>
-      <section id = 'temperatureGraphContainerAdvancedMode'></section>
+      <section id = 'temperatureGraphContainerAdvancedMode'>
+        <img src = '../assets/img/graphAdvancedMode.svg' id ='imgGraphAdvancedMode'>
+      </section>
       <section id = 'weatherInfoAdvancedModeContainer'>
         <div id = 'windContainerAdvancedMode'>
           <div class = 'headerContainers'>
@@ -245,6 +269,18 @@ export default {
           <h3 class = 'dataContainers'>{{weather.main.pressure}}hPa</h3>
         </div>
       </section> 
+      <section id = 'calendarAdvancedMode'>
+        <div class="calendarHeaderAdvancedMode">
+          <span id="monthCalendar">{{ currentMonth }}</span>
+          <span id="yearCalendar">{{ currentYear }}</span>
+        </div>
+        <div class="calendar-days">
+          <div v-for="day in daysOfWeek" :key="day" class="day">{{ day }}</div>
+          <div v-for="blank in firstDayOfMonth" :key="blank" class="blank"></div>
+          <div v-for="date in daysInMonth" :key="date" :class="{ 'today': date === parseInt(currentDay) }" class="date">{{ date }}</div>
+
+        </div>
+      </section>
 
   </main>
 </template>
@@ -526,6 +562,13 @@ margin-bottom: -0.5em;
   position: absolute;
   left: 8.44em;
   top:23.62em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#imgGraphAdvancedMode{
+  margin-right: 1em;
 }
 
 #weatherInfoAdvancedModeContainer{
@@ -647,4 +690,77 @@ margin-bottom: -0.5em;
   position: absolute;
   right: 1.6em;
 }*/
+#calendarAdvancedMode{
+  width: 18rem;
+  height: 18rem;
+  flex-shrink: 0;
+  position: absolute;
+  right: 14em;
+  bottom:2em;
+  border-radius: 1.25rem;
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  background: var(--secondary-color-palette-30-saturation-spring-bud-30-sat, #E1E2CB);
+}
+
+.calendarHeaderAdvancedMode {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #303030;
+  font-family: Asap;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
+  margin: 0;
+  width: 5em;
+  margin-top: 1em;
+  padding-left: 2em;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+  color: #000;
+  font-family: Asap;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 250;
+  line-height: normal;
+  margin: 0;
+  margin-top: 0.5em;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+}
+
+.day,
+.blank,
+.date {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.blank {
+  visibility: hidden;
+}
+
+.today {
+  width: 2.0625rem;
+  height: 2.0625rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  fill: #E18AD1;
+  stroke-width: 1px;
+  stroke: var(--Textual-Elements-Midnight-Onyx, #303030);
+}
 </style>

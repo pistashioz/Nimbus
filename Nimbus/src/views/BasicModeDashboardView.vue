@@ -343,10 +343,7 @@ export default {
       </div>
 
       <div id = 'temperatureGraphContainerBasicMode'>
-        <Bar
-          id="my-chart-id"
-          :data="chartData"
-        />
+        <img src="../assets/img/graphBasicMode.svg" id = 'imgGraphBasicMode'>
       </div>
 
       <div id = 'airQualityContainer'>
@@ -785,6 +782,12 @@ export default {
   position: absolute;
   left: 24.5em;
   top:24em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#imgGraphBasicMode{
+  margin-top: 0.5em;
 }
 
 #airQualityContainer{
