@@ -87,11 +87,19 @@
             required
             />
             <!-- Display search results -->
-            <ul v-if="searchResults.length">
-              <li v-for="result in searchResults" :key="result.name">
-                {{ result.name }}
-              </li>
-            </ul>
+            <div v-if="searchResults.length" class="search-results-container">
+              <div 
+              v-for="result in searchResults" 
+              :key="result.name" 
+              class="result-item" 
+              @click="selectPrediction(result)"
+              >
+              <span class="main-text">{{ result.main_text }}</span>
+              <span class="hyphen" v-if="result.secondary_text">-</span>
+              <span class="secondary-text">{{ result.secondary_text }}</span>
+            </div>
+          </div>
+
           </div>
           
           <div class="button-wrapper">
@@ -129,7 +137,7 @@ import ErrorMessage from '@/components/ErrorMessage.vue';
 import ActionLink from '@/components/ActionLink.vue';
 import ArrowButton from '@/components/ArrowButton.vue';
 import { validateEmail, validatePassword, validateUsername, validatePasswordMatch  } from "@/utils.js";
-import { LocationService, loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
+import { getAutocompletePredictions , loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
 
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
@@ -145,8 +153,12 @@ export default {
       agreedToTerms: false, // Tracks whether the terms checkbox is checked
       searchQuery: '', // Bound to search input
       searchResults: [], // Used to display search results
+      addedResults: [], // Used to display search results
+      selectedPlace: null, // To temporarily store selected place
       timeoutID: null, // Used to throttle the api call not to overwhelm it
       target: null, // Used to track the target of the click event
+      isSelectingPrediction: false, // Flag to indicate prediction selection
+   
     };
   },
   components: {
@@ -175,12 +187,13 @@ export default {
     agreedToTerms() {
       this.handleClearError(); // Clear error message when terms checkbox changes
     },
-    searchQuery(newValue, oldValue) {
-      console.log(oldValue.length, newValue.length);
-      console.log(`searchQuery changed from ${oldValue} to ${newValue}`);
-        this.handleSearchInput();
-      // handleSearchInput(newValue);
+    searchQuery() {
+    if (!this.isSelectingPrediction) {
+      this.handleSearchInput();
+    } else {
+      this.isSelectingPrediction = false; // Reset the flag
     }
+  },
   },
   mounted() {
     this.adjustFormWrapperHeight();
@@ -189,7 +202,6 @@ export default {
   methods: {
     adjustFormWrapperHeight() {
       const activeFormHeight = this.$refs.signUpForm.clientHeight;
-
       // Set the height of the form wrapper
       this.$refs.formWrapper.style.maxHeight = `${activeFormHeight}px`;
     },
@@ -199,31 +211,56 @@ export default {
       /* ProvidesLocation(target); */
     },
     handleSearchInput() {
-      console.log(this.target);
       clearTimeout(this.timeoutID);
       this.timeoutID = setTimeout(() => {
-        this.fetchSearchResults(this.target);
+        this.fetchPredictions();
       }, 300);
-    },
-     fetchSearchResults(target) {
-      try{
-        if (target.value.length >= 3) { //Setting a minimum of 3 characters to start searching for
-   ProvidesLocation(target);
-      }
-      } catch (error) {
-        console.log(error);
-      }	
-/*     async fetchSearchResults(query) {
-      try{
-        if (query.length >= 3) { //Setting a minimum of 3 characters to start searching for
-        this.searchResults = await LocationService.search(query);
-        console.log(this.searchResults);
-      }
-      } catch (error) {
-        console.log(error);
-      }	 */
+    }, 
+    async fetchPredictions() {
+  try {
+    if (this.searchQuery.length >= 1) {
+      const predictions = await getAutocompletePredictions(this.searchQuery);
+      this.searchResults = predictions.map(p => ({
+        main_text: p.structured_formatting.main_text,
+        secondary_text: p.structured_formatting.secondary_text,
+        place_id: p.place_id
+      }));
+    }
+  } catch (error) {
+    console.error('Error fetching predictions:', error);
+  }
+},
 
-    },
+selectPrediction(prediction) {
+  this.isSelectingPrediction = true; // Set the flag
+  // Check if secondary_text exists and append accordingly
+  this.searchQuery = prediction.secondary_text 
+    ? `${prediction.main_text} ${prediction.secondary_text}` 
+    : prediction.main_text;
+  this.searchResults = []; // Clear the predictions
+},
+
+/*     fetchSearchResults(target) {
+    try {
+        if (target.value.length >= 1) {
+            ProvidesLocation(target, (placeDetails) => {
+                // Store the place details for later use
+                this.selectedPlace = placeDetails;
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }   
+}, */
+    handleAdd() {
+    // Use the selectedPlace details when 'Add' is clicked
+    if (this.selectedPlace) {
+        this.addedResults.push(this.selectedPlace);
+        this.selectedPlace = null; // Reset selected place
+        console.log(this.addedResults);
+    }
+},
+
     // Function to handle SignUp
     async signUp() {      
       if (!this.agreedToTerms) {
@@ -258,9 +295,6 @@ export default {
     handleClearError() {
       this.errorMessage = "";
     },
-    handleAdd() {
-      // Logic to handle the Add action
-    },
     goToLogIn(event) {
       if (event.target.classList.contains('main-text')) {
         this.$router.push({ name: 'login' });
@@ -273,6 +307,49 @@ export default {
 
 <style scoped>
 
+.search-results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid #303030;
+  margin: 1rem;
+
+  background-color: #FAC54B;
+}
+
+.result-item {
+  padding: 0.8rem;
+  
+  margin: 0.5rem;
+  cursor: pointer; /* Changes the cursor on hover */
+  border-radius: 20px; /* Optional: for rounded corners */
+  border: 1px solid #303030; /* Optional: border color */
+  background-color: #f8f8f8; /* Optional: background color */
+}
+
+.result-item:hover {
+  background-color: #F2E6DD; /* Change on hover */
+}
+
+.main-text {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  color: #303030; /* Adjust text color as needed */
+
+}
+
+.hyphen {
+  margin: 0.2rem 0.2rem;
+}
+
+.secondary-text {
+  font-family: 'Asap', sans-serif;
+  color: #666; /* Adjust text color as needed */
+}
+
+
 .form-wrapper {
   overflow: hidden;
 }
@@ -283,8 +360,8 @@ flex-direction: row;
 }
 
 .personalization-area {
-  width: auto;
-height: auto;
+  width: 200px;
+height: 200px;
 flex-shrink: 0;
   border-radius: 10px;
   border: 1px solid #303030;

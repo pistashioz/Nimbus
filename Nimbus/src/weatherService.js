@@ -6,42 +6,62 @@ const GOOGLE_API_KEY = 'AIzaSyCyW66L8sE0ZKKaHV0q-HfLgeEY2L-zH8k' // Google Maps 
 
 
 export function loadGoogleMapsAPI() {
-  loadScript(`https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`, () => {
-    console.log('Google Maps API script loaded');
-    // Additional logic after the API is loaded, if needed
-  });
+    // Check if the script is already loaded
+    if (window.google && window.google.maps) {
+        console.log('Google Maps API is already loaded.');
+        return;
+    }
+    
+    const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
+    loadScript(scriptUrl, () => {
+        console.log('Google Maps API script loaded');
+    });
 }
 
 
-
-// Example in weatherService.js
-window.initMap = function() {
-    console.log("Google Maps API initialized");
-    // Additional initialization logic here
+export const getAutocompletePredictions = async (input) => {
+    return new Promise((resolve, reject) => {
+      if (!window.google || !window.google.maps.places) {
+        reject('Google Maps Places API not loaded');
+        return;
+      }
+  
+      const service = new google.maps.places.AutocompleteService();
+      service.getQueryPredictions({ input }, (predictions, status) => {
+        if (status != google.maps.places.PlacesServiceStatus.OK) {
+          reject(status);
+          return;
+        }
+        resolve(predictions);
+      });
+    });
   };
+  
 
-  export const ProvidesLocation = (target) => {
-
-    const options = {
-        types: ['geocode'],
-    }
-    console.log(target);
-    const autocomplete = new google.maps.places.Autocomplete((target), options);
+export const ProvidesLocation = (target, callback) => {
+    const options = { types: ['geocode'] };
+    const autocomplete = new google.maps.places.Autocomplete(target, options);
 
     autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
         if (!place.geometry || !place.geometry.location) {
-            // User entered the name of a Place that was not suggested and
-            // pressed the Enter key, or the Place Details request failed.
             window.alert("No details available for input: '" + place.name + "'");
             return;
-          }
-        console.log(place.name);
-        console.log(place.geometry.location.lat());
-        console.log(place.geometry.location.lng());
+        }
+        
+        // Prepare the place details
+        const placeDetails = {
+            name: place.name,
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+        };
+
+        // Invoke the callback with the place details
+        callback(placeDetails);
     });
-  };
-  
+};
+
+
 export const LocationService = {
   async search(query) {
     const response = await fetch(
