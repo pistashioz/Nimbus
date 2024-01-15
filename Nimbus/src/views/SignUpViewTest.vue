@@ -3,7 +3,7 @@
   <div class="form-wrapper" ref="formWrapper">
     <!-- signup form wrapper -->
     <!-- Conditionally render the first or second form -->
-    <main class="sign-up form concluded" ref="signUpForm">
+    <main class="sign-up form" ref="signUpForm">
       <!-- Form element with submit event handler -->
       <form @submit.prevent="signUp">
         <!-- Title for the signup form -->
@@ -70,7 +70,7 @@
   </div>
   <div class="personalization form-wrapper" ref="persFormWrapper">
     <!-- personalization form wrapper -->
-    <main class="personalization form active" ref="personalizationForm">
+    <main class="personalization form" ref="personalizationForm">
       
       
       <!-- Form element with submit event handler -->
@@ -366,7 +366,6 @@ export default {
       console.error('Error fetching predictions:', error);
     }
   },
-
   async selectPrediction(prediction) {
   this.isSelectingPrediction = true; // Set the flag
 
@@ -403,8 +402,6 @@ export default {
     console.error('Error fetching place details:', error);
   }
 },
-
-
   handleAdd() {
 
         // Check if no location has been selected
@@ -542,33 +539,51 @@ selectLanguage(lang) {
     }
   }, */
   fetchLocationNameFromOpenWeather() {
-  // Check if the browser supports geolocation
-  if (navigator.geolocation) {
-    // Use the Geolocation API to get the current position
-    navigator.geolocation.getCurrentPosition(
+    
+
+    // Check if the browser supports geolocation
+    if (navigator.geolocation) {
+      // Use the Geolocation API to get the current position
+      navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
           // Extract latitude and longitude from the position object
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           console.log(`latitude: ${latitude}, longitude: ${longitude}`);
-
+          
           // Call reverseGeocodeOpenWeather with the obtained coordinates
           const result = await reverseGeocodeOpenWeather(latitude, longitude);
-
+          
           // Check if the result has data
           if (result.length > 0) {
             // Log the first location name from the result
             console.log('Location name:', result[0].name);
-
             // Update the region data property with relevant information
             this.userRegion = {
               latitude: latitude,
               longitude: longitude,
               region: result[0].name, // Human-readable address
             };
-            console.log(`The user region is: ${this.userRegion.region} with latitude: ${this.userRegion.latitude}, longitude: ${this.userRegion.longitude}`);
+            console.log(this.triedToleave);
+           if (this.triedToleave) {
+              
+              // Save preferences
+              this.persSave();
+              console.log('Preferences saved.');
+             
+              // Add a delay before redirecting to the intended route
+   
+                this.$router.push({ name: this.triedToleave.name });
+                this.triedToLeave = null; // Reset the variable
+            
+            } 
+            
+          //  console.log(`The user region is: ${this.userRegion.region} with latitude: ${this.userRegion.latitude}, longitude: ${this.userRegion.longitude}`);
           }
+
+
+          
         } catch (error) {
           // Handle any errors during the API call or processing
           console.error('Error fetching location name:', error);
@@ -578,16 +593,16 @@ selectLanguage(lang) {
         // Handle errors related to the Geolocation API
         console.error('Error fetching location name:', error);
       }
-    );
-  } else {
-    // Browser does not support Geolocation
-    console.error("Geolocation is not supported by this browser.");
-    this.errorMessage = "Geolocation is not supported by your browser."; 
-  }
-},
+      );
+    } else {
+      // Browser does not support Geolocation
+      console.error("Geolocation is not supported by this browser.");
+      this.errorMessage = "Geolocation is not supported by your browser."; 
+    }
+  },
 async persSave() {
       if (!this.username) {
-        this.errorMessage = 'No username provided.';
+          this.errorMessage = 'No username provided.';
         return;
       } 
       try {
@@ -601,46 +616,51 @@ async persSave() {
             userLocations: this.userLocations,
         };
 
-        console.log(preferences);
         // Save the preferences to the database
         await this.store.savePreferences(this.username, this.preferences);
 
            // Redirect to the landing page
            this.$router.push({ name: "landingPage" });
       } catch (error) {
+        console.log(error);
         this.errorMessage = error.message;
       }
     },
     skipPersonalization() {
-        // Redirect to the landing page
-        // the this.preferences does not have one userLocations property or userRegion, ask the user to select one
-        if (this.userLocations.length === 0 ||!this.userRegion) {
-          this.errorMessage = "Please select at least one location either from the Weather Watchlist or from Language and Region section";
-          return
-        }
+    // Redirect to the landing page
+    // Check if neither userLocations nor userRegion are set
+    if (this.userLocations.length === 0 && !this.userRegion) {
+      console.log(this.userLocations);
+      console.log(this.userRegion);
+      this.errorMessage = "Please select at least one location either from the Weather Watchlist or from Language and Region section";
+      return;
+    }
 
-        this.$router.push({ name: "landingPage" });
-    },
+    this.$router.push({ name: "landingPage" });
+},
+
   },
-  beforeRouteLeave(to, from, next) {
+  //CHECK THIS IF TILL HAVE TIME
+/*   beforeRouteLeave(to, from, next) {
+    if (this.store.registeredUser) {
     // Check if the user has selected a region
     if (!this.userRegion || this.userRegion.region === '') {
       // Prompt the user
-      this.errorMessage = 'Please let us know at least your region for a personalized experience.';
+      this.errorMessage = 'Please let us know at least your region for data presentation on the Dashboard.';
       // Make the 4th area active
       this.activeArea = 4;
 
       this.triedToleave = to;
       console.log(this.triedToleave);
-      console.log(this.triedToleave.name);
-      // Prevent navigation by calling next(false)
-      next(false);
-    } else {
+next(false);
+    } else {  
       // If the region is selected, save the region and proceed with the navigation
       this.persSave()
       next();
+    }} else {
+      next();
     }
-  },
+  }, */
 };
 </script>
 
@@ -922,7 +942,7 @@ font-size: 1rem;
 }
 
 .personalization.form-wrapper {
-  z-index: 2;
+  z-index: -1;
 }
 .personalization.form {
   width: 500px;
