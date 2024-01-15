@@ -283,6 +283,8 @@ export default {
       isSelectingPrediction: false, // Flag to indicate prediction selection
       langIcon,
       regionIcon,
+
+      triedToleave: null, // Used to track whether the user has tried to leave the page
     };
   },
   components: {
@@ -623,27 +625,20 @@ async persSave() {
   beforeRouteLeave(to, from, next) {
     // Check if the user has selected a region
     if (!this.userRegion || this.userRegion.region === '') {
-      console.log(to);
       // Prompt the user
       this.errorMessage = 'Please let us know at least your region for a personalized experience.';
       // Make the 4th area active
       this.activeArea = 4;
+
+      this.triedToleave = to;
+      console.log(this.triedToleave);
+      console.log(this.triedToleave.name);
       // Prevent navigation by calling next(false)
       next(false);
     } else {
-      // If the region is selected, automatically save the preferences
+      // If the region is selected, save the region and proceed with the navigation
       this.persSave()
-        .then(() => {
-          // Proceed with the navigation after saving
-          console.log(to);
-        })
-        .catch((error) => {
-          // Handle any errors during saving
-          console.error('Error saving preferences:', error);
-          this.errorMessage = error.message;
-          // Still allow navigation
-          next();
-        });
+      next();
     }
   },
 };
