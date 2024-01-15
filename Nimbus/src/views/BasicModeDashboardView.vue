@@ -4,6 +4,7 @@ import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
+
 export default {
   name: 'basicMode',
   data() {
@@ -161,8 +162,6 @@ export default {
         const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
         const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
         const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-        const formattedsunriseTime = this.formatTime(this.weather.sys.sunrise, this.weather.timezone)
-        const formattedsunsetTime =this.formatTime(this.weather.sys.sunset, this.weather.timezone)
         const timeStampCurrentTime = Math.round(cityTime / 1000);
         const sunriseTime = this.weather.sys.sunrise
         const sunsetTime = this.weather.sys.sunset
@@ -171,12 +170,13 @@ export default {
         let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
         console.log('Percentage of daylight:', percentageOfDaylight);
         
-          if (percentageOfDaylight < 100) {
+          if (percentageOfDaylight < 100 && percentageOfDaylight > 0) {
             smallLine.style.width = `${percentageOfDaylight}%`;
             sunCircle.style.left = `${percentageOfDaylight}%`;
-          } else {
-            smallLine.style.width = '0';
-            sunCircle.style.left = '0';
+          } else{
+            console.log('menor a 0')
+            smallLine.style.width = '0%'
+            sunCircle.style.left = '0%';
           }
 
         return formattedTime;
@@ -195,6 +195,39 @@ export default {
         min: Math.round(minTemp),
         max: Math.round(maxTemp)
       };
+    },
+    
+    getWeatherWeeklyIllustration(i){
+      console.log(this.five_day_forecast?.list?.[i * 8].weather[0].main);
+        const weatherMain = this.five_day_forecast.list[i * 8].weather[0].main
+        const imageUrl = this.mapWeatherToImage(weatherMain);
+        console.log('Image URL:', imageUrl);
+        return imageUrl;
+    },
+    mapWeatherToImage(weatherMain) {
+      switch (weatherMain) {
+      case 'Clear':
+        console.log('a')
+        return '../assets/img/sunnyImg.png';
+      case 'Clouds':
+      console.log('b')
+        return '../assets/img/cloudyImg.png';
+      case 'Rain':
+      console.log('c')
+        return '../assets/img/rainImg.png';
+      case 'Thunderstorm':
+      console.log('d')
+        return '../assets/img/thunderImg.png';
+      case 'Snow':
+      console.log('e')
+        return '../assets/img/snowImg.png';
+      case 'Mist':
+      console.log('f')
+        return '../assets/img/mistImg.png';
+      default:
+      console.log('g')
+        return '../assets/img/sunnyImg.png';
+      }
     },
     refreshingOrDry(){
       if(this.weather.main.humidity < 30){
@@ -359,7 +392,7 @@ export default {
         <div id = 'thisWeekContainer'><p>This Week</p></div>
         <div id = 'mondayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(0) }}</h3>
-          <img id = 'mondayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'mondayImg' :src="getWeatherWeeklyIllustration(0)">
           <div id = 'mondayTemp'>
             <p id = 'minTempMonday'>{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
             <p id = 'maxTempMonday'>/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
@@ -367,7 +400,7 @@ export default {
         </div>
         <div id = 'tuesdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(1) }}</h3>
-          <img id = 'tuesdayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'tuesdayImg' :src="getWeatherWeeklyIllustration(1)">
           <div id = 'tuesdayTemp'>
             <p id = 'minTempTuesday'>{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
             <p id = 'maxTempTuesday'>/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
@@ -375,7 +408,7 @@ export default {
         </div>
         <div id = 'wednesdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(2) }}</h3>
-          <img id = 'wednesdayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'wednesdayImg' :src="getWeatherWeeklyIllustration(2)">
           <div id = 'wednesdayTemp'>
             <p id = 'minTempWednesday'>{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
             <p id = 'maxTempWednesday'>/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
@@ -383,7 +416,7 @@ export default {
         </div>
         <div id = 'thursdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(3) }}</h3>
-          <img id = 'thursdayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'thursdayImg' :src="getWeatherWeeklyIllustration(3)">
           <div id = 'thursdayTemp'>
             <p id = 'minTempThursday'>{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
             <p id = 'maxTempThursday'>/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
@@ -391,7 +424,7 @@ export default {
         </div>
         <div id="fridayContainer">
           <h3 class = 'dayTitle'>{{ getDayOfWeek(4) }}</h3>
-          <img id="fridayImg" src="../assets/img/sunnyImg.svg">
+          <img id="fridayImg" :src="getWeatherWeeklyIllustration(4)">
           <div id="fridayTemp">
             <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
             <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
@@ -728,6 +761,14 @@ export default {
   left: 1em;
   display: flex;
   justify-content: space-around;
+  margin: 0;
+}
+#refreshingOrDry{
+  display: flex;
+  align-items: flex-start;
+  width: 8em;
+  margin-left: 0.5em;
+
 }
 
 #degreesContainer{
