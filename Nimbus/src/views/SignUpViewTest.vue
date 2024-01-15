@@ -74,7 +74,7 @@
       
       
       <!-- Form element with submit event handler -->
-      <form @submit.prevent="signUp">
+      <form @submit.prevent="persSave">
         <!-- Title for the signup form -->
         <h1>Make Nimbus truly yours!</h1>
         <div class="personalization-form-wrapper">
@@ -164,21 +164,45 @@
   <h2>Language and Region</h2>
   
   <div class="language-selection">
-    <button @click="selectLanguage('pt')">PT
+    <label class="section-label">Language</label>
+    <div class="languages">
+      <img
+            :src="langIcon" 
+            @click="togglePasswordConfirmationVisibility" 
+            class="lang-icon" 
+          />
+    <button @click="selectLanguage('pt')" :class="{ selected: userLang === 'pt' }" >PT
      <!--  <img src="/path/to/portugal-flag.svg" alt="Portugal Flag"> -->
     </button>
-    <button @click="selectLanguage('en')">ENG
+    <button @click="selectLanguage('en')" :class="{ selected: userLang === 'en' }">ENG
       <!-- <img src="/path/to/usa-flag.svg" alt="USA Flag"> -->
     </button>
   </div>
+  </div>
 
   <div class="region-detection">
-    <button @click="  fetchLocationNameFromOpenWeather">Detect Region</button>
-    <div v-if="userRegion">
-      <p>Latitude: {{ userRegion.latitude }}</p>
-      <p>Longitude: {{ userRegion.longitude }}</p>
-      <p>Region: {{ userRegion.region }}</p>
+    <div class="region-label"><label class="section-label">Region </label>
+      <button @click="  fetchLocationNameFromOpenWeather">Detect Region</button></div>
+    <div class="region">
+    <img
+            :src="regionIcon" 
+            @click="togglePasswordConfirmationVisibility" 
+            class="lang-icon" 
+          />
+          <div class="userRegion">
+<!--       <p>Latitude: {{ userRegion.latitude }}</p>
+      <p>Longitude: {{ userRegion.longitude }}</p> -->
+      <input 
+      type="text" 
+      disabled 
+      :placeholder="userRegion ? userRegion.region : 'Select your region'" 
+      :value="userRegion ? userRegion.region : ''"
+      class="region-input"
+    />
     </div>
+    
+
+  </div>
   </div>
 </div>
 
@@ -223,6 +247,8 @@ import AnimatedCircles from '@/components/AnimatedCircles.vue';
 import { validateEmail, validatePassword, validateUsername, validatePasswordMatch  } from "@/utils.js";
 import {fetchPlaceDetails , reverseGeocodeOpenWeather, reverseGeocode, getAutocompletePredictions , loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
 
+import langIcon from '@/assets/icons/world.svg';
+import regionIcon from '@/assets/icons/region.svg';
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
 
@@ -253,7 +279,8 @@ export default {
       timeoutID: null, // Used to throttle the api call not to overwhelm it
       target: null, // Used to track the target of the click event
       isSelectingPrediction: false, // Flag to indicate prediction selection
-   
+      langIcon,
+      regionIcon,
     };
   },
   components: {
@@ -481,8 +508,13 @@ removeUserLocation(index) {
   // Using colors for now, this will change the background color of the default avatar
   // Need to repalce this with changing the SVG icon path when available
   this.defaultAvatarColor = avatar;
-},    selectLanguage(lang) {
+},    
+selectLanguage(lang) {
+  if (this.userLang === lang) {
+    this.userLang = null;
+  } else {
       this.userLang = lang;
+  }
     },
     // Method to do reverse geocoding with google maps API
 /*     detectRegion() {
@@ -539,7 +571,7 @@ removeUserLocation(index) {
               longitude: longitude,
               region: result[0].name, // Human-readable address
             };
-            console.log(this.userRegion);
+            console.log(`The user region is: ${this.userRegion.region} with latitude: ${this.userRegion.latitude}, longitude: ${this.userRegion.longitude}`);
           }
         } catch (error) {
           // Handle any errors during the API call or processing
@@ -564,6 +596,83 @@ removeUserLocation(index) {
 
 
 <style scoped>
+
+.language-selection,
+.region-detection {
+  display: flex;
+  flex-direction: column;
+}
+
+/* .language-buttons button:hover, .region-detection button:hover {
+  background-color: #d0d0d0;
+}
+ */
+
+ .languages,
+ .region {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+ /*  margin-bottom: 10px; */
+ }
+ .languages img,
+ .region img {
+  width: 30px;
+  height: 30px;
+  margin-right: 5px;
+ }
+.languages button,
+.region-label button{
+  margin: 5px;
+  padding: 10px;
+  background-color: #f0f0f0; 
+  border: 1px solid #303030;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #303030;
+
+font-family: 'Asap Regular', sans-serif;
+font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.region-input {
+/*   flex-grow: 1; */
+  width: fit-content;
+  padding: 10px;
+  border: 1px solid #303030;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  color: #303030;
+  font-family: 'Asap Regular', sans-serif;
+font-size: 1rem;
+}
+
+.region-input::placeholder {
+  color: #858585;
+}
+
+.region-input:disabled {
+  background-color: #EDDED4;
+}
+.languages button:hover {
+  background-color: #e7e7e7; 
+}
+
+.languages button.selected {
+  background-color: #DFE287;; 
+  color: #303030;
+}
+
+.section-label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* .section-label:nth-child(1) {
+  margin-top: 20px;
+} */
 
 .area-3-organizer {
   display: flex;
