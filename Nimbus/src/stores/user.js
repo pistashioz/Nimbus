@@ -6,6 +6,9 @@ export const useUserStore = defineStore("user", {
         isUserAuthenticated: false,
         // Stores the current authenticated user's data
         user: null,
+        // Store the just registered user's data
+        registeredUser: null,
+
         // Array of user objects
         users: [
             { username: "maria", password: "54321", email: "maria@example.com" },
@@ -43,6 +46,22 @@ export const useUserStore = defineStore("user", {
                 throw Error("User already exists!");
             } else {
                 this.users.push({ username: username, password: password, email: email });
+            }
+        },
+        savePreferences(username, preferences) {
+            // Find the user by username
+            const userIndex = this.users.findIndex((user) => user.username === username);
+            if (userIndex!== -1) {
+                console.log(this.users[userIndex]);
+                // Update user data and maintain reactivity
+                this.users[userIndex] = {...this.users[userIndex],...preferences };
+                // Update the current user data if the user is logged in
+/*                 if (this.user && this.user.username === username) {
+                    this.user = {...this.user,...preferences };
+                } */
+                console.log(this.users[userIndex]);
+            } else {
+                throw Error("User not found!");
             }
         },
         // Action to log out the current user

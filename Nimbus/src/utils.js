@@ -4,6 +4,7 @@ export function validateEmail(email) {
     console.log(email);
     if (!emailRegex.test(email)) {
       throw new Error('Please enter a valid email address.');
+      return
     }
   }
   

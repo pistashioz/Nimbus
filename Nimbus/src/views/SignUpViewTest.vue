@@ -70,7 +70,7 @@
   </div>
   <div class="personalization form-wrapper" ref="persFormWrapper">
     <!-- personalization form wrapper -->
-    <main class="personalization form active " ref="personalizationForm">
+    <main class="personalization form active" ref="personalizationForm">
       
       
       <!-- Form element with submit event handler -->
@@ -86,6 +86,7 @@
             :class="{ active: activeArea === area }"
           >
             <div v-if="area === 1">
+              <h2>Weather Watchlist</h2>
               <InputField
               id="search"
               type="search"
@@ -94,7 +95,6 @@
               style="margin: 1rem;"
               @focus="handleSearchBoxFocus"
               @add="handleAdd"
-              required
               />
               <!-- Display search results -->
               <div v-if="searchResults.length" class="search-results-container">
@@ -118,6 +118,7 @@
   <h2>Alert Preferences</h2>
   <div class="preferences">
     <button 
+    type="button"
       v-for="preference in ['Temperature', 'Wind', 'Moon Phases', 'Precipitation', 'Waves']" 
       :key="preference" 
       :class="{ selected: userPreferences.includes(preference) }" 
@@ -171,10 +172,10 @@
             @click="togglePasswordConfirmationVisibility" 
             class="lang-icon" 
           />
-    <button @click="selectLanguage('pt')" :class="{ selected: userLang === 'pt' }" >PT
+    <button type="button" @click="selectLanguage('pt')" :class="{ selected: userLang === 'pt' } " >PT
      <!--  <img src="/path/to/portugal-flag.svg" alt="Portugal Flag"> -->
     </button>
-    <button @click="selectLanguage('en')" :class="{ selected: userLang === 'en' }">ENG
+    <button type="button" @click="selectLanguage('en')" :class="{ selected: userLang === 'en' }">ENG
       <!-- <img src="/path/to/usa-flag.svg" alt="USA Flag"> -->
     </button>
   </div>
@@ -182,7 +183,7 @@
 
   <div class="region-detection">
     <div class="region-label"><label class="section-label">Region </label>
-      <button @click="  fetchLocationNameFromOpenWeather">Detect Region</button></div>
+      <button type="button" @click="  fetchLocationNameFromOpenWeather">Detect Region</button></div>
     <div class="region">
     <img
             :src="regionIcon" 
@@ -215,14 +216,14 @@
             <ArrowButton direction="down" button-class="personalization-arrow" @clickButton="handleDownClick" />
           </div>
           <div class="s-button-wrapper">
-            <!-- signup submission button -->
             <CustomButton
             buttonType="submit"
             buttonText="Save"
             />
             <CustomButton
-            buttonType="submit"
+            buttonType="button"
             buttonText="Skip"
+            @click="skipPersonalization"
             />
           </div>
         </div>
@@ -230,7 +231,7 @@
       
       <ErrorMessage :message="errorMessage" @clear-error="handleClearError" /> 
       <!-- Link to log-in page -->
-      <ActionLink preText="Prefer to dive in now? " text="Skip this form" @handleClick="goToLogIn" />
+      <ActionLink preText="Prefer to dive in now? " text="Skip this form" @handleClick="skipPersonalization" />
     </form>
     
   </main>
@@ -276,6 +277,7 @@ export default {
       searchResults: [], // Used to display search results
       addedResults: [], 
       userLocations: [], // Used to hold chosen locations
+      preferences: null, // Tracks the preferences from the form
       timeoutID: null, // Used to throttle the api call not to overwhelm it
       target: null, // Used to track the target of the click event
       isSelectingPrediction: false, // Flag to indicate prediction selection
@@ -435,41 +437,33 @@ export default {
 removeUserLocation(index) {
     this.userLocations.splice(index, 1);
   },
+// Function to handle SignUp
+async signUp() {
+  try {
+    // Perform validations first
+    validateEmail(this.email);
+    validateUsername(this.username);
+    validatePasswordMatch(this.password, this.passwordConfirmation);
+    if (!this.agreedToTerms) {
+      throw new Error('You must agree to the Terms & Conditions and Privacy Policy.');
+    }
 
+    // Attempting to sign up with provided credentials
+    await this.store.register(this.email, this.username, this.password);
 
-    // Function to handle SignUp
-    async signUp() {      
-      if (!this.agreedToTerms) {
-        this.errorMessage = 'You must agree to the Terms & Conditions and Privacy Policy.';
-        return;
-      } 
-      try {
+    // If successful, display the personalization form
+    this.$refs.signUpForm.classList.add('concluded');
+    this.$refs.formWrapper.style.zIndex = '-1';
+    setTimeout(() => {
+      this.$refs.persFormWrapper.style.zIndex = '1';
+      this.$refs.personalizationForm.classList.add('active');
+    }, 100);
 
-        // If successful, display the personalization form
-        this.$refs.signUpForm.classList.add('concluded');
-        this.$refs.formWrapper.style.zIndex = '-1';
-        setTimeout(() => {
-          this.$refs.persFormWrapper.style.zIndex = '1';
-          this.$refs.personalizationForm.classList.add('active');
-        }, 100);
-        // Attempting to sign up with provided credentials
-
-/*         validateEmail(this.email);
-        validatePassword(this.password);
-        validateUsername(this.username);
-        validatePasswordMatch(this.password, this.passwordConfirmation);
-        
-        await this.store.register(this.email, this.username, this.password);
-        // On successful sign up, redirect to the landing page
-        this.$router.push({ name: "landingPage" }); */
-
-
-      } catch (error) {
-        console.log(error);
-        this.errorMessage = error.message;
-        return;
-      }
-    },
+  } catch (error) {
+    console.error(error);
+    this.errorMessage = error.message;
+  }
+},
     handleClearError() {
       this.errorMessage = "";
     },
@@ -589,7 +583,68 @@ selectLanguage(lang) {
     this.errorMessage = "Geolocation is not supported by your browser."; 
   }
 },
+async persSave() {
+      if (!this.username) {
+        this.errorMessage = 'No username provided.';
+        return;
+      } 
+      try {
+        // Construct the preferences object
+        this.preferences = {
+            userPreferences: this.userPreferences,
+            allowGamification: this.allowGamification,
+            selectedAvatar: this.selectedAvatar,
+            userLang: this.userLang,
+            userRegion: this.userRegion,
+            userLocations: this.userLocations,
+        };
 
+        console.log(preferences);
+        // Save the preferences to the database
+        await this.store.savePreferences(this.username, this.preferences);
+
+           // Redirect to the landing page
+           this.$router.push({ name: "landingPage" });
+      } catch (error) {
+        this.errorMessage = error.message;
+      }
+    },
+    skipPersonalization() {
+        // Redirect to the landing page
+        // the this.preferences does not have one userLocations property or userRegion, ask the user to select one
+        if (this.userLocations.length === 0 ||!this.userRegion) {
+          this.errorMessage = "Please select at least one location either from the Weather Watchlist or from Language and Region section";
+          return
+        }
+
+        this.$router.push({ name: "landingPage" });
+    },
+  },
+  beforeRouteLeave(to, from, next) {
+    // Check if the user has selected a region
+    if (!this.userRegion || this.userRegion.region === '') {
+      console.log(to);
+      // Prompt the user
+      this.errorMessage = 'Please let us know at least your region for a personalized experience.';
+      // Make the 4th area active
+      this.activeArea = 4;
+      // Prevent navigation by calling next(false)
+      next(false);
+    } else {
+      // If the region is selected, automatically save the preferences
+      this.persSave()
+        .then(() => {
+          // Proceed with the navigation after saving
+          console.log(to);
+        })
+        .catch((error) => {
+          // Handle any errors during saving
+          console.error('Error saving preferences:', error);
+          this.errorMessage = error.message;
+          // Still allow navigation
+          next();
+        });
+    }
   },
 };
 </script>
@@ -656,7 +711,8 @@ font-size: 1rem;
 .region-input:disabled {
   background-color: #EDDED4;
 }
-.languages button:hover {
+.languages button:hover,
+.region-label button:hover {
   background-color: #e7e7e7; 
 }
 
