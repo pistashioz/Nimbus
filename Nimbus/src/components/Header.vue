@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/user";
 export default {
   data() {
     return {
-      store: useUserStore()
+      
     };
   },
   computed: {
@@ -13,6 +13,10 @@ export default {
     },
     isUser() {
       return this.store.isUser
+    },
+    // Access to Pinia user store
+    store() {
+      return useUserStore();
     }
   },
   methods: {
@@ -26,35 +30,52 @@ export default {
 
 <template>
   <nav>
-      <span v-if="!isUser" id = 'unlogged'>
-      <div id = 'leftNav'>
-        <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img src = '../assets/logo.svg' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
-        <RouterLink :to="{ name: 'login' }"  id  ='login'>Login</RouterLink>
+    <!-- Display this part when user is not logged in -->
+    <span v-if="!isUser" id='unlogged'>
+      <div id='leftNav'>
+        <RouterLink :to="{ name: 'landingPage' }" id='logo'>
+          <img src='../assets/logo.svg' alt='logo' id='logoImg'> nimbus
+        </RouterLink>
+        <RouterLink :to="{ name: 'login' }" id='login'>Login</RouterLink>
       </div>
-      <div id = 'rightNav'>
-        <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>SignUp</RouterLink>
+      <div id='rightNav'>
+        <RouterLink :to="{ name: 'signUp' }" id='signUp'>Sign Up</RouterLink>
       </div>
     </span>
-  
-    <span v-else id = 'logged'>
-      
-        <RouterLink :to="{ name: 'basicModeDashboard' }"></RouterLink>
-        <RouterLink :to="{ name: 'advancedModeDashboard' }">Access to Dashboard</RouterLink>
-        <RouterLink :to="{ name: 'helpAndSupport' }">Help & Support</RouterLink>
-      <button @click="logout">logout</button>
+
+    <!-- Display this part when user is logged in -->
+    <span v-else id='logged'>
+      <div id='leftNav'>
+        <RouterLink :to="{ name: 'landingPage' }" id='logo'>
+          <img src='../assets/logo.svg' alt='logo' id='logoImg'> nimbus
+        </RouterLink>
+        <span class='username'>Hello, {{ name }}</span>
+      </div>
+      <div id='rightNav'>
+        <button @click="logout" id='logout'>Logout</button>
+      </div>
     </span>
   </nav>
 </template>
+
 <style>
 
-a{
+a, button{
   text-decoration: none;
+  background-color: transparent;
   color: #303030;
   font-family: 'Asap';
+  border: none;
+  outline: none; /* Remove focus outline */
   font-size:1.2vw;
   }
 
-#unlogged {
+#rightNav {
+  border: 1PX solid #303030;
+}
+
+#unlogged,
+#logged {
   /* background-color: red; */
   height: 20vh;
   display: flex;
@@ -65,15 +86,17 @@ a{
   max-width: 100vw; 
   margin: 0 auto; 
   padding: 0 2vw; 
+  background: none;
 }
 
 #leftNav{
   background-color: #ADD8FB;
+  border: 1px solid #303030;
   display: flex;
   width: 30vw;
   height: 12vh;
   border-radius: 20vh;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding-left: 2vw;
   padding-right: 2vw;
@@ -87,6 +110,7 @@ a{
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.5rem;
   width: 18vw;
 }
 #logoImg{
@@ -94,9 +118,11 @@ a{
   height: auto;
   margin-right: 1vw; 
 }
-#signUp{
+#signUp,
+#rightNav{
   background-color: #F5CB5B;
   display: flex;
+  justify-content: center;
   height: 10vh;
   border-radius: 20vh; 
   align-items: center;
@@ -104,10 +130,13 @@ a{
   font-family: 'Recoleta';
   font-weight: bold;
   font-size: 1.5vw;
-  max-width: 10vw;
+  min-width: 10vw;
+
 }
 
-#login{
+#login,
+#logout,
+.username{
   font-family: 'Recoleta';
   font-weight: bold;
   font-size: 1.5vw;
