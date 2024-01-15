@@ -32,14 +32,14 @@ export default {
         <RouterLink :to="{ name: 'login' }"  id  ='login'>Login</RouterLink>
       </div>
       <div id = 'rightNav'>
-        <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>Sign Up</RouterLink>
+        <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>SignUp</RouterLink>
       </div>
     </span>
   
     <span v-else id = 'logged'>
       
         <RouterLink :to="{ name: 'basicModeDashboard' }"></RouterLink>
-        <RouterLink :to="{ name: 'advancedModeDashboard' }"></RouterLink>
+        <RouterLink :to="{ name: 'advancedModeDashboard' }">Access to Dashboard</RouterLink>
         <RouterLink :to="{ name: 'helpAndSupport' }">Help & Support</RouterLink>
       <button @click="logout">logout</button>
     </span>
@@ -53,7 +53,9 @@ a{
   font-family: 'Asap';
   font-size:1.2vw;
   }
+
 #unlogged {
+  /* background-color: red; */
   height: 20vh;
   display: flex;
   justify-content: space-between;
@@ -75,7 +77,6 @@ a{
   align-items: center;
   padding-left: 2vw;
   padding-right: 2vw;
-  border: solid #303030 0.5;
 }
 
 #logo{
@@ -96,7 +97,7 @@ a{
 #signUp{
   background-color: #F5CB5B;
   display: flex;
-  height: 8vh;
+  height: 10vh;
   border-radius: 20vh; 
   align-items: center;
   padding: 0 2vw;
@@ -104,7 +105,6 @@ a{
   font-weight: bold;
   font-size: 1.5vw;
   max-width: 10vw;
-  border: solid #303030 0.5;
 }
 
 #login{

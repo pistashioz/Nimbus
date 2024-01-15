@@ -170,10 +170,10 @@ button{
 }
 #intro{
   width: 100%;
-  height: 832px;
+  height: 532px;
   margin:0;
   position: absolute;
-  top: 0;
+  top: 50%;
   display: flex;
   align-items: center;
   justify-content: center;

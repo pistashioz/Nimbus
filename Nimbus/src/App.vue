@@ -9,10 +9,14 @@ export default {
 </script>
 
 <template>
-  <v-app>
+  <v-app class="v-app">
     <Header />
-    <v-main class="d-flex align-center justify-center" >
+    <v-main class="v-main">
       <RouterView />
     </v-main>
   </v-app>
 </template>
+
+<style>
+
+</style>

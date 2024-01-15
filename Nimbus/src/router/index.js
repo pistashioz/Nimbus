@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingPageView from '../views/LandingPageView.vue'
 import LoginView from '../views/LoginView.vue'
+import LoginViewTest from '../views/LoginViewTest.vue'
 import SignUpView from '../views/SignUpView.vue'
+import SignUpViewTest from '../views/SignUpViewTest.vue'
 import LegalResourcesView from '../views/LegalResourcesView.vue'
 import AdditionalInformationView from '../views/AdditionalInformationView.vue'
 import BasicModeDashboardView from '../views/BasicModeDashboardView.vue'
 import AdvancedModeDashboardView from '../views/AdvancedModeDashboardView.vue'
 import HelpAndSupportView from '../views/HelpAndSupportView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -18,12 +21,22 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginViewTest
+    },
+    {
+      path: '/loginTest',
+      name: 'loginTest',
+      component: LoginViewTest
     },
     {
       path: '/signUp',
       name: 'signUp',
-      component: SignUpView
+      component: SignUpViewTest
+    },
+    {
+      path: '/signUpTest',
+      name: 'signUpTest',
+      component: SignUpViewTest
     },
     {
       path: '/legalResources',
