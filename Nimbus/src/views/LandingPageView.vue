@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -14,20 +14,56 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-/*   goTopBtn.addEventListener('click', ()=>{
+ goTopBtn.addEventListener('click', ()=>{
     window.scrollTo({
       top: 0
     })
-  }) */
+  }) 
 });
 
 </script>
+ -->
+ <script>
+ import { useUserStore } from "@/stores/user";
+ 
+ export default {
+   computed: {
+     store() {
+       return useUserStore();
+     },
+     isUser() {
+       return this.store.isUser;
+     },
+     userLocations() {
+       return this.store.userLocations;
+     }
+   },
+   methods: {
+     navigateToDashboard() {
+       if (this.isUser) {
+        console.log(this.store.userLocations);
+        //console.log(this.store.userLocations.length);
+        console.log(this.userLocations);
+         if (this.userLocations && this.userLocations.length > 0) {
+           this.$router.push({ name: 'advancedModeDashboard' });
+         } else {
+           this.$router.push({ name: 'basicModeDashboard' });
+         }
+       } else {
+         // Handle for other cases if necessary
+       }
+     },
+   },
+ };
+ </script>
 <template>
   <main class="landing-page">
     <div class="first-vp">
       <div id = 'introText' class = 'text'>
         Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.
-        <button class = 'accDashboardBtn'>Access the Dashboard</button>
+        <button v-if="isUser" class='accDashboardBtn' @click="navigateToDashboard">
+        Access the Dashboard
+      </button>
       </div>
       <div class="first-vp-bg">
         <img id = 'sunLandingPage' src = '../assets/img/sunLandingPage.svg'>
