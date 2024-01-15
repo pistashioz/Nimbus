@@ -2,6 +2,9 @@
 import moment from 'moment';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+
+import { useUserStore } from "@/stores/user";
+
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 
@@ -24,8 +27,26 @@ export default {
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
+    this.query=this.userLocation.region;
+    console.log(this.store.authenticatedUser);
+    console.log(this.userLocation);
   },
   computed: {
+    store() {
+       return useUserStore();
+     },
+     isUser() {
+       return this.store.isUser;
+     },
+     getAuthenticatedUser() {
+       return this.store.authenticatedUser;
+     },
+     userLocations() {
+       return this.getAuthenticatedUser.userLocations;
+     },
+     userLocation() {
+       return this.getAuthenticatedUser.userRegion;
+     },
     getWeatherAltText() {
     const weatherMain = this.weather.weather[0].main.toLowerCase();
 
@@ -305,10 +326,12 @@ export default {
 };
 </script>
 <template>
-  <main>
     <input type = 'text' class = 'search-bar' placeholder="search..." v-model="query" @keypress = 'fetchWeather'>
-    <div id="basicModeContainer" v-if="(typeof weather.main != 'undefined')">
-      <div id = 'containerWeatherToday'>
+  <main class="dash-body">
+    <div class="grid" v-if="(typeof weather.main != 'undefined')">
+    
+      <div class="div1 gridCell">
+        <div id = 'containerWeatherToday'>
 
         <h3 id = 'date'>{{dateBuilder()}}</h3>
         <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration' :alt="getWeatherAltText" >
@@ -318,6 +341,8 @@ export default {
           <h2 id = 'locationCity' >{{ weather.name }}</h2>
         </div>
       </div>
+      </div>
+      <div class="div2 gridCell">
       <div id = 'containerWeatherInfoToday'>
         <div id = 'feelsLikeContainer'>
           <p id = 'feelsLikeTitle'>Feels Like</p>
@@ -354,6 +379,9 @@ export default {
         </div>
         <RouterLink :to="{ name: 'advancedModeDashboard', params: { city: weather.name }} " id = 'seeMoreBtn'>See more</RouterLink>
       </div>
+    </div>
+   
+    <div class="div3 gridCell">
       <div id = 'containerNimbusNudges'>
         <div id = 'headerNimbusNudges'>
           <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
@@ -369,16 +397,20 @@ export default {
          </div>
         <p></p>
       </div>
+    </div>
+    <div class="div4 gridCell">
       <div id = 'degreesContainer'>
           <h1 id = 'degreesValue'>{{Math.round(weather.main.temp)}}</h1>
           <p id = 'degrees'>degrees</p>
           <p id = 'degreesType'>celsius</p>
       </div>
-
+</div>
+<div class="div5 gridCell">
       <div id = 'temperatureGraphContainerBasicMode'>
         <img src="../assets/img/graphBasicMode.svg" id = 'imgGraphBasicMode'>
       </div>
-
+    </div>
+    <div class="div6 gridCell">
       <div id = 'airQualityContainer'>
         <div id = 'airQualityHeader'>AirQuality</div>
         <div id = 'airQualityData'>
@@ -388,6 +420,8 @@ export default {
         <p id = 'airQualityMeaning'>{{ airQualityMeaning() }}</p>
         </div>
       </div>
+    </div>
+    <div class="div7 gridCell">
       <section id = 'thisWeekSection'>
         <div id = 'thisWeekContainer'><p>This Week</p></div>
         <div id = 'mondayContainer'>
@@ -431,6 +465,8 @@ export default {
           </div>
         </div>
       </section>
+    </div>
+    <div class="div8 gridCell">
       <div id = 'sunshineInfo'>
         <span id = 'sunriseSunsetContainer'>
           <div id = 'sunriseContainer'>
@@ -462,10 +498,60 @@ export default {
         </span>
       </div>
     </div>
+ 
+  </div>
   </main>
 </template>
 <style>
 
+.dash-body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #01542C;
+  color: #49ABFB;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  height: 750px;
+  width: 960px;
+}
+
+.gridCell {
+  background-color: #858585;
+  border: 1px solid #858585;
+  border-radius: 10px;
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out; 
+  display: flex;
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 2;}
+
+.div2 { grid-area: 1 / 2 / 2 / 4;}
+
+.div3 { grid-area: 1 / 4 / 2 / 4;}
+
+.div4 { grid-area: 2 / 1 / 3 / 2;}
+
+.div5 { grid-area: 2 / 2 / 3 / 4;}
+
+.div6 { grid-area: 2 / 4 / 3 / 4;}
+
+.div7 { grid-area: 3 / 1/ 4 / 4;}
+
+.div8 { grid-area: 3 / 4/ 4 / 4;}
 :root{
   background-color: #EDDED4;
 }

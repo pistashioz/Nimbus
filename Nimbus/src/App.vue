@@ -1,16 +1,16 @@
-<script>
+<!-- <script>
 import { RouterLink, RouterView } from "vue-router";
-import Header from "./components/Header.vue";
+import HeaderDashboard from "./components/HeaderDashboard.vue";
 export default {
   components: {
-    Header,
+    HeaderDashboard,
   }
 }
 </script>
 
 <template>
   <v-app>
-    <Header />
+    <HeaderDashboard />
     <v-main class="d-flex align-center justify-center" >
       <RouterView v-slot="{ Component}">
         <transition name = 'route' mode = 'out-in'>
@@ -35,4 +35,27 @@ export default {
 .route-leave-active{
   transition: all 0.5s ease-in;
 }
+</style> -->
+
+<script>
+import { RouterLink, RouterView } from "vue-router";
+import Header from "./components/Header.vue";
+export default {
+  components: {
+    Header,
+  }
+}
+</script>
+
+<template>
+  <v-app class="v-app">
+    <Header />
+    <v-main class="v-main">
+      <RouterView />
+    </v-main>
+  </v-app>
+</template>
+
+<style>
+
 </style>

@@ -1,23 +1,49 @@
 body, html {
-    margin: 0;
-    padding: 0;
-    background-color: #EDDED4; /* light cream background */
-    font-family: 'Asap Regular', sans-serif; /* default text font */
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Recoleta Black', serif; /* headings font */
-  }
-  
+  margin: 0;
+  padding: 0;
+  background-color: #EDDED4; /* light cream background */
+  font-family: 'Asap Regular', sans-serif; /* default text font */
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Recoleta Black', serif; /* headings font */
+}
+form h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-align: left;
+}
 /* Style for input placeholders */
 input::placeholder {
-    font-family: 'Asap Regular', sans-serif; /* default text font */
-    font-size: 1.25rem; /* default font size for placeholder */
-    color: #A6A6A6; /* placeholder text color */
+  font-family: 'Asap Regular', sans-serif; /* default text font */
+  font-size: 1.25rem; /* default font size for placeholder */
+  color: #A6A6A6; /* placeholder text color */
 }
 
 button {
-    font-family: 'Asap ExtraBold', sans-serif; /* default text font */
-    font-size: 25px; /* default font size for placeholder */
-    color: #A6A6A6; 
+  font-family: 'Asap ExtraBold', sans-serif; /* default text font */
+  font-size: 25px; /* default font size for placeholder */
+  color: #A6A6A6; 
+}
+
+.form {
+background: #F2CAAC;
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+padding: 2rem 2rem 2rem 2rem;
+border-radius: 30px;
+border: 1px solid #303030;
+text-align: center;
+width: 350px;
+}
+
+
+
+.form-wrapper {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
 }
