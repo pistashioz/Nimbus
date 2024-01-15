@@ -3,7 +3,7 @@ body, html {
     padding: 0;
     background-color: #EDDED4; /* light cream background */
     font-family: 'Asap Regular', sans-serif; /* default text font */
-  
+    box-sizing: border-box;
   }
   
   h1, h2, h3, h4, h5, h6 {

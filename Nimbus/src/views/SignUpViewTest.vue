@@ -66,8 +66,11 @@
         <ActionLink preText="Already have an account?" text="Log In" @handleClick="goToLogIn" />
       </form>
     </main>
+    
+  </div>
+  <div class="personalization form-wrapper" ref="persFormWrapper">
     <!-- personalization form wrapper -->
-    <main class="personalization form active" ref="personalizationForm">
+    <main class="personalization form active " ref="personalizationForm">
       
       
       <!-- Form element with submit event handler -->
@@ -76,58 +79,138 @@
         <h1>Make Nimbus truly yours!</h1>
         <div class="personalization-form-wrapper">
           <div class="personalization-area">
-            <InputField
-            id="search"
-            type="search"
-            placeholder="search location"
-            v-model="searchQuery"
-            style="margin: 1rem;"
-            @focus="handleSearchBoxFocus"
-            @add="handleAdd"
-            required
-            />
-            <!-- Display search results -->
-            <div v-if="searchResults.length" class="search-results-container">
-              <div 
-              v-for="result in searchResults" 
-              :key="result.name" 
-              class="result-item" 
-              @click="selectPrediction(result)"
-              >
-              <span class="main-text">{{ result.main_text }}</span>
-              <span class="hyphen" v-if="result.secondary_text">-</span>
-              <span class="secondary-text">{{ result.secondary_text }}</span>
+            <div 
+            class="personalization-container" 
+            v-for="area in 4" 
+            :key="area"
+            :class="{ active: activeArea === area }"
+          >
+            <div v-if="area === 1">
+              <InputField
+              id="search"
+              type="search"
+              placeholder="search location"
+              v-model="searchQuery"
+              style="margin: 1rem;"
+              @focus="handleSearchBoxFocus"
+              @add="handleAdd"
+              required
+              />
+              <!-- Display search results -->
+              <div v-if="searchResults.length" class="search-results-container">
+                <div 
+                v-for="result in searchResults" 
+                :key="result.name" 
+                class="result-item" 
+                @click="selectPrediction(result)"
+                >
+                <span class="main-text">{{ result.main_text }}</span>
+                <span class="hyphen" v-if="result.secondary_text">-</span>
+                <span class="secondary-text">{{ result.secondary_text }}</span>
+              </div>
             </div>
+            <AnimatedCircles 
+            :selectedLocations="userLocations"
+            @remove-location="removeUserLocation"
+            />
           </div>
+          <div v-else-if="area === 2">
+  <h2>Alert Preferences</h2>
+  <div class="preferences">
+    <button 
+      v-for="preference in ['Temperature', 'Wind', 'Moon Phases', 'Precipitation', 'Waves']" 
+      :key="preference" 
+      :class="{ selected: userPreferences.includes(preference) }" 
+      @click="togglePreference(preference)"
+    >
+      {{ preference }}
+    </button>
+  </div>
+</div>
+
+<div v-else-if="area === 3">
+  <h2>Allow Gamification</h2>
+  <div class="area-3-organizer">
+    <div class="avatar-selection">
+    <div class="default-avatar" :style="{ backgroundColor: defaultAvatarColor }">
+      <!-- Default avatar icon goes here -->
+    </div>
+
+  </div>
+  <div class="gamification-options">
+    <div class="gamification-toggle" @click="toggleGamification" :class="{ 'on' : allowGamification }">
+  <div class="toggle-circle" :class="{ 'toggle-on': allowGamification }"></div>
+</div>
+<div class="avatar-options">
+      <div 
+        v-for="(avatar, index) in avatars" 
+        :key="index" 
+        :class="{ 'selected-avatar': selectedAvatar === avatar }" 
+        @click="selectAvatar(avatar)"
+      >
+        <!-- Avatar icon goes here -->
+        <!-- Temporary color change for demonstration -->
+        <div :style="{ backgroundColor: avatar }"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+  
+<div v-else-if="area === 4">
+  <h2>Language and Region</h2>
+  
+  <div class="language-selection">
+    <button @click="selectLanguage('pt')">PT
+     <!--  <img src="/path/to/portugal-flag.svg" alt="Portugal Flag"> -->
+    </button>
+    <button @click="selectLanguage('en')">ENG
+      <!-- <img src="/path/to/usa-flag.svg" alt="USA Flag"> -->
+    </button>
+  </div>
+
+  <div class="region-detection">
+    <button @click="  fetchLocationNameFromOpenWeather">Detect Region</button>
+    <div v-if="userRegion">
+      <p>Latitude: {{ userRegion.latitude }}</p>
+      <p>Longitude: {{ userRegion.longitude }}</p>
+      <p>Region: {{ userRegion.region }}</p>
+    </div>
+  </div>
+</div>
 
           </div>
-          
-          <div class="button-wrapper">
-            <div class="arrow-button-wrapper">
-              <ArrowButton direction="up" button-class="personalization-arrow" @click="handleUpClick" />
-              <ArrowButton direction="down" button-class="personalization-arrow" @click="handleDownClick" />
-            </div>
-            <div class="s-button-wrapper">
-              <!-- signup submission button -->
-              <CustomButton
-              buttonType="submit"
-              buttonText="Save"
-              />
-              <CustomButton
-              buttonType="submit"
-              buttonText="Skip"
-              />
-            </div>
+        </div>
+        
+        <div class="button-wrapper">
+          <div class="arrow-button-wrapper">
+            <ArrowButton direction="up" button-class="personalization-arrow" @clickButton="handleUpClick" />
+            <ArrowButton direction="down" button-class="personalization-arrow" @clickButton="handleDownClick" />
+          </div>
+          <div class="s-button-wrapper">
+            <!-- signup submission button -->
+            <CustomButton
+            buttonType="submit"
+            buttonText="Save"
+            />
+            <CustomButton
+            buttonType="submit"
+            buttonText="Skip"
+            />
           </div>
         </div>
-        <!-- Container for error messages
-        <ErrorMessage :message="errorMessage" @clear-error="handleClearError" /> -->
-        <!-- Link to log-in page -->
-        <ActionLink preText="Prefer to dive in now? " text="Skip this form" @handleClick="goToLogIn" />
-      </form>
+      </div>
       
-    </main>
-  </div>
+      <ErrorMessage :message="errorMessage" @clear-error="handleClearError" /> 
+      <!-- Link to log-in page -->
+      <ActionLink preText="Prefer to dive in now? " text="Skip this form" @handleClick="goToLogIn" />
+    </form>
+    
+  </main>
+</div>
 </template>
 
 <script>
@@ -136,8 +219,9 @@ import CustomButton from '@/components/CustomButton.vue';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import ActionLink from '@/components/ActionLink.vue';
 import ArrowButton from '@/components/ArrowButton.vue';
+import AnimatedCircles from '@/components/AnimatedCircles.vue';
 import { validateEmail, validatePassword, validateUsername, validatePasswordMatch  } from "@/utils.js";
-import { getAutocompletePredictions , loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
+import {fetchPlaceDetails , reverseGeocodeOpenWeather, reverseGeocode, getAutocompletePredictions , loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
 
 // Import user store from Pinia
 import { useUserStore } from '@/stores/user';
@@ -151,10 +235,21 @@ export default {
       passwordConfirmation: "", // Bound to password confirmation input
       errorMessage: "", // Used to display signUp error messages
       agreedToTerms: false, // Tracks whether the terms checkbox is checked
+
+      activeArea: 1, // Start with the first area
+      userPreferences: [], // Tracks which preferences the user has selected
+
+      allowGamification: false,
+    selectedAvatar: null,
+    avatars: ['#FF6347', '#4682B4', '#32CD32'], // Placeholder colors for avatars. Lets hope i dont forget to change this
+    defaultAvatarColor: '#ddd', // Default color for the avatar
+    userLang: null,
+      userRegion: null,
+
       searchQuery: '', // Bound to search input
       searchResults: [], // Used to display search results
-      addedResults: [], // Used to display search results
-      selectedPlace: null, // To temporarily store selected place
+      addedResults: [], 
+      userLocations: [], // Used to hold chosen locations
       timeoutID: null, // Used to throttle the api call not to overwhelm it
       target: null, // Used to track the target of the click event
       isSelectingPrediction: false, // Flag to indicate prediction selection
@@ -167,6 +262,7 @@ export default {
     ErrorMessage,
     ActionLink,
     ArrowButton,
+    AnimatedCircles,
   },
   computed: {
     // Access to Pinia user store
@@ -189,77 +285,130 @@ export default {
     },
     searchQuery() {
     if (!this.isSelectingPrediction) {
+      // Handle search input and clear results if searchQuery is empty
       this.handleSearchInput();
+
     } else {
       this.isSelectingPrediction = false; // Reset the flag
     }
   },
   },
-  mounted() {
-    this.adjustFormWrapperHeight();
+  mounted () {
+    loadGoogleMapsAPI();
   },
   // Methods of the component
   methods: {
-    adjustFormWrapperHeight() {
-      const activeFormHeight = this.$refs.signUpForm.clientHeight;
-      // Set the height of the form wrapper
-      this.$refs.formWrapper.style.maxHeight = `${activeFormHeight}px`;
-    },
-    handleSearchBoxFocus(target) {
+    handleSearchBoxFocus() {
       loadGoogleMapsAPI();
-      this.target = target;
-      /* ProvidesLocation(target); */
     },
     handleSearchInput() {
-      clearTimeout(this.timeoutID);
+    clearTimeout(this.timeoutID);
+    // Clear searchResults immediately if searchQuery is empty
+    if (this.searchQuery === '') {
+      this.searchResults = [];
+      this.addedResults= [];
+      console.log(this.addedResults);
+    } else {
       this.timeoutID = setTimeout(() => {
         this.fetchPredictions();
       }, 300);
-    }, 
-    async fetchPredictions() {
+    }
+  },
+  async fetchPredictions() {
+    try {
+      // Only fetch predictions if searchQuery is not empty
+      if (this.searchQuery.length >= 1) {
+        const predictions = await getAutocompletePredictions(this.searchQuery);
+        this.searchResults = predictions.map(p => ({
+          description: p.description,
+          main_text: p.structured_formatting.main_text,
+          secondary_text: p.structured_formatting.secondary_text,
+          place_id: p.place_id
+        }));
+        console.log(predictions);
+        console.log(this.searchResults);
+      } else {
+        // If searchQuery is empty, clear searchResults
+        this.searchResults = [];
+      }
+    } catch (error) {
+      console.error('Error fetching predictions:', error);
+    }
+  },
+
+  async selectPrediction(prediction) {
+  this.isSelectingPrediction = true; // Set the flag
+
   try {
-    if (this.searchQuery.length >= 1) {
-      const predictions = await getAutocompletePredictions(this.searchQuery);
-      this.searchResults = predictions.map(p => ({
-        main_text: p.structured_formatting.main_text,
-        secondary_text: p.structured_formatting.secondary_text,
-        place_id: p.place_id
-      }));
+    const placeDetails = await fetchPlaceDetails(prediction.place_id);
+    if (placeDetails) {
+      // Get latitude and longitude from the place details
+      const locationLatLong = {
+        lat: placeDetails.geometry.location.lat(),
+        lng: placeDetails.geometry.location.lng(),
+      };
+
+      // Construct the object to be added to addedResults
+      const resultToAdd = {
+        main_text: prediction.main_text,
+        description: prediction.description,
+        ...locationLatLong // Spread operator to include lat and lng
+      };
+
+      this.searchQuery = prediction.description;
+
+/*       this.searchQuery = prediction.secondary_text 
+    ? `${prediction.main_text} ${prediction.secondary_text}` 
+    : prediction.main_text;
+     */
+      // Update addedResults with the new object
+      this.addedResults = [resultToAdd];
+
+      // Clear the search results
+      this.searchResults = [];
+
     }
   } catch (error) {
-    console.error('Error fetching predictions:', error);
+    console.error('Error fetching place details:', error);
   }
 },
 
-selectPrediction(prediction) {
-  this.isSelectingPrediction = true; // Set the flag
-  // Check if secondary_text exists and append accordingly
-  this.searchQuery = prediction.secondary_text 
-    ? `${prediction.main_text} ${prediction.secondary_text}` 
-    : prediction.main_text;
-  this.searchResults = []; // Clear the predictions
-},
 
-/*     fetchSearchResults(target) {
-    try {
-        if (target.value.length >= 1) {
-            ProvidesLocation(target, (placeDetails) => {
-                // Store the place details for later use
-                this.selectedPlace = placeDetails;
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }   
-}, */
-    handleAdd() {
-    // Use the selectedPlace details when 'Add' is clicked
-    if (this.selectedPlace) {
-        this.addedResults.push(this.selectedPlace);
-        this.selectedPlace = null; // Reset selected place
-        console.log(this.addedResults);
+  handleAdd() {
+
+        // Check if no location has been selected
+        if (this.addedResults.length === 0) {
+      // Set an error message to inform the user to select a location first
+      this.searchResults = []; // Clear the predictions
+      this.errorMessage = "Please select a location before adding.";
+  
+      return; // Exit the function to prevent adding empty locations
     }
-},
+
+    // Check if the maximum number of locations has been reached
+    if (this.userLocations.length >= 4) {
+      // Set the error message to inform the user
+      this.errorMessage = "Maximum of 4 locations can be added.";
+      this.searchQuery = '';
+      return; // Exit the function to prevent adding more locations
+    }
+
+    // Check if there's a selected location in addedResults
+    if (this.addedResults.length > 0) {
+      const selectedLocation = this.addedResults[0];
+      // Add the selected location to userLocations
+      this.userLocations.push(selectedLocation);
+      console.log(this.userLocations);
+      // Clear addedResults as the selection is confirmed
+      this.addedResults = [];
+    }
+    // Clear the searchQuery and any existing error message
+    this.searchQuery = '';
+  },
+removeUserLocation(index) {
+    this.userLocations.splice(index, 1);
+  },
+
 
     // Function to handle SignUp
     async signUp() {      
@@ -271,7 +420,9 @@ selectPrediction(prediction) {
 
         // If successful, display the personalization form
         this.$refs.signUpForm.classList.add('concluded');
+        this.$refs.formWrapper.style.zIndex = '-1';
         setTimeout(() => {
+          this.$refs.persFormWrapper.style.zIndex = '1';
           this.$refs.personalizationForm.classList.add('active');
         }, 100);
         // Attempting to sign up with provided credentials
@@ -300,6 +451,113 @@ selectPrediction(prediction) {
         this.$router.push({ name: 'login' });
       }
     },
+    handleUpClick() {
+      if (this.activeArea > 1) {
+        this.activeArea--;
+      }
+    },
+    handleDownClick() {
+      console.log(this.activeArea);
+      if (this.activeArea < 4) {
+        this.activeArea++;
+        console.log(this.activeArea);
+      }
+    },
+    togglePreference(preference) {
+    const index = this.userPreferences.indexOf(preference);
+    if (index === -1) {
+      // Add the preference if not already selected
+      this.userPreferences.push(preference);
+    } else {
+      // Remove the preference if already selected
+      this.userPreferences.splice(index, 1);
+    }
+  },
+  toggleGamification() {
+    this.allowGamification = !this.allowGamification;
+  },
+  selectAvatar(avatar) {
+  this.selectedAvatar = avatar;
+  // Using colors for now, this will change the background color of the default avatar
+  // Need to repalce this with changing the SVG icon path when available
+  this.defaultAvatarColor = avatar;
+},    selectLanguage(lang) {
+      this.userLang = lang;
+    },
+    // Method to do reverse geocoding with google maps API
+/*     detectRegion() {
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const address = await reverseGeocode(position.coords.latitude, position.coords.longitude);
+            this.region = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              address: address, // human-readable address
+            };
+            console.log(this.region);
+          } catch (error) {
+            console.error("Error in reverse geocoding:", error);
+            this.errorMessage = "Error obtaining address.";
+          }
+        },
+        (error) => {
+          console.error("Error detecting region:", error);
+          this.errorMessage = "Error detecting region.";
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      this.errorMessage = "Geolocation is not supported by your browser.";
+    }
+  }, */
+  fetchLocationNameFromOpenWeather() {
+  // Check if the browser supports geolocation
+  if (navigator.geolocation) {
+    // Use the Geolocation API to get the current position
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          // Extract latitude and longitude from the position object
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          console.log(`latitude: ${latitude}, longitude: ${longitude}`);
+
+          // Call reverseGeocodeOpenWeather with the obtained coordinates
+          const result = await reverseGeocodeOpenWeather(latitude, longitude);
+
+          // Check if the result has data
+          if (result.length > 0) {
+            // Log the first location name from the result
+            console.log('Location name:', result[0].name);
+
+            // Update the region data property with relevant information
+            this.userRegion = {
+              latitude: latitude,
+              longitude: longitude,
+              region: result[0].name, // Human-readable address
+            };
+            console.log(this.userRegion);
+          }
+        } catch (error) {
+          // Handle any errors during the API call or processing
+          console.error('Error fetching location name:', error);
+        }
+      },
+      (error) => {
+        // Handle errors related to the Geolocation API
+        console.error('Error fetching location name:', error);
+      }
+    );
+  } else {
+    // Browser does not support Geolocation
+    console.error("Geolocation is not supported by this browser.");
+    this.errorMessage = "Geolocation is not supported by your browser."; 
+  }
+},
+
   },
 };
 </script>
@@ -307,27 +565,133 @@ selectPrediction(prediction) {
 
 <style scoped>
 
-.search-results-container {
+.area-3-organizer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  border: 1px solid #303030;
-  margin: 1rem;
+  height: 7rem;
+}
+.gamification-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100%;
+}
+.gamification-toggle {
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
 
-  background-color: #FAC54B;
+.toggle-circle {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2.5px;
+  left: 2.5px;
+  transition: all 0.3s ease;
+}
+
+.toggle-on {
+  transform: translateX(25px);
+}
+
+.gamification-toggle.on {
+  background-color: #b4b4b4;
+}
+
+
+.default-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: #303030;
+  margin-right: 20px;
+}
+
+.avatar-options div {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.avatar-options {
+  display: flex;
+}
+/* .selected-avatar {
+  border: 2px solid #4CAF50;
+} */
+
+
+.preferences button {
+  margin: 5px;
+  padding: 10px;
+  background-color: #f0f0f0; 
+  border: 1px solid #303030;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #303030;
+
+font-family: 'Asap Regular', sans-serif;
+font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.preferences button:hover {
+  background-color: #e7e7e7; 
+}
+
+.preferences button.selected {
+  background-color: #DFE287;; 
+  color: #303030;
+}
+
+
+.search-results-container {
+  transform: translateY(65px);
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 10px;
+    border: 1px solid #303030;
+    margin: 1rem;
+    background-color: #FAC54B;
+     z-index: 1; 
+    max-width: 345px;
+    max-height: 220px;
+    overflow-y: hidden;
+
 }
 
 .result-item {
   padding: 0.8rem;
-  
-  margin: 0.5rem;
-  cursor: pointer; /* Changes the cursor on hover */
-  border-radius: 20px; /* Optional: for rounded corners */
-  border: 1px solid #303030; /* Optional: border color */
-  background-color: #f8f8f8; /* Optional: background color */
+  position: relative;
+  text-align: left;
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-height: 1rem;
+  margin: 0.5rem 0.5rem;
+  cursor: pointer; 
+  border-radius: 20px; 
+  border: 1px solid #303030; 
+  background-color: #f8f8f8; 
+
 }
+
 
 .result-item:hover {
   background-color: #F2E6DD; /* Change on hover */
@@ -337,7 +701,6 @@ selectPrediction(prediction) {
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   color: #303030; /* Adjust text color as needed */
-
 }
 
 .hyphen {
@@ -351,22 +714,40 @@ selectPrediction(prediction) {
 
 
 .form-wrapper {
+    display: flex;
   overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+}
+.personalization-area {
+  width: 76%;
+  min-height: 300px;
+  border-radius: 10px;
+  border: 1px solid #303030;
+  background: #F2E6DD;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.personalization-container {
+  display: none; /* Initially hide all areas */
+}
+
+.personalization-container.active {
+  display: block; /* Show active area */
 }
 
 .personalization-form-wrapper {
   display: flex;
-flex-direction: row;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  transition: transform 0.5s ease-in-out;
 }
 
-.personalization-area {
-  width: 200px;
-height: 200px;
-flex-shrink: 0;
-  border-radius: 10px;
-  border: 1px solid #303030;
-background: #F2E6DD;
-}
 
 .sign-up.form {
   width: 360px;
@@ -380,17 +761,20 @@ background: #F2E6DD;
   opacity: 0;
 }
 
-
+.personalization.form-wrapper {
+  z-index: 2;
+}
 .personalization.form {
-  width: 400px;
-  transform: translateY(0%);
-  opacity: 0;
-  transition: transform 0.3s ease-in-out, opacity 0.5s ease-in;
+  width: 500px;
+  transform: translateY(101%);
+  opacity: 0.5;
+  transition: transform 0.2s ease-in-out, opacity 0.3s ease-in;
 }
 
 .personalization.form.active {
-  transform: translateY(-101%);
+  transform: translateY(0%);
   opacity: 1;
+
 }
 
 .terms-checkbox {
@@ -432,17 +816,15 @@ background: #F2E6DD;
 
 .button-wrapper {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: fit-content;
 }
 .arrow-button-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  width: 100%;
 }
 
 .personalization-arrow:first-child {
@@ -452,6 +834,11 @@ background: #F2E6DD;
   fill: #49ABFB;
 }
 
+.s-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .s-button-wrapper button:first-child {
  color: #303030;
 background: #F2E6DD;

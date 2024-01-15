@@ -14,7 +14,8 @@
     />
     <!-- Conditionally render the add button if type is 'search' -->
     <button 
-    v-if="type === 'search'" 
+    v-if="type === 'search'"
+    type ="button"
     ref="addButton"
     @click="emitAddEvent"
     class="search-add-button"
@@ -114,7 +115,11 @@ input {
   outline: none; /* remove the default focus outline */
 }
 
-input:focus {
+input#search{
+  border: 1px solid #DFE287;
+  background-color: #DFE287;
+}
+input#search:focus {
   border: 1px solid #303030; /* subtle border for focus */
 }
 

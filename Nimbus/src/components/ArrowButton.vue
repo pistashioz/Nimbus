@@ -43,7 +43,7 @@
     },
     methods: {
       onClick() {
-        this.$emit('click');
+        this.$emit('clickButton');
       }
     }
   };
