@@ -61,40 +61,32 @@ export default {
     </div>
       <div class="div1 gridCell">
         <div class = 'personal-data'>
-    <div class="avatar-selection">
-      <div class="personal-username" >
+          <div class="personal-username" >
       <div class="username" > {{ this.getAuthenticatedUser.username }}</div>
       <div class="joined" > Joined in 16th Jan, 2024<!-- {{ this.getAuthenticatedUser.joinedDate }} --></div>
     </div>
+    <div class="avatar-credentials">
+    <div class="avatar-selection">
+
       <div class="default-avatar" :style="{ backgroundColor: defaultAvatarColor }">
         <!-- Default avatar icon goes here -->
       </div>    
   </div>
-  <div class="credencials">  
+  <div class="credentials">  
     <div class="personal-email" >
+    <div class="email" >
       <div class="label" >  <h1>Email</h1></div>
       <div class="email" > {{ this.getAuthenticatedUser.email }}</div>
-    </div>
+    </div>  
+    <button type="button" class="change-emai"> Change Email</button>
+  </div>
     <div class="personal-username" >
       <div class="username" >{{ this.getAuthenticatedUser.username }}</div>
       <div class="joined" > Joined in 16th Jan, 2024<!-- {{ this.getAuthenticatedUser.joinedDate }} --></div>
-    </div></div>
-
-<div class="avatar-options">
-
-      <div 
-        v-for="(avatar, index) in avatars" 
-        :key="index" 
-        :class="{ 'selected-avatar': selectedAvatar === avatar }" 
-        @click="selectAvatar(avatar)"
-      >
-        <!-- Avatar icon goes here -->
-        <!-- Temporary color change for demonstration -->
-        <div :style="{ backgroundColor: avatar }"></div>
-      </div>
- 
-
+    </div>
   </div>
+</div>
+
     
       </div>
       </div>
@@ -183,17 +175,25 @@ border-radius: 50px 50px 10px 10px ;}
     background: #C3C3C3;
     display: flex;
     justify-content: space-between;
- /*    flex-direction: column; */
+    flex-direction: column; 
     align-items: center;
 }
 
 .personal-email {
+  width: 100%;    border-radius: 10px;
+    background: #C3C3C3;
+    display: flex;
+    justify-content: space-between;
+ /*    flex-direction: column; */
+    align-items: center;
+}
+
+.email {
     width: 100%;    
     background: red;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
- /*    flex-direction: column; */
     align-items: flex-start;
 }
 
@@ -211,14 +211,17 @@ border-radius: 50px 50px 10px 10px ;}
 .personal-username {
   display: flex;
   align-items: center;
-  width: auto;
+  justify-content: space-around;
+  width: 80%;
   background-color: #ccc;
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
 }
-
-.credencials {
+.avatar-credentials {
+  display: flex;
+}
+.credentials {
   display: flex;
   flex-direction: column;
   align-items: center;
