@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import ArrowButton from '@/components/ArrowButton.vue';
+import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
@@ -22,6 +23,7 @@ export default {
   },
   components: {
     ArrowButton,
+    HeaderDashboard,
   },
   created(){
     
@@ -332,7 +334,9 @@ export default {
     <input type = 'text' class = 'search-bar' placeholder="search..." v-model="query" @keypress = 'fetchWeather'>
   <main class="dash-body">
     <div class="grid" v-if="(typeof weather.main != 'undefined')">
-    
+    <div class="div0 gridCell">
+      <HeaderDashboard />
+    </div>
       <div class="div1 gridCell">
         <div id = 'containerWeatherToday'>
 <!--           <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration' :alt="getWeatherAltText" > -->

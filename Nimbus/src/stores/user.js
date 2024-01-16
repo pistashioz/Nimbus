@@ -38,18 +38,27 @@ export const useUserStore = defineStore("user", {
         },
         // Action to register a new user
         register(email, username, password) {
-            // Find the user by username and email
-            const user = this.users.find(
-                (user) => (user.username === username && user.email === email && user.password === password)
-            );
-            if (user) {
-                console.log(user);
+            // Existing user check
+            const existingUser = this.users.find(user => user.email === email || user.username === username);
+            if (existingUser) {
                 throw Error("User already exists!");
-            } else {
-                this.users.push({ username: username, password: password, email: email });
-                this.registeredUser = true;
             }
-        },
+        
+            // Create new user with initial nimbusCoin value
+            const newUser = {
+                username: username, 
+                email: email, 
+                password: password,
+                nimbusCoins: 0 // Initial coins set to 0
+            };
+        
+            
+            // Add new user to users array
+            this.users.push(newUser);
+        
+            // Setting the registered user to the store - deal with this if time is available
+            this.registeredUser = newUser.username;
+        },        
         savePreferences(username, preferences) {
             // Find the user by username
             const userIndex = this.users.findIndex((user) => user.username === username);

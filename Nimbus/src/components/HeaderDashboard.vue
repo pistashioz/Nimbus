@@ -36,7 +36,7 @@ export default {
       </div>
     </span> 
   
-    <span v-else id = 'logged'>
+    <span v-else id = 'logged2'>
       <div id = 'nimbusLogo'>nimbus</div>
       <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
       <RouterLink :to="{name: 'myAccount'}" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
@@ -112,7 +112,7 @@ a{
   font-weight: bold;
   font-size: 1.5vw;
 }
-#logged{
+#logged2{
   width: 69.125rem;
   height: 3.125rem;
   flex-shrink: 0;
