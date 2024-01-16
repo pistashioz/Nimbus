@@ -2,7 +2,7 @@
 import moment from 'moment';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-
+import ArrowButton from '@/components/ArrowButton.vue';
 import { useUserStore } from "@/stores/user";
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
@@ -19,6 +19,9 @@ export default {
       five_day_forecast: {},
       air_quality: {},
     };
+  },
+  components: {
+    ArrowButton,
   },
   created(){
     
@@ -392,8 +395,8 @@ export default {
         <div id = 'headerNimbusNudges'>
           <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
           <div id = 'buttonsHeaderNimbusNudges'>
-            <button id = 'leftNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-left " style="color: #303030;"  /></button>
-            <button id = 'rightNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #303030;" /></button>
+            <ArrowButton direction="left" button-class="personalization-arrow" @clickButton="handleUpClick" />
+            <ArrowButton direction="right" button-class="personalization-arrow" @clickButton="handleDownClick" />
           </div>
         </div>
          <div id = 'nimbusNudgesData'>
@@ -408,9 +411,16 @@ export default {
     </div>
     <div class="div4 gridCell">
       <div id = 'degreesContainer'>
-          <h1 id = 'degreesValue'>{{Math.round(weather.main.temp)}}</h1>
-          <p id = 'degrees'>degrees</p>
-          <p id = 'degreesType'>celsius</p>
+          <h1 id = 'degreesValue'>{{Math.round(weather.main.temp)}}
+            <div class="degress-sub-wrapper">
+
+              <div id = 'degrees'>degrees</div>
+            <div id = 'degreesType'>celsius</div>
+            </div>
+
+          </h1>
+        
+          <!-- <p id = 'degreesType'>celsius</p> -->
       </div>
 </div>
 <div class="div5 gridCell">
@@ -420,12 +430,13 @@ export default {
     </div>
     <div class="div6 gridCell">
       <div id = 'airQualityContainer'>
-        <div id = 'airQualityHeader'>AirQuality</div>
+        <div id = 'airQualityHeader'>Air Quality</div>
+        <p id = 'airQualityMeaning'>{{ airQualityMeaning() }}</p>
         <div id = 'airQualityData'>
           <div id = 'circleAirQuality'>
           <h2 id = 'airQualityValue'>{{ air_quality.list[0].main.aqi }}</h2>
         </div>
-        <p id = 'airQualityMeaning'>{{ airQualityMeaning() }}</p>
+       
         </div>
       </div>
     </div>
@@ -514,14 +525,15 @@ export default {
 
 .dash-body {
   width: 100vw;
-  height: 100vh;
+  height: fit-content;
   margin: 0;
   padding: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
  /*  background-color: #01542C; */
   color: #49ABFB;
+  overflow: scrol;
 }
 
 .grid {
@@ -530,7 +542,7 @@ export default {
   grid-template-rows: repeat(3, 1fr);
   grid-column-gap: 32px;
   grid-row-gap: 32px;
-  height: 750px;
+  height: 900px;
   width: 1260px;
 }
 
@@ -720,12 +732,12 @@ export default {
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
 }
-#headerNimbusNudges{
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-left: 1.12em;
-  padding-right: 0.94em;
+#headerNimbusNudges {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8em 1rem 0rem 1rem;
+    height: 10%;
 }
 #titleNimbusNudges{
   color: #303030;
@@ -734,25 +746,48 @@ export default {
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+#nimbusNudgesData {
+  width: fit-content;
+  padding: 0.8rem 1rem 1rem 1rem;
 }
 
 #buttonsHeaderNimbusNudges{
-  width: 5em;
-  height: 2em;
+/*   width: 5em;
+  height: 2em; */
   display: flex;
   justify-content: space-around;
+  align-items: center;
+  width: 35%;
 }
-#buttonsHeaderNimbusNudges button{
+
+.personalization-arrow:first-child {
+ /*  margin-bottom: 1rem; */
+}
+.arrow-button.personalization-arrow {
+background-color: #FAF8ED;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* .arrow-button.personalization-arrow .arrow-icon {
+  width: 30px;
+  height: 30px;
+} */
+/* #buttonsHeaderNimbusNudges button{
   width: 1.4375rem;
   height: 1.4375rem;
   flex-shrink: 0;
   border-radius: 50%;
   background-color: #FAF8ED;
   border: solid 0.05em #303030;
-}
+} */
 #buttonsOptionsNimbusNudges{
-  position: absolute;
-  bottom: 0;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -866,15 +901,11 @@ margin-left: 0.8rem;
 }
 
 #degreesContainer{
-  width: 10rem;
-  height: 8.625rem;
-  flex-shrink: 0;
+  width: 100%;
   border-radius: 1.25rem;
   border: 1px solid #000;
   background: rgba(156, 200, 161, 0.80);
-  position: absolute;
-  top:24em;
-  left:11.44em;
+
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -883,124 +914,111 @@ margin-left: 0.8rem;
   color: #303030;
   margin: 0;
   font-family: Recoleta;
-  font-size: 6.25rem;
+  font-size: 11rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   align-self: center;
+  height: fit-content;
+}
+
+.degress-sub-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rem 0.2rem;
 }
 #degreesType, #degrees{
   color: var(--textual-elements-20-saturation-midnight-onyx-20-sat, #302727);
   font-family: Asap;
-  font-size: 0.75rem;
+  font-size: 1.0rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  position: absolute;
-  bottom:0.2em;
-}
-#degrees{
-  left:2.5em;
-}
-#degreesType{
-  
-  right:2.5em;
+  margin: 0;
+  transform: translateY(-200%);
+  display: flex;
 }
 
 #temperatureGraphContainerBasicMode{
-  width: 38.9375rem;
-  height: 8.5625rem;
+  width: 100%;
   flex-shrink: 0;
   border-radius: 1.25rem;
   border: 1px solid #000;
   background: #F2E6DD;
-  position: absolute;
-  left: 24.5em;
-  top:24em;
+
   display: flex;
   align-items: center;
   justify-content: center;
 }
-#imgGraphBasicMode{
+/* #imgGraphBasicMode{
   margin-top: 0.5em;
-}
+} */
 
 #airQualityContainer{
-  width: 15.4375rem;
-  height: 8.75rem;
+  width: 100%;
   flex-shrink: 0;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: #FF87AB;
-  position: absolute;
+/*   position: absolute;
   right: 11.44em;
-  top: 24em;
+  top: 24em; */
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 #airQualityHeader{
   color: #303030;
   font-family: Asap;
-  font-size: 1rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  position: absolute;
-  left: 1.18em;
-  top:0.69em;
+  padding: 0.7rem 0rem 0rem 1rem;
 }
 
 #airQualityData{
   width: 100%;
-  height: auto;
   margin: 0;
-  position: absolute;
-  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
 
 #circleAirQuality{
-  width: 5.0625rem;
-  height: 5.0625rem;
+  width: 8rem;
+  height: 8rem;
   flex-shrink: 0;
   background-color: #FFECA7;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  bottom: 1.2em ;
-  left:1em;
   color: #303030;
   font-family: Recoleta;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin-bottom: 0.5rem;
 }
-#airQualityMeaning{
-  margin-left: 6em;
-  margin-bottom:2em;
-  color: #F8FAFB;
-  text-align: right;
-  font-family: Asap;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  width: 7.16244rem;
-  height: 3.3125rem;
-  flex-shrink: 0;
+
+#airQualityMeaning {
+    margin-left: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #F8FAFB;
+    text-align: left;
+    font-family: Asap;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }
+
 #thisWeekSection{
   display: flex;
-  width: 55rem;
-  height: 8.3125rem;
-  position: absolute;
-  left: 10.5em;
-  bottom: 1em;
+  width: 100%;
   justify-content: space-around;
   align-items: center;
 }
@@ -1090,19 +1108,16 @@ line-height: normal;
 }
 
 #sunshineInfo{
-  width: 14.25rem;
-  height: 8.3125rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid #303030;
-  background: var(--primary-color-palette-40-saturation-sunbeam-gold-40-sat, #FAE3AF);
-  position: absolute;
-  left: 66.31em;
-  bottom: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-direction: column;
+  width: 100%;
+    /* height: 8.3125rem; */
+    flex-shrink: 0;
+    border-radius: 1.25rem;
+    border: 1px solid #303030;
+    background: var(--primary-color-palette-40-saturation-sunbeam-gold-40-sat, #FAE3AF);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
 }
 #sunriseSunsetContainer, #uvLightContainer{
   width: 12.0625rem;
@@ -1184,19 +1199,23 @@ line-height: normal;
   margin: 0;
 }
 #uvLightContainer{
-  display: flex;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 
 }
 #uvHeader{
-  align-self:baseline;
-  width: 10.5rem;
-  height: 1rem;
-  padding-top: 0.4em;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 1em;
+
+    /* align-self: baseline; */
+    width: 100%;
+    height: 1rem;
+    padding-top: 0.4em;
+    /* flex-shrink: 0; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
 }
 
 #uvRec{
@@ -1216,47 +1235,49 @@ line-height: normal;
   font-style: normal;
   font-weight: 900;
   line-height: normal;
+  margin-left: 1rem;
 
 }
 
-#uvIllustration{
-  align-self: center;
-  width: 2em;
-  height:1em;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 75%;
-  left: 10%;
-
+#uvIllustration {
+    width: 90%;
+    height: 1em;
+    margin-left: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    position: relative;
 }
 #uvBigLine{
-  width: 10.5rem;
+  width: 100%;
   height: 0.25rem;
-  flex-shrink: 0;
+/*   flex-shrink: 0; */
   border-radius: 0.625rem;
   background: #D9D9D9;
   z-index: 2;
 }
 #uvSmallLine{
-  width: 8.8125rem;
+  width: 30%;
+  justify-self: flex-end;
   height: 0.25rem;
-  flex-shrink: 0;
+  transform: translateY(-0.25rem);
+ /*  flex-shrink: 0; */
   z-index: 4;
   border-radius: 0.625rem;
   background: var(--secondary-color-palette-20-saturation-autumn-blaze-20-sat, #E64000);
-  position: absolute;
-  left: 0;
+
 }
 #uvCircle{
-  width: 0.6875rem;
-  height: 0.6875rem;
+  width: 0.9rem;
+  position: absolute;
+  height: 0.9rem;
+  top: -0.40rem;
+  left: 30%;
+  /* transform: translateY(-0.3rem); */
   border-radius: 50%;
-  flex-shrink: 0;
+/*   flex-shrink: 0; */
   background-color: #FABE32;
   z-index: 5;
-  position: absolute;
-  left: 8.5em;
 }
 </style>

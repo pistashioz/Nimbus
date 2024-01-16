@@ -34,21 +34,33 @@ document.addEventListener('DOMContentLoaded', function () {
      isUser() {
        return this.store.isUser;
      },
+     getAuthenticatedUser() {
+       return this.store.authenticatedUser;
+     },
      userLocations() {
-       return this.store.userLocations;
-     }
+       return this.getAuthenticatedUser.userLocations;
+     },
+     userLocation() {
+       return this.getAuthenticatedUser.userRegion;
+     },
    },
    methods: {
      navigateToDashboard() {
        if (this.isUser) {
-        console.log(this.store.userLocations);
+        console.log(this.getAuthenticatedUser);
+        console.log(this.userLocation);
         //console.log(this.store.userLocations.length);
         console.log(this.userLocations);
          if (this.userLocations && this.userLocations.length > 0) {
-          // this.$router.push({ name: 'advancedModeDashboard' });
-           this.$router.push({ name: 'basicModeDashboard' });
+          // this.$router.push({ name: 'advancedModeDashboard' }); //ACTIVATE THIS AFTER
+          this.userLocations.forEach((location) => {
+            console.log(location);
+          });
+          console.log(`GOT THIS LOCATION: ${this.userLocations}`);
+            this.$router.push({ name: 'basicModeDashboard' }); 
          } else {
-           this.$router.push({ name: 'basicModeDashboard' });
+          console.log('no locations');
+            this.$router.push({ name: 'basicModeDashboard' }); 
          }
        } else {
          // Handle for other cases if necessary
