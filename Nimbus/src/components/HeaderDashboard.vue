@@ -25,7 +25,6 @@ export default {
 </script>
 
 <template>
-  <nav> 
       <span v-if="!isUser" id = 'unlogged'>
       <div id = 'leftNav'>
         <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img src = '../assets/logo.svg' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
@@ -38,12 +37,14 @@ export default {
   
     <span v-else id = 'logged2'>
       <div id = 'nimbusLogo'>nimbus</div>
-      <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
+      <div class="header-links">
+        <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
       <RouterLink :to="{name: 'myAccount'}" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
       <RouterLink :to="{ name: 'helpAndSupport' }" id='helpAndSupportBtn' :class="{ active: $route.name === 'helpAndSupport' }">HELP & SUPPORT</RouterLink>
       <button @click="logout" id = 'logoutBtn'>LOG OUT</button>
+      </div>
+      
     </span>
-  </nav>
 </template>
 <style>
 
@@ -113,11 +114,11 @@ a{
   font-size: 1.5vw;
 }
 #logged2{
-  width: 69.125rem;
-  height: 3.125rem;
+  width: 100%;
+/*   height: 3.125rem; */
   flex-shrink: 0;
   border-radius: 3.125rem 3.125rem 0.625rem 0.625rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  /* border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--Primary-Color-Palette-Dawn-Blush, #F2E6DD);
   margin: 0;
   margin-left: auto;
@@ -125,7 +126,7 @@ a{
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 #nimbusLogo{
   width: 5.37075rem;
@@ -135,8 +136,17 @@ a{
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+   margin-left: 8rem; 
+/*   padding-left: 6rem; */
 }
 
+.header-links {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 50%;
+  margin-right: 4rem;
+}
 #todayBtn, #myAccBtn, #helpAndSupportBtn, #logoutBtn{
   display: flex;
   padding: 0.4375rem 1.1875rem;
