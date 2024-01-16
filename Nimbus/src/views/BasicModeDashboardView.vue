@@ -193,25 +193,18 @@ export default {
     mapWeatherToImage(weatherMain) {
       switch (weatherMain) {
       case 'Clear':
-        console.log('a')
         return '../assets/img/sunnyImg.png';
       case 'Clouds':
-      console.log('b')
         return '../assets/img/cloudyImg.png';
       case 'Rain':
-      console.log('c')
         return '../assets/img/rainImg.png';
       case 'Thunderstorm':
-      console.log('d')
         return '../assets/img/thunderImg.png';
       case 'Snow':
-      console.log('e')
         return '../assets/img/snowImg.png';
       case 'Mist':
-      console.log('f')
         return '../assets/img/mistImg.png';
       default:
-      console.log('g')
         return '../assets/img/sunnyImg.png';
       }
     },
@@ -298,9 +291,10 @@ export default {
     </div>
       <div class="div1 gridCell">
         <div id = 'containerWeatherToday'>
-<!--           <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration' :alt="getWeatherAltText" > -->
+          <h3 id = 'date'>{{dateBuilder()}}</h3>
+        <img id = 'weatherTodayIllustration' src = '../assets/img/rainImg.svg' :alt="getWeatherAltText" > 
           <div class="date-icon-header">
-        <h3 id = 'date'>{{dateBuilder()}}</h3>
+        
           </div>
 
         
@@ -408,7 +402,7 @@ export default {
         <div id = 'thisWeekContainer'><p>This Week</p></div>
         <div id = 'mondayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(0) }}</h3>
-          <img id = 'mondayImg' :src="getWeatherWeeklyIllustration(0)">
+          <img id = 'mondayImg' src='../assets/img/cloudImg.svg'>
           <div id = 'mondayTemp'>
             <p id = 'minTempMonday'>{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
             <p id = 'maxTempMonday'>/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
@@ -416,7 +410,7 @@ export default {
         </div>
         <div id = 'tuesdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(1) }}</h3>
-          <img id = 'tuesdayImg' :src="getWeatherWeeklyIllustration(1)">
+          <img id = 'tuesdayImg' src='../assets/img/cloudImg.svg'>
           <div id = 'tuesdayTemp'>
             <p id = 'minTempTuesday'>{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
             <p id = 'maxTempTuesday'>/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
@@ -424,7 +418,7 @@ export default {
         </div>
         <div id = 'wednesdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(2) }}</h3>
-          <img id = 'wednesdayImg' :src="getWeatherWeeklyIllustration(2)">
+          <img id = 'wednesdayImg' src='../assets/img/sunnyImg.svg'>
           <div id = 'wednesdayTemp'>
             <p id = 'minTempWednesday'>{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
             <p id = 'maxTempWednesday'>/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
@@ -432,7 +426,7 @@ export default {
         </div>
         <div id = 'thursdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(3) }}</h3>
-          <img id = 'thursdayImg' :src="getWeatherWeeklyIllustration(3)">
+          <img id = 'thursdayImg' src='../assets/img/sunnyImg.svg'>
           <div id = 'thursdayTemp'>
             <p id = 'minTempThursday'>{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
             <p id = 'maxTempThursday'>/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
@@ -440,7 +434,7 @@ export default {
         </div>
         <div id="fridayContainer">
           <h3 class = 'dayTitle'>{{ getDayOfWeek(4) }}</h3>
-          <img id="fridayImg" :src="getWeatherWeeklyIllustration(4)">
+          <img id="fridayImg" src='../assets/img/sunnyImg.svg'>
           <div id="fridayTemp">
             <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
             <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
@@ -556,8 +550,9 @@ border-radius: 50px 50px 10px 10px ;}
     align-items: center;
 }
 #weatherTodayIllustration{
-  max-width: 12em;
+  max-width: 10em;
   height: auto;
+  margin:auto;
 }
 
 .date-icon-header {
@@ -573,6 +568,7 @@ border-radius: 50px 50px 10px 10px ;}
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  
 }
 
 #location{
@@ -585,21 +581,19 @@ border-radius: 50px 50px 10px 10px ;}
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-bottom: 1rem;
+  
 }
 .locationCity {
 
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 1.75rem;
+  z-index: 4;
 }
 
 #containerWeatherInfoToday {
-    /* position: absolute; */
-    /* left: 28.88em; */
     width: 100%;
-    /* height: 15.5rem; */
     border-radius: 10px;
-    /* border: 1px solid #000; */
     background: #B7AFE2;
     padding: 1rem;
     display: flex;
