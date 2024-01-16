@@ -58,7 +58,7 @@ export default {
 <template>
   <v-app class="v-app">
     <!-- Render Header only if showHeader is true -->
-    <Header v-if="showHeader" />
+    <Header v-if="showHeader"></Header>
     <v-main class="v-main">
       <RouterView />
     </v-main>

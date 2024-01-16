@@ -35,6 +35,7 @@
           down: '0deg',
           left: '90deg',
           right: '270deg',
+          diagonal: '225deg'
         };
         return {
           transform: `rotate(${rotations[this.direction]})`

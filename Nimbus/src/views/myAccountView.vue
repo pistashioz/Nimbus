@@ -1,5 +1,5 @@
 <script>
-import ArrowButton from '@/components/ArrowButton.vue';
+ import ArrowButton from '@/components/ArrowButton.vue'; 
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
 
@@ -8,10 +8,17 @@ export default {
   name: 'basicMode',
   data() {
     return {
+      experiencePrices: {
+        nationalGeographic: 12,
+        adventureGear: 23,
+        wellnessRetreat: 37,
+        ecoFriendlyProducts: 7,
+        chapterByChapter: 16
+      }
     };
   },
   components: {
-    ArrowButton,
+    ArrowButton, 
     HeaderDashboard,
   },
   mounted() {
@@ -37,6 +44,17 @@ export default {
 
 },
   methods: {
+    purchaseExperience(experienceKey) {
+    const price = this.experiencePrices[experienceKey];
+    if (this.getAuthenticatedUser.nimbusCoins >= price) {
+      // Subtract the price from user's nimbus coins
+      this.getAuthenticatedUser.nimbusCoins -= price;
+      // Additional logic to record the purchase or notify the user
+    } else {
+      // Handle insufficient funds
+      alert("Insufficient nimbus coins.");
+    }
+  }
   }
   
 };
@@ -54,7 +72,7 @@ export default {
     <div class="avatar-credentials">
     <div class="avatar-selection">
 
-      <div class="default-avatar" :style="{ backgroundColor: defaultAvatarColor }">
+      <div class="default-avatar" >
         <!-- Default avatar icon goes here -->
       </div>    
   </div>
@@ -106,23 +124,74 @@ export default {
           <div class="exp-img">
             <!-- <img src="" alt=""> -->
           </div>
-          <div id="exp-content">
+          <div class="exp-content">
             <h3 class="exp-title">     National Geographic Subscription</h3>
             <span class="exp-text">Unlock the world's secrets with an exclusive subscription discount.</span>
-            <span class="exp-price">Price: 12 nimbus coins</span>
-            <button class="exp-buy">X</button>
+            <div class="exp-price">
+      <p>Price: {{ experiencePrices.nationalGeographic }} nimbus coins</p>
+      <ArrowButton @click="purchaseExperience('nationalGeographic')" direction="up" button-class="personalization-arrow" />
+    </div>
           </div>
      
         </div>
-        <div class="exp two">Adventure Gear Vouchers</div>
-        <div class="exp three">Wellness Retreat Discounts</div>
-        <div class="exp four">Eco-Friendly Product Deals</div>
-        <div class="exp five">Chapter-by-Chapter Savings</div>
+        <div class="exp two">
+          
+          <div class="exp-img">
+            <!-- <img src="" alt=""> -->
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">    Adventure Gear Vouchers</h3>
+            <span class="exp-text">Redeem for savings on the latest outdoor and adventure equipment.</span>
+            <div class="exp-price"><p>Price: 23 nimbus coins</p> <ArrowButton direction="up" button-class="personalization-arrow" /></div>
+            
+          </div>
+        </div>
+        <div class="exp three">
+          
+          <div class="exp-img">
+            <!-- <img src="" alt=""> -->
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">    Wellness Retreat Discounts</h3>
+            <span class="exp-text">Exchange coins for relaxation with spa and wellness offers.</span>
+            <div class="exp-price"><p>Price: 37 nimbus coins</p> <ArrowButton direction="up" button-class="personalization-arrow" /></div>
+            
+          </div>
+        </div>
+        <div class="exp four">
+          
+          <div class="exp-img">
+            <!-- <img src="" alt=""> -->
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">    Eco-Friendly Product Deals</h3>
+            <span class="exp-text">Get deals on products that love the earth as much as you do.</span>
+            <div class="exp-price"><p>Price: 7 nimbus coins</p> <ArrowButton direction="up" button-class="personalization-arrow" /></div>
+            
+          </div>
+        </div>
+        <div class="exp five">
+          
+          <div class="exp-img">
+            <!-- <img src="" alt=""> -->
+          </div>
+          <div class="exp-content">
+            <h3 class="exp-title">   Chapter-by-Chapter Savings</h3>
+            <span class="exp-text">Bookstore discounts to indulge your literary appetite.</span>
+            <div class="exp-price"><p>Price: 16 nimbus coins</p> <ArrowButton direction="up" button-class="personalization-arrow" /></div>
+            
+          </div>
+        </div>
       </div>
 </div>
 <div class="div5 gridCell">
       <div class = 'gamification'>
-
+        <div class="personal-email" >
+    <div class="nimbus-coins" >
+      <div class="coins-number" > <h3>185</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
+      <div class="coins-label" > nimbus coins</div>
+    </div>  
+  </div>
     </div>
 
  
@@ -130,7 +199,16 @@ export default {
   </main>
 </template>
 <style>
-
+.nimbus-coins {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.coins-number h3 {
+  margin-right: 0.8rem;
+  margin-bottom: 0;
+  margin-top: 0;
+}
 .account-body {
   width: 100vw;
   height: 100vh;
@@ -145,7 +223,7 @@ export default {
 
 .account-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1.3fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 50px 1fr 1fr 1fr ; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
@@ -207,6 +285,8 @@ grid-row-end: 4;
   grid-column-end: 3;
   grid-row-start: 3;
   grid-row-end: 5;
+  overflow-y: scroll;
+  background: rgba(156, 200, 161, 0.80);
 }
 .account-grid .div5 { grid-area: 3 / 3 / 4 / 6;
 
@@ -354,8 +434,8 @@ grid-row-end: 4;
 }
 .experiences{
   width: 100%;
+  height: 50rem;
   border-radius: 1.25rem;
-  background: rgba(156, 200, 161, 0.80);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -363,34 +443,97 @@ grid-row-end: 4;
   padding: 1rem;
 }
 .exp {
-  background-color: #FAC54B;
-  border: 1px solid #303030;
-  border-radius: 10px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    border: 1px solid #303030;
+    border-radius: 10px;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    justify-content: center;
+    height: 100%;
+    margin-bottom: 1rem;
+}
+.exp.one {
+  background: #E1B6D9;
+}
 
+.exp.two {
+  background: #E8AC82;
+}
+
+.exp.three {
+  background: #DFE287;
+}
+
+.exp.four {
+  background: #ADD8FB;
+}
+.exp.five {
+  margin-bottom: 0;
+  background: #FAC54B;
 }
 .exp-img {
   background-color: red;
-  width: 100%;
-  height: 80%;
+  width: 222px;
+  height: 100%;
   border: 1px solid #303030;
   border-radius: 10px;
-  margin-left: 1rem;
+
 }
 .exp-title {
   margin-bottom: 0;
-  margin-top: 3%;
- };
+  margin-top: 0;
+ }
+ .exp-text {
+  font-size: 0.8rem;
+  letter-spacing: 0.01rem;
+  color: #858585;
+ }
 
-#exp-content{ 
+.exp-content{ 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-background-color: green
- };
+  justify-content: space-between;
+  margin-left: 1rem;
+  height: 100%;
+  width: 100%;
+/* background-color: green; */
+ }
+
+ .exp-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+
+ }
+
+.exp-price .arrow-button.personalization-arrow {
+background-color: #FAF8ED;
+  width: 52px;
+  height: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(30%) rotate(180deg) !important;
+}
+
+.arrow-button.personalization-arrow .arrow-icon {
+  transform: rotate(90deg);
+  width: 15px;
+  height: 15px;
+}
+
+ .exp-price p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 0.8rem;
+  transform: translateY(15%)
+ }
+
 .gamification{
   width: 100%;
   flex-shrink: 0;
