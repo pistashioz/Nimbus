@@ -1,24 +1,13 @@
 <script>
-import moment from 'moment';
-import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import ArrowButton from '@/components/ArrowButton.vue';
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 
 export default {
   name: 'basicMode',
   data() {
     return {
-      api_key: '39d7058ef12ab5dae395f420fd79ec5a',
-      url_base: 'http://api.openweathermap.org/data/2.5/',
-      query: '',
-      weather: {},
-      five_day_forecast: {},
-      air_quality: {},
     };
   },
   components: {
@@ -61,10 +50,7 @@ export default {
     </div>
       <div class="div1 gridCell">
         <div class = 'personal-data'>
-          <div class="personal-username" >
-      <div class="username" > {{ this.getAuthenticatedUser.username }}</div>
-      <div class="joined" > Joined in 16th Jan, 2024<!-- {{ this.getAuthenticatedUser.joinedDate }} --></div>
-    </div>
+
     <div class="avatar-credentials">
     <div class="avatar-selection">
 
@@ -73,6 +59,10 @@ export default {
       </div>    
   </div>
   <div class="credentials">  
+    <div class="personal-username" >
+      <div class="username" > {{ this.getAuthenticatedUser.username }}</div>
+      <div class="joined" > Joined in 16th Jan, 2024<!-- {{ this.getAuthenticatedUser.joinedDate }} --></div>
+    </div>
     <div class="personal-email" >
     <div class="email" >
       <div class="label" >  <h1>Email</h1></div>
@@ -112,7 +102,22 @@ export default {
 
     <div class="div4 gridCell">
       <div class = 'experiences'>
-
+        <div class="exp one">
+          <div class="exp-img">
+            <!-- <img src="" alt=""> -->
+          </div>
+          <div id="exp-content">
+            <h3 class="exp-title">     National Geographic Subscription</h3>
+            <span class="exp-text">Unlock the world's secrets with an exclusive subscription discount.</span>
+            <span class="exp-price">Price: 12 nimbus coins</span>
+            <button class="exp-buy">X</button>
+          </div>
+     
+        </div>
+        <div class="exp two">Adventure Gear Vouchers</div>
+        <div class="exp three">Wellness Retreat Discounts</div>
+        <div class="exp four">Eco-Friendly Product Deals</div>
+        <div class="exp five">Chapter-by-Chapter Savings</div>
       </div>
 </div>
 <div class="div5 gridCell">
@@ -135,7 +140,7 @@ export default {
   align-items: center;
   justify-content: center;
  /*  background-color: #01542C; */
-  color: #49ABFB;
+  color: #303030;
 }
 
 .account-grid {
@@ -198,7 +203,6 @@ grid-row-end: 4;
 
 
 .account-grid .div4 { 
-/*   grid-area: 3 / 1 / 4 / 2; */
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 3;
@@ -216,7 +220,7 @@ grid-row-end: 4;
     width: 100%;    border-radius: 10px;
     background: #C3C3C3;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-around;
     flex-direction: column; 
     align-items: flex-start;
 }
@@ -224,33 +228,39 @@ grid-row-end: 4;
 .personal-email,
 .personal-password {
   width: 100%;    border-radius: 10px;
-  
     display: flex;
     justify-content: space-between;
- /*    flex-direction: column; */
     align-items: center;
 }
 
 .email, .password
 {
-    /* width: 100%;    */ 
-    background: red;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
 }
+
 .change-email,
 .change-password {
-  width: 80%;    border-radius: 10px;
+  width: 40%;    border-radius: 10px;
   background-color: #f1f1f1;
+  border: 1px solid #303030;
   padding: 1rem;
   color: #c3c3c3;
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 1rem;
- /*    flex-direction: column; */
+  transition: all 0.3s ease-in-out;
 }
+
+.change-email:hover,
+.change-password:hover{
+  width: 40%;    border-radius: 10px;
+  background-color: #FAC54B;
+  color: #858585;
+}
+
 .label h1 {
   margin: 0;
   height: 2.2rem
@@ -263,15 +273,16 @@ grid-row-end: 4;
   height: 100%;
 }
 .personal-username {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 80%;
-  background-color: #ccc;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    transition: all 0.3s ease;
 }
+/* .username {
+  color: #E6612E;
+} */
 .avatar-credentials {
     display: flex;
     width: 100%;
@@ -282,12 +293,11 @@ grid-row-end: 4;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    height: fit-content;
-    background-color: green;
-    cursor: pointer;
+    width: 65%;
+    height: 100%;
     position: relative;
     transition: all 0.3s ease;
+    justify-content: space-between;
 }
 
 .username {
@@ -348,8 +358,39 @@ grid-row-end: 4;
   background: rgba(156, 200, 161, 0.80);
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   flex-direction: column;
+  padding: 1rem;
 }
+.exp {
+  background-color: #FAC54B;
+  border: 1px solid #303030;
+  border-radius: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.exp-img {
+  background-color: red;
+  width: 100%;
+  height: 80%;
+  border: 1px solid #303030;
+  border-radius: 10px;
+  margin-left: 1rem;
+}
+.exp-title {
+  margin-bottom: 0;
+  margin-top: 3%;
+ };
+
+#exp-content{ 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+background-color: green
+ };
 .gamification{
   width: 100%;
   flex-shrink: 0;
