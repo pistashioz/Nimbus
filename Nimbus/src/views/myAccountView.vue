@@ -454,7 +454,7 @@ export default {
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 50px 1fr 1fr ; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
@@ -474,7 +474,7 @@ export default {
   justify-content: center;
 }
 
-.div0 { grid-area: 1 / 1 / 2 / 6;
+.div0 { grid-area: 1 / 1 / 2 / 5;
 border-radius: 50px 50px 10px 10px ;}
 
 .div1 { grid-area: 2 / 1 / 3 / 3;}
