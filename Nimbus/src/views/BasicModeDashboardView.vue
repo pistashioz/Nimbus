@@ -5,6 +5,7 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 import ArrowButton from '@/components/ArrowButton.vue';
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
+import { reverseGeocode, fetchDataByCityName, fetchAirQuality, fetchFiveDayForecast } from '@/weatherService';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
@@ -13,9 +14,6 @@ export default {
   name: 'basicMode',
   data() {
     return {
-      api_key: '39d7058ef12ab5dae395f420fd79ec5a',
-      url_base: 'http://api.openweathermap.org/data/2.5/',
-      query: '',
       weather: {},
       five_day_forecast: {},
       air_quality: {},
@@ -26,13 +24,12 @@ export default {
     HeaderDashboard,
   },
   created(){
-    
+    this.fetchWeather()
   },
   mounted() {
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
-    this.query=this.userLocation.region;
     console.log(this.store.authenticatedUser);
     console.log(this.userLocation);
   },
@@ -103,52 +100,15 @@ export default {
 },
   methods: {
     
-    fetchWeather(e){
-      if (e.key == 'Enter'){
-        fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
-        .then(res => res.json())
-        .then(this.setResults)
-        .then(this.fetchFiveDayForecast)
-        .then(this.fetchAirQuality);
-      }
-    },
-    fetchFiveDayForecast(){
-      //console.log('Fetching 5 day weather forecast...');
-      const { lat, lon } = this.weather.coord;
-      fetch(`${this.url_base}forecast?lat=${lat}&lon=${lon}&appid=${this.api_key}`)
-        .then(res => res.json()) 
-        .then(response => {
-          //console.log(response);
-          this.setFiveDayForecastResults(response);
-        })
-        .catch(error => {
-          console.error('Error fetching 5 day weather forecast:', error);
-        });
-    },
-    fetchAirQuality(){
-      const { lat, lon } = this.weather.coord;
-      fetch(`${this.url_base}air_pollution?lat=${lat}&lon=${lon}&appid=${this.api_key}`)
-        .then(res => res.json()) 
-        .then(response => {
-          //console.log('respuesta',response);
-          this.setAirQualityResults(response);
-          this.calculateSunPosition();
-        })
-        .catch(error => {
-          console.error('Error fetching air pollution data:', error);
-        });
-    },
-    setResults (results){
-      this.weather = results;
-    },
-    setFiveDayForecastResults(response){
-      this.five_day_forecast = response
-      //console.log(this.five_day_forecast.list[0].pop)
-    },
-    setAirQualityResults(response){
-      this.air_quality = response
-      //console.log(this.air_quality.list[0].main.aqi)
-    },
+  async fetchWeather() {
+    try {
+      this.weather = await fetchDataByCityName(this.userLocation.region);
+      this.air_quality = await fetchAirQuality(this.userLocation.region);
+      this.five_day_forecast = await fetchFiveDayForecast(this.userLocation.region)
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+    }
+  },
     dateBuilder() {
       return moment().format('dddd, D MMMM');
     },
@@ -331,7 +291,6 @@ export default {
 };
 </script>
 <template>
-    <input type = 'text' class = 'search-bar' placeholder="search..." v-model="query" @keypress = 'fetchWeather'>
   <main class="dash-body">
     <div class="grid" v-if="(typeof weather.main != 'undefined')">
     <div class="div0 gridCell">

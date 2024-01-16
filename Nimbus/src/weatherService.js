@@ -1,8 +1,7 @@
 import { loadScript } from "./utils.js";
-
+import * as api from '@/api/api.js'
 const API_KEY = '39d7058ef12ab5dae395f420fd79ec5a'; // OpenWeather API key
 const GOOGLE_API_KEY = 'AIzaSyCyW66L8sE0ZKKaHV0q-HfLgeEY2L-zH8k' // Google Maps API key
-
 
 
 export function loadGoogleMapsAPI() {
@@ -121,7 +120,64 @@ export const reverseGeocodeOpenWeather = async (latitude, longitude, limit = 1) 
   }
 };
 
+export const fetchDataByCityName = async (cityName) => {
+  try {
+    const weatherResponse = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=${API_KEY}`);
 
+    if (!weatherResponse.ok) {
+      throw new Error("Could not find the city.");
+    }
+
+    const data = await weatherResponse.json();
+    console.log('data', data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const fetchFiveDayForecast = async (cityName) => {
+  try {
+    const weatherData = await fetchDataByCityName(cityName);
+
+    const { lat, lon } = weatherData.coord;
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+
+    if (!response.ok) {
+      throw new Error("Error fetching 5 day weather forecast.");
+    }
+
+    const data = await response.json();
+    console.log('5 day forecast data', data);
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const fetchAirQuality = async (cityName) => {
+  try {
+    const weatherData = await fetchDataByCityName(cityName);
+
+    const { lat, lon } = weatherData.coord;
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+
+    if (!response.ok) {
+      throw new Error("Error fetching air pollution data.");
+    }
+
+    const data = await response.json();
+    console.log('air quality data', data);
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 /* export const LocationService = {
   async search(query) {
     const response = await fetch(
@@ -135,3 +191,4 @@ export const reverseGeocodeOpenWeather = async (latitude, longitude, limit = 1) 
 };
 
  */
+
