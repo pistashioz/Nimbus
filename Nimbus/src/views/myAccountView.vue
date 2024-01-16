@@ -332,8 +332,8 @@ export default {
 </script>
 <template>
     <input type = 'text' class = 'search-bar' placeholder="search..." v-model="query" @keypress = 'fetchWeather'>
-  <main class="dash-body">
-    <div class="grid" v-if="(typeof weather.main != 'undefined')">
+  <main class="account-body">
+    <div class="account-grid" v-if="(typeof weather.main != 'undefined')">
     <div class="div0 gridCell">
       <HeaderDashboard />
     </div>
@@ -353,44 +353,7 @@ export default {
       </div>
       </div>
       <div class="div2 gridCell">
-      <div id = 'containerWeatherInfoToday'>
-        <div id="feelsLikeContainer">
-  <p id="feelsLikeTitle">Feels Like</p>
-  <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
-</div>
-
-        <div id = 'expectedContainer'>
-          <p id = 'expectedTitle'>Expected</p>
-          <p id = 'expectedData'>{{ weather.weather[0].description }}</p>
-        </div>
-        <div id = 'humidityContainer'>
-          <div class = 'humidityContainerHeader'>
-            <img src = '../assets/img/humidityIconBasicMode.svg' class = 'humidityIcon'>
-          <p class = 'humidityTitleBasicMode'>Humidity</p>
-          </div>
-          <div id = 'humidityData'>
-            <p id = 'humidityPercentage'>{{ weather.main.humidity}}%</p>
-            <p id = 'refreshingOrDry'>{{ refreshingOrDry() }}</p>
-          </div>
-        </div>
-        <div id = 'rainContainer'>
-          <div class = 'rainContainerHeader'>
-            <img src = '../assets/img/rainIconBasicMode.svg' class = 'rainIcon'>
-            <p class = 'rainTitleBasicMode'>Rain</p>
-          </div>
-          <div id = 'rainData'>
-            <p id = 'rainPercentage'>
-              {{ Math.round(this.five_day_forecast.list[0].pop * 100) }} 
-          </p> <p id = 'chance'>% Chance</p></div>
-        </div>
-        <div id = 'windContainer'>
-          <div class = 'windContainerHeader'>
-            <img src = '../assets/img/windIconBasicMode.svg' class = 'windIcon'>
-            <p class = 'windTitleBasicMode'>Wind</p>
-          </div>
-          <p id = 'windData'>{{ windSpeed() }}</p>
-        </div>
-        <RouterLink :to="{ name: 'advancedModeDashboard', params: { city: weather.name }} " id = 'seeMoreBtn'>See more</RouterLink>
+      <div class = 'gamification-avatar'>
       </div>
     </div>
    
@@ -439,7 +402,7 @@ export default {
 </template>
 <style>
 
-.dash-body {
+.account-body {
   width: 100vw;
   height: fit-content;
   margin: 0;
@@ -452,9 +415,9 @@ export default {
   overflow: scrol;
 }
 
-.grid {
+.account-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 50px 1fr 1fr ; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
@@ -462,7 +425,7 @@ export default {
   width: 1260px;
 }
 
-.gridCell {
+.account-grid .gridCell {
   background-color: #F2E6DD;
   border: 1px solid #303030;
   border-radius: 20px;
@@ -474,24 +437,26 @@ export default {
   justify-content: center;
 }
 
-.div0 { grid-area: 1 / 1 / 2 / 5;
+.account-grid .div0 { grid-area: 1 / 1 / 2 / 6;
 border-radius: 50px 50px 10px 10px ;}
 
-.div1 { grid-area: 2 / 1 / 3 / 3;}
+.account-grid .div1 { grid-area: 2 / 1 / 3 / 3;}
 
-.div2 { grid-area: 2 / 3 / 3 / 4;}
+/* .account-grid .div2 { grid-area: 2 / 3 / 3 / 4;} */
 
-.div3 { grid-area: 2 / 4 / 3 / 4;}
+.account-grid .div2 { grid-area: 2 / 3 / 3 / 4;}
 
-.div4 { 
+.account-grid .div3 { grid-area: 2 / 4 / 3 / 6;}
+
+.account-grid .div4 { 
 /*   grid-area: 3 / 1 / 4 / 2; */
   grid-column-start: 1;
-  grid-column-end: span 2;
+  grid-column-end: 3;
   grid-row-start: 3;
   grid-row-end: 4;
 }
 
-.div5 { grid-area: 3 / 2 / 4 / 5;}
+.account-grid .div5 { grid-area: 3 / 3 / 4 / 6;}
 
 
 :root{
@@ -548,13 +513,9 @@ border-radius: 50px 50px 10px 10px ;}
   font-size: 1.75rem;
 }
 
-#containerWeatherInfoToday {
-    /* position: absolute; */
-    /* left: 28.88em; */
+.gamification-avatar {
     width: 100%;
-    /* height: 15.5rem; */
     border-radius: 10px;
-    /* border: 1px solid #000; */
     background: #B7AFE2;
     padding: 1rem;
     display: flex;
