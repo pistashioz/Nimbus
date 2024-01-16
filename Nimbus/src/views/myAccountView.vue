@@ -78,11 +78,14 @@ export default {
       <div class="label" >  <h1>Email</h1></div>
       <div class="email" > {{ this.getAuthenticatedUser.email }}</div>
     </div>  
-    <button type="button" class="change-emai"> Change Email</button>
+    <button type="button" class="change-email"> Change Email</button>
   </div>
-    <div class="personal-username" >
-      <div class="username" >{{ this.getAuthenticatedUser.username }}</div>
-      <div class="joined" > Joined in 16th Jan, 2024<!-- {{ this.getAuthenticatedUser.joinedDate }} --></div>
+    <div class="personal-password" >
+      <div class="password">
+        <div class="label" >  <h1>Password</h1></div>
+      <div class="password" >{{ this.getAuthenticatedUser.password }}</div>
+      </div>
+      <button type="button" class="change-password"> Change Password</button>
     </div>
   </div>
 </div>
@@ -91,7 +94,7 @@ export default {
       </div>
       </div>
       <div class="div2 gridCell">
-      <div class = 'gamification-avatar'>
+      <div class = 'explanations'>
       </div>
     </div>
    
@@ -100,6 +103,13 @@ export default {
   
       </div>
     </div>
+
+    <div class="div3-5 gridCell">
+      <div class = 'gamification-avatar'>
+
+      </div>
+</div>
+
     <div class="div4 gridCell">
       <div class = 'experiences'>
 
@@ -130,8 +140,8 @@ export default {
 
 .account-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 50px 1fr 1fr ; /* Adjust the first value for the header row height */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 50px 1fr 1fr 1fr ; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
   height: 850px;
@@ -150,53 +160,97 @@ export default {
   justify-content: center;
 }
 
-.account-grid .div0 { grid-area: 1 / 1 / 2 / 6;
+.account-grid .div0 { grid-area: 1 / 1 / 2 / 7;
 border-radius: 50px 50px 10px 10px ;}
 
-.account-grid .div1 { grid-area: 2 / 1 / 3 / 3;}
+.account-grid .div1 { grid-area: 2 / 1 / 3 / 3;
+
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;}
 
 /* .account-grid .div2 { grid-area: 2 / 3 / 3 / 4;} */
 
-.account-grid .div2 { grid-area: 2 / 3 / 3 / 4;}
+.account-grid .div2 { grid-area: 2 / 3 / 3 / 4;
 
-.account-grid .div3 { grid-area: 2 / 4 / 3 / 6;}
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 2;
+  grid-row-end: 3;
+}
+
+.account-grid .div3 { grid-area: 2 / 4 / 3 / 6;
+
+  grid-column-start: 5;
+  grid-column-end: 7;
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+
+.account-grid .div3-5 { 
+
+grid-column-start: 3;
+grid-column-end: 5;
+grid-row-start: 3;
+grid-row-end: 4;
+}
+
 
 .account-grid .div4 { 
 /*   grid-area: 3 / 1 / 4 / 2; */
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 3;
-  grid-row-end: 4;
+  grid-row-end: 5;
 }
-.account-grid .div5 { grid-area: 3 / 3 / 4 / 6;}
+.account-grid .div5 { grid-area: 3 / 3 / 4 / 6;
+
+  grid-column-start:3;
+  grid-column-end: 7;
+  grid-row-start: 4;
+  grid-row-end: 5;
+}
 
 .personal-data {
     width: 100%;    border-radius: 10px;
     background: #C3C3C3;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: column; 
-    align-items: center;
+    align-items: flex-start;
 }
 
-.personal-email {
+.personal-email,
+.personal-password {
   width: 100%;    border-radius: 10px;
-    background: #C3C3C3;
+  
     display: flex;
     justify-content: space-between;
  /*    flex-direction: column; */
     align-items: center;
 }
 
-.email {
-    width: 100%;    
+.email, .password
+{
+    /* width: 100%;    */ 
     background: red;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
 }
-
+.change-email,
+.change-password {
+  width: 80%;    border-radius: 10px;
+  background-color: #f1f1f1;
+  padding: 1rem;
+  color: #c3c3c3;
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 1rem;
+ /*    flex-direction: column; */
+}
 .label h1 {
   margin: 0;
   height: 2.2rem
@@ -219,17 +273,21 @@ border-radius: 50px 50px 10px 10px ;}
   transition: all 0.3s ease;
 }
 .avatar-credentials {
-  display: flex;
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
 }
 .credentials {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: auto;
-  background-color: green;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    background-color: green;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
 .username {
@@ -255,6 +313,18 @@ border-radius: 50px 50px 10px 10px ;}
 
 .avatar-options {
   display: flex;
+}
+
+.explanations {
+    width: 100%;
+    border-radius: 10px;
+    background: #FFF9CF;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .gamification-avatar {
