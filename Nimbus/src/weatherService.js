@@ -122,6 +122,7 @@ export const reverseGeocodeOpenWeather = async (latitude, longitude, limit = 1) 
 
 export const fetchDataByCityName = async (cityName) => {
   try {
+    console.log(cityName)
     const weatherResponse = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=${API_KEY}`);
 
     if (!weatherResponse.ok) {
@@ -129,7 +130,6 @@ export const fetchDataByCityName = async (cityName) => {
     }
 
     const data = await weatherResponse.json();
-    console.log('data', data);
     return data;
   } catch (error) {
     console.error(error);

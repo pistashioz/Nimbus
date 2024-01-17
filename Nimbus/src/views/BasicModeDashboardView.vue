@@ -1,15 +1,10 @@
 <script>
 import moment from 'moment';
-import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import ArrowButton from '@/components/ArrowButton.vue';
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
 import { reverseGeocode, fetchDataByCityName, fetchAirQuality, fetchFiveDayForecast } from '@/weatherService';
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-
-
+import { useWeatherStore } from '@/stores/weather'
 export default {
   name: 'basicMode',
   data() {
@@ -37,6 +32,15 @@ export default {
     store() {
        return useUserStore();
      },
+     weatherStore() {
+      return useWeatherStore()
+     },
+     weatherData() {
+      return this.weatherStore.weatherData;
+    },
+    regionWeatherData(){
+      return this.weatherStore.regionWeatherData;
+    },
      isUser() {
        return this.store.isUser;
      },
@@ -71,6 +75,7 @@ export default {
     }
   },
     getWeatherTodayIllustration(){
+      
       console.log(this.weather.weather[0].main.toLowerCase())
       const weatherImg = this.weather.weather[0].main.toLowerCase()
       switch (weatherImg) {
@@ -99,15 +104,31 @@ export default {
   }
 },
   methods: {
-    
+    initializeWeatherData() {
+      this.updateWeatherData();
+    },
+    updateWeatherData() {
+      const region = this.userLocation.region;
+
+      this.weatherStore.updateUserWeather(region, this.userLocations);
+      this.weatherStore.fetchWeatherForAllLocations();
+      this.weatherStore.fetchRegionWeather();
+      
+    },
   async fetchWeather() {
     try {
-      this.weather = await fetchDataByCityName(this.userLocation.region);
-      this.air_quality = await fetchAirQuality(this.userLocation.region);
-      this.five_day_forecast = await fetchFiveDayForecast(this.userLocation.region)
-    } catch (error) {
-      console.error('Error fetching weather data:', error);
+      await this.updateWeatherData();
+      if (this.weatherStore.regionWeatherData) {
+      this.weather = this.weatherStore.regionWeatherData.currentWeather;
+      this.air_quality = this.weatherStore.regionWeatherData.airQuality;
+      this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
+      console.log(this.weather);
+    } else {
+      console.error('Region weather data is not available.');
     }
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      }
   },
     dateBuilder() {
       return moment().format('dddd, D MMMM');

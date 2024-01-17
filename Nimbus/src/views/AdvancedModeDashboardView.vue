@@ -1,7 +1,7 @@
 <script>
 import { useUserStore } from "@/stores/user";
 import { fetchDataByCityName, fetchAirQuality, fetchFiveDayForecast } from '@/weatherService';
-
+import { useWeatherStore } from '@/stores/weather'
 export default {
   name: 'advancedMode',
   data(){
@@ -15,7 +15,8 @@ export default {
       currentYear: new Date().getFullYear(),
       currentMonth: "",
       currentDay: "",
-      weatherCities: []
+      weatherCity: [],
+      weather: []
     }
   },
   created() {
@@ -23,12 +24,20 @@ export default {
     this.startUpdatingTime();
     this.currentMonth = this.getMonthName(this.monthIndex);
     this.currentDay = new Date().getDate();
-    this.fetchWeatherCities()
   },
   computed: {
     store() {
        return useUserStore();
      },
+     weatherStore() {
+      return useWeatherStore()
+     },
+     weatherData() {
+      return this.weatherStore.weatherData;
+    },
+    regionWeatherData(){
+      return this.weatherStore.regionWeatherData;
+    },
      isUser() {
        return this.store.isUser;
      },
@@ -56,39 +65,16 @@ export default {
         
     async fetchWeather(){
       try {
-
-        this.weather = await fetchDataByCityName(this.userLocation.region);
-        this.air_quality = await fetchAirQuality(this.userLocation.region);
-        this.five_day_forecast = await fetchFiveDayForecast(this.userLocation.region)
-        console.log('???')
+        const region = this.userLocation.region;
+        this.weatherStore.updateUserWeather(region, this.userLocations);
+        console.log(this.weatherStore.weatherData.locations)
+        this.weatherCity = this.weatherStore.weatherData.locations.map((locationData) => {
+          return locationData.currentWeather;
+        });
+        this.weather = this.weatherStore.regionWeatherData.currentWeather
         console.log(this.weather)
-        const response = await fetch(`${this.url_base}weather?q=${this.$route.params.city}&units=metric&APPID=${this.api_key}`);
-        const results = await response.json();
-        this.setResults(results);
-        await this.fetchFiveDayForecast();
-        await this.fetchAirQuality();
-        this.isWeatherLoaded = true;
 
-        
-      } catch (error) {
-        console.error('Error fetching weather data:', error);
-      }
-    },
-    async fetchWeatherCities(){
-      try { //store each city weather in array
-        const cityLocations = this.getAuthenticatedUser.userLocations || [];
       
-      // Extract city names from userLocations and create an array
-        const cityNames = cityLocations.map(location => location.main_text);
-        console.log('cidades',cityNames)
-        for (const cityName of cityNames) {
-          const results = await fetchDataByCityName(cityName);
-  
-
-          // Push the weather data for each city into the array
-          this.weatherCities.push(results);
-          console.log(this.weatherCities)
-        }
         this.isWeatherLoaded = true;
 
         
@@ -170,49 +156,49 @@ export default {
         </div>
       </div>
     </section>
-    <section id = 'citiesContainer'>
+    <section id = 'citiesContainer' v-if="weatherCity">
       <div class = 'cityContainer'>
         <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ userLocations[0].main_text }}</div> 
+          <div class = 'cityName'>{{ weatherCity[0].name }}</div> 
           <div class = 'countryName'>{{userLocations[0].description.split(',')[1] }}</div>
         </div>
         <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
         <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(this.weatherCities[0].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(this.weatherCities[0].main.temp_max) }}°</h3>
+          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[0].main.temp) }}°</h2>
+          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[0].main.temp_max) }}°</h3>
         </div>
       </div>
       <div class = 'cityContainer'>
         <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ userLocations[1].main_text }}</div> 
+          <div class = 'cityName'>{{ weatherCity[1].name }}</div> 
           <div class = 'countryName'>{{userLocations[1].description.split(',')[1] }}</div>
         </div>
         <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
         <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(this.weatherCities[1].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(this.weatherCities[1].main.temp_max) }}°</h3>
+          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[1].main.temp) }}°</h2>
+          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[1].main.temp_max) }}°</h3>
         </div>
       </div>
       <div class = 'cityContainer'>
         <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ userLocations[2].main_text }}</div> 
+          <div class = 'cityName'>{{ weatherCity[2].name }}</div> 
           <div class = 'countryName'>{{userLocations[2].description.split(',')[1] }}</div>
         </div>
         <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
         <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(this.weatherCities[2].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(this.weatherCities[2].main.temp_max) }}°</h3>
+          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[2].main.temp) }}°</h2>
+          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[2].main.temp_max) }}°</h3>
         </div>
       </div>
       <div class = 'cityContainer'>
         <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ userLocations[3].main_text }}</div> 
+          <div class = 'cityName'>{{ weatherCity[3].name }}</div> 
           <div class = 'countryName'>{{userLocations[3].description.split(',')[1] }}</div>
         </div>
         <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
         <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(this.weatherCities[3].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(this.weatherCities[3].main.temp_max) }}°</h3>
+          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[3].main.temp) }}°</h2>
+          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[3].main.temp_max) }}°</h3>
         </div>
       </div>
     </section>
@@ -248,7 +234,7 @@ export default {
             <h2 class = 'weatherInfoContainerHeader' id = 'rainTitle'>Rain</h2>
             <img class = 'weatherInfoIllustrations' alt = 'Rain' src = '../assets/img/rainIcon.svg'>
           </div>
-          <h3 class = 'dataContainers'> {{ five_day_forecast && five_day_forecast.list ? Math.round(five_day_forecast.list[0].pop * 100) :'' }}  %</h3>
+          <h3 class = 'dataContainers'> {{ weatherStore.regionWeatherData.fiveDayForecast && weatherStore.regionWeatherData.fiveDayForecast.list ? Math.round(weatherStore.regionWeatherData.fiveDayForecast.list[0].pop * 100) :'' }}  %</h3>
         </div>
         <div id = 'humidityContainerAdvancedMode'>
           <div class = 'headerContainers'>
