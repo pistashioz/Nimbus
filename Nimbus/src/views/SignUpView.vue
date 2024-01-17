@@ -840,7 +840,7 @@ font-size: 1rem;
 
 
 .search-results-container {
-  transform: translateY(65px);
+  transform: translateY(-20px);
     display: flex;
     position: absolute;
     flex-direction: row;

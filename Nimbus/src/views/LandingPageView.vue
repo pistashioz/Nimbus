@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
   align-items: flex-start;
 } */
 .first-vp{
-  height: 55vh;
+  height: 80vh;
 /*   background-color: aqua; */
   width: 100vw;
   display: flex;
@@ -310,7 +310,7 @@ flex-direction: column;
 #cloud1LandingPage{
   width: 28em;
   height: auto;
-  z-index: 3;
+  z-index: 2;
   position: absolute;
   right: 5em;
   animation: drift 50s ease infinite;
@@ -318,7 +318,7 @@ flex-direction: column;
 #cloud2LandingPage{
   width: 35em;
   height: auto;
-  z-index: 2;
+  z-index:2;
   position: absolute;
   right: -7em;
   top: 25em;
@@ -354,14 +354,13 @@ margin-top: 2rem;
 }
 
 .second-vp{
-  height: 65vh;
+  height: 90vh;
 /*   background-color: red; */
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  z-index: -1;
 }
 
 .text{
@@ -379,18 +378,6 @@ margin-top: 2rem;
   margin-left: 3vw;  */
 }
 
-
-#AboutSection{
-  background-color: #F2E6DD;
-  width: 100%;
-  height: 800px;
-  flex-shrink: 0;
-  position: relative;
-  top: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-}
 #aboutTitle {
   display: flex;
     height: fit-content;
@@ -406,7 +393,6 @@ margin-top: 2rem;
     /* margin-left: 10%; */
     margin-top: 1rem;
     margin-bottom: 0;
-
 }
 #forecasting{
   font-family: 'Recoleta';
@@ -525,9 +511,18 @@ margin-top: 2rem;
   font-weight: 500;
 }
 
-.sub-sec-one {
+.sub-sec-one{
 text-decoration: underline;
 }
+.sub-sec-two:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+.sub-sec-three:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 .third-vp{
   height: fit-content;
@@ -656,7 +651,8 @@ hr.solid {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
+  margin-top: 5em;
 }
 #subHeadingReviews{
   color: #303030;

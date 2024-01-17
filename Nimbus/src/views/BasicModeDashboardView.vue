@@ -22,6 +22,7 @@ export default {
     this.fetchWeather()
   },
   mounted() {
+    this.fetchWeather()
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
@@ -122,7 +123,6 @@ export default {
       this.weather = this.weatherStore.regionWeatherData.currentWeather;
       this.air_quality = this.weatherStore.regionWeatherData.airQuality;
       this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
-      console.log(this.weather);
     } else {
       console.error('Region weather data is not available.');
     }
@@ -517,7 +517,7 @@ export default {
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 50px 1fr 1fr 1fr; /* Adjust the first value for the header row height */
+  grid-template-rows: 50px 1fr 1fr 0.6fr; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
   height: 850px;
@@ -551,7 +551,7 @@ border-radius: 50px 50px 10px 10px ;}
 
 .div6 { grid-area: 3 / 4 / 4 / 4;}
 
-.div7 { grid-area: 4/ 1/ 5 / 4;}
+.div7 { grid-area: 4/ 1/  4 / 4;}
 
 .div8 { grid-area: 4 / 4/ 5 / 4;}
 :root{
@@ -589,7 +589,7 @@ border-radius: 50px 50px 10px 10px ;}
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  
+  margin-top: 2em;
 }
 
 #location{
@@ -947,7 +947,7 @@ margin-left: 0.8rem;
   top: 24em; */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 #airQualityHeader{
   color: #303030;
@@ -965,6 +965,7 @@ margin-left: 0.8rem;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  margin-bottom: 1em;
 }
 
 #circleAirQuality{

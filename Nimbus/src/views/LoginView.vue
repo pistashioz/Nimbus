@@ -36,13 +36,13 @@
           <CustomButton
           buttonClass="google social"
           buttonText="Continue with Google"
-          iconSrc="google"
+          iconSrc="google" class = 'buttons-social-login'
           />
           <!-- Apple sign button -->
           <CustomButton
           buttonClass="apple social"
           buttonText="Continue with Apple"
-          iconSrc="apple"
+          iconSrc="apple" 
           />
         </div>
         <!-- Link to sign-up page -->
@@ -125,5 +125,4 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
 </style>
