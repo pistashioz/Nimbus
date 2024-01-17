@@ -186,7 +186,7 @@ export default {
 </div>
 <div class="div5 gridCell">
       <div class = 'gamification'>
-        <div class="personal-email" >
+        <div class="gamification-row1" >
     <div class="nimbus-coins" >
       <div class="coins-number" > <h3>185</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
       <div class="coins-label" > nimbus coins</div>
@@ -306,12 +306,14 @@ grid-row-end: 4;
 }
 
 .personal-email,
-.personal-password {
+.personal-password,
+.gamification-row1 {
   width: 100%;    border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 
 .email, .password
 {
