@@ -15,7 +15,7 @@ export default {
       daysOfWeek: ["M", "T", "W", "T", "F", "S", "S"],
       currentYear: new Date().getFullYear(),
       currentMonth: "",
-      currentDay: "",
+      currentDayOfWeek: "",
       weatherCity: [],
       weather: []
     }
@@ -99,7 +99,9 @@ export default {
   // Removed the part that sets currentDay to a string representing the day of the week
   const date = now.getDate();
   this.currentDate = date < 10 ? `0${date}` : date.toString();
-
+  const daysOfWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+      const dayIndex = now.getDay();
+      this.currentDayOfWeek = daysOfWeek[dayIndex];
     
       this.currentDate = date < 10 ? `0${date}` : date.toString();
       const monthIndex = now.getMonth();
@@ -169,7 +171,7 @@ export default {
         <div id = 'month'>{{ currentMonth }}</div>
         <div id = 'dateAndDayAdvancedMode'>
           <h2 id = 'dateAdvancedMode'>{{ currentDate }}</h2>
-          <h3 id = 'dayAdvancedMode'>{{ currentDay }}</h3>
+          <h3 id = 'dayAdvancedMode'>{{ currentDayOfWeek }}</h3>
         </div>
       </div>
     </section>
@@ -202,7 +204,6 @@ export default {
           <button id = 'allClearBtn'>ALL CLEAR!</button>
           <button id = 'quietTheSkiesBtn'>QUIET THE SKIES</button>
          </div>
-        <p></p>
       </section>
     </div>
 
@@ -279,15 +280,14 @@ overflow: hidden;}
   transform: translateY(8.8rem);
   height: fit-content;
 } 
-.gridAM{
-  display: grid;
-  grid-template-columns:  1fr 3rem 11.25rem 18rem; /* repeat(4, 1fr); */ 
-  grid-template-rows: 50px 1fr 301.34px 1fr ; /* Adjust the first value for the header row height */
-  grid-column-gap: 32px;
-  grid-row-gap: 32px;
-  height: 850px;
- 
-  width: 1260px;
+.gridAM {
+    display: grid;
+    grid-template-columns: 1fr 3rem 11.25rem 18rem;
+    grid-template-rows: 50px 300px 300.34px;
+    grid-column-gap: 32px;
+    grid-row-gap: 32px;
+    height: 860px;
+    width: 1260px;
 }
 .gridCellAM {
   background-color: #EDDED4;
@@ -310,8 +310,7 @@ border-radius: 50px 50px 10px 10px ;}
   grid-row-start: 2;
   grid-row-end: 3;}
 
-.div2AM { width: ;
-
+.div2AM { 
   grid-column-start: 2;
   grid-column-end: 4;
   grid-row-start: 2;
@@ -331,11 +330,12 @@ border-radius: 50px 50px 10px 10px ;}
   grid-row-end: 3;
 }
 
-.div5AM {  grid-column-start: 3;
-  grid-column-end: 3;
-  grid-row-start: 3;
-  grid-row-end: 4;}
-
+.div5AM {
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
   .div5AM.gridCellAM { justify-content: flex-start;
    overflow: visible;
    border: 0;
@@ -541,31 +541,23 @@ width: 3.125rem;
   */
 }
 #citiesContainer{
-/*   width: 15.5rem;
-  height:14.312rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
-  background: var(--secondary-color-palette-20-saturation-orchid-flush-20-sat, #E15CC9);
-  /*
-  position: absolute;
-  left:45.75em;
-  top:7em;
-  */
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  
+    background: var(--secondary-color-palette-20-saturation-orchid-flush-20-sat, #E15CC9);
+    display: flex;
+    align-items: center;
+    /* flex-direction: column; */
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 .cityContainer {
-    width: 7rem;
-    height: 7rem;
+/*     width: 7rem;
+    height: 7rem; */
     /* flex-shrink: 0; */
     border-radius: 1.25rem;
     border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
     background: #F2E6DD;
+    width: 5rem;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -584,6 +576,9 @@ width: 3.125rem;
   z-index: 5;
 }
 
+#headerNimbusNudges{
+  padding-top: 0;
+}
 .cityName{
   color: #E65E2A;
   font-family: Asap;
@@ -845,7 +840,7 @@ margin-bottom: -0.5em;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   align-self: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   color: #000;
   font-family: Asap;
   font-size: 0.9rem;
@@ -853,7 +848,7 @@ margin-bottom: -0.5em;
   font-weight: 250;
   line-height: normal;
   margin: 0;
-  margin-top: 0.5em;
+  margin-top: 1.3rem;
   padding-left: 1rem;
     padding-right: 1rem;
 }

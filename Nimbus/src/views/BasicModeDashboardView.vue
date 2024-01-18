@@ -12,17 +12,27 @@ export default {
       weather: {},
       five_day_forecast: {},
       air_quality: {},
+      region: ''
     };
   },
   components: {
     ArrowButton,
     HeaderDashboard,
   },
-  created(){
-    this.fetchWeather()
-  },
+  created() {
+    this.region = this.userLocation.region || '';
+  this.fetchWeather().then(() => {
+    console.log(this.fetchWeather());
+    // Actions to perform after data is fetched
+    console.log("Weather data fetched");
+  }).catch(error => {
+    // Handle errors that occurred during fetchWeather
+    console.error("Error fetching weather data:", error);
+  });
+},
+
   mounted() {
-    this.fetchWeather()
+/*     this.fetchWeather() */
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
@@ -109,19 +119,22 @@ export default {
       this.updateWeatherData();
     },
     updateWeatherData() {
-      const region = this.userLocation.region;
-
-      this.weatherStore.updateUserWeather(region, this.userLocations);
+      console.log(this.userLocation.region);
+      console.log(this.region);
+      this.weatherStore.updateUserWeather(this.region, this.userLocations);
       this.weatherStore.fetchWeatherForAllLocations();
       this.weatherStore.fetchRegionWeather();
       
     },
-  async fetchWeather() {
+/*   async fetchWeather() {
     try {
       await this.updateWeatherData();
+      console.log(this.weatherStore);
+      console.log(this.weatherStore.regionWeatherData);
       if (this.weatherStore.regionWeatherData) {
       this.weather = this.weatherStore.regionWeatherData.currentWeather;
       console.log(this.weather);
+      console.log(this.weather.weather);
       this.air_quality = this.weatherStore.regionWeatherData.airQuality;
       this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
     } else {
@@ -130,7 +143,31 @@ export default {
       } catch (error) {
         console.error('Error fetching weather data:', error);
       }
-  },
+  }, */
+  async fetchWeather() {
+  try {
+    await this.updateWeatherData();
+    if (this.weatherStore.regionWeatherData) {
+      console.log('Weather data is available.');
+      this.weather = this.weatherStore.regionWeatherData.currentWeather || {};
+      this.air_quality = this.weatherStore.regionWeatherData.airQuality || {};
+      this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast || {};
+    } else {
+      console.error('Region weather data is not available.');
+      // Set default values or handle the absence of data
+      this.weather = {};
+      this.air_quality = {};
+      this.five_day_forecast = {};
+    }
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    // Handle the error, set default values
+    this.weather = {};
+    this.air_quality = {};
+    this.five_day_forecast = {};
+  }
+}
+,
     dateBuilder() {
       return moment().format('dddd, D MMMM');
     },
