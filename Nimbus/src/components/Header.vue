@@ -35,7 +35,7 @@ export default {
     <span v-if="!isUser" id='unlogged'>
       <div id='leftNav'>
         <RouterLink :to="{ name: 'landingPage' }" id='logo'>
-          <img src='../assets/logo.svg' alt='logo' id='logoImg'> nimbus
+          <img :src='nimbusLogo' alt='logo' id='logoImg'> nimbus
         </RouterLink>
         <RouterLink :to="{ name: 'login' }" id='login'>Login</RouterLink>
       </div>
@@ -102,6 +102,10 @@ a, button{
   align-items: center;
   padding-left: 2vw;
   padding-right: 2vw;
+}
+
+#leftNav .username {
+  font-size: 1.5rem;
 }
 
 #logo{

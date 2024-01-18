@@ -679,7 +679,8 @@ margin-right: 0;
   background-color: #e7e7e7; 
 }
 
-.preferences button.selected {
+.preferences button.selected,
+.lang-btn-wrapper button.selected {
   background-color: #DFE287;; 
   color: #303030;
 }
