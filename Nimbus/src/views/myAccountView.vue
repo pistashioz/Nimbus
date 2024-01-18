@@ -2,6 +2,8 @@
  import ArrowButton from '@/components/ArrowButton.vue'; 
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
+import rightButtonIcon from "@/assets/icons/right-button.svg";
+import wrongButtonIcon from "@/assets/icons/wrong-button.svg";
 
 
 export default {
@@ -14,7 +16,18 @@ export default {
         wellnessRetreat: 37,
         ecoFriendlyProducts: 7,
         chapterByChapter: 16
-      }
+      },
+      daysActive: {
+      dayOne: false,
+      dayTwo: false,
+      dayThree: false,
+      dayFour: false,
+      dayFive: false,
+      daySix: false,
+      daySeven: false
+    },
+    rightButtonIcon,
+    wrongButtonIcon
     };
   },
   components: {
@@ -54,7 +67,18 @@ export default {
       // Handle insufficient funds
       alert("Insufficient nimbus coins.");
     }
-  }
+  },
+  toggleDay(day) {
+    this.daysActive[day] = !this.daysActive[day];
+  },
+  handleRightButtonClick() {
+      // Implement logic for right button click
+      console.log("Right button clicked");
+    },
+    handleWrongButtonClick() {
+      // Implement logic for wrong button click
+      console.log("Wrong button clicked");
+    },
   }
   
 };
@@ -186,28 +210,319 @@ export default {
 </div>
 <div class="div5 gridCell">
       <div class = 'gamification'>
-        <div class="gamification-row1" >
+        <div class="gamification-row-one" >
     <div class="nimbus-coins" >
       <div class="coins-number" > <h3>185</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
       <div class="coins-label" > nimbus coins</div>
-    </div>  
+    </div>
+    <div class="run-streak-container">
+      <div class="run-streak" >
+      <div class="streak-title" > <h3>Run Streak</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
+      <div class="streak-week" > 
+        <div class="day one" :class="{ active: daysActive.dayOne }" @click="toggleDay('dayOne')">S</div>
+        <div class="day two" :class="{ active: daysActive.dayTwo }" @click="toggleDay('dayTwo')">M</div>
+        <div class="day three" :class="{ active: daysActive.dayThree }" @click="toggleDay('dayThree')">T</div>
+        <div class="day four" :class="{ active: daysActive.dayFour }" @click="toggleDay('dayFour')">W</div>
+        <div class="day five" :class="{ active: daysActive.dayFive }" @click="toggleDay('dayFive')">T</div>
+        <div class="day six" :class="{ active: daysActive.daySix }" @click="toggleDay('daySix')">F</div>
+        <div class="day seven" :class="{ active: daysActive.daySeven }" @click="toggleDay('daySeven')">S</div>
+        </div>
+    </div> 
+    <div class="week-saying" >
+      <div class="streak-saying" > <h3>Start your streak, grow your Nimbus companion!</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
+    </div>
+    </div>
+    
+  </div>
+  <div class="gamification-row-two" >
+    <div class="daily-digest" >
+      <div class="title" > <h3>Daily Digest</h3> </div>
+      <div class="daily-digest-quest">
+      <div class="digest-container" >
+      <div class="digest-header" > 16º/18º </div>
+      <div class="digest-quest" > 
+        <p>How did we do? Was today's forecast spot on or a bit off?</p>
+        </div>
+    </div> 
+    <div class="quest-button" >
+      <button type="button" class="right-button">
+        <img :src="rightButtonIcon" class="icon" />
+      </button>
+      <button type="button" class="wrong-button">
+        <img :src="wrongButtonIcon" class="icon" />
+      </button>
+    </div>
+    </div>
+    </div>
+    <div class="weather-timeline" >
+      <div class="title" > <h3>Weather Timeline</h3> </div>
+      <div class="weather-timeline-container">
+        <div class="timeline-container" >
+      <div class="digest-quest" >
+        <h3>Porto</h3>
+        <div class="weather-one city1"> Icon 23º</div>
+        <div class="weather-two city1"> Icon 15%</div>
+<!--         <p>How did we do? Was today's forecast spot on or a bit off?</p> -->
+        </div>
+      </div>
+      <div class="timeline-container" >
+        <div class="digest-quest" >
+        <h3>Porto</h3>
+        <div class="weather-one city1"> Icon 23º</div>
+        <div class="weather-two city1"> Icon 15%</div>
+<!--         <p>How did we do? Was today's forecast spot on or a bit off?</p> -->
+        </div>
+      </div>
+      <div class="timeline-container" >
+        <div class="digest-quest" >
+        <h3>Porto</h3>
+        <div class="weather-one city1"> Icon 23º</div>
+        <div class="weather-two city1"> Icon 15%</div>
+<!--         <p>How did we do? Was today's forecast spot on or a bit off?</p> -->
+        </div>
+    </div> 
+      </div>
+
+   
+    </div>
   </div>
     </div>
 
  
-  </div>  </div>
+  </div>  
+</div>
   </main>
 </template>
 <style>
-.nimbus-coins {
+.run-streak-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 60%;
+}
+.nimbus-coins,
+.run-streak {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+.run-streak {
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.streak-title {
+  margin-left: 2rem;
+}
+.streak-title h3 {
+  margin: 0;
+}
+.streak-title h3,
+.daily-digest h3,
+.weather-timeline .title h3 {
+  color: #303030;
+font-size: 1.2rem;
+font-family: Asap;
+font-weight: 800;
+word-wrap: break-word;
+text-align: right;
+}
+
+.weather-one.city1 {
+ margin-bottom: 1rem
+}
+.streak-week {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 60%;
+}
+.streak-week .day {
+  width: 30px;
+  height: 30px;
+  line-height: 30px; /* Center the text vertically */
+  border: 1px solid #303030;
+  border-radius: 50%;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #303030;
+font-size: 15px;
+font-family: Recoleta;
+font-weight: 900;
+}
+
+.streak-week .day.active {
+  background-color: #FF5733; 
+}
+
+.week-saying {
+    border: 1px solid #303030;
+    border-radius: 20px;
+    padding: 1rem;
+    text-align: center;
+    width: 85%;
+    height: 0.5rem;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    background-image: linear-gradient( 135deg, rgba(144, 238, 144, 0.3) 25%, /* Soft green */ rgba(255, 182, 193, 0.3) 50%, /* Soft pink */ rgba(173, 216, 230, 0.3) 75% /* Soft blue */ );
+    justify-content: center;
+}
+
+.streak-saying h3 {
+  font-size: 1rem;
+  margin: 0;
+font-family: Recoleta;
+font-weight: normal;
+word-wrap: break-word
+}
+
+.daily-digest {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 28%;
+}
+
+.weather-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 70%;
+}
+
+.daily-digest .title h3{
+  margin-top: 0;
+}
+
+.daily-digest-quest,
+.weather-timeline-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.weather-timeline-container  {width: 100%;
+justify-content: space-between;}
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #DEE25A;
+  border: 1px solid #303030;
+  border-radius: 20px ;
+  padding: 1rem;
+  width: 7rem;
+  height: 7rem;
+}
+
+.timeline-container:first-child {
+  background-color: #CCEECE;
+}
+.timeline-container:nth-child(2){
+background-color: #FFF9CF;
+}
+
+.timeline-container:nth-child(3){
+background-color: #FFCFD1;
+}
+.timeline-container .digest-quest h3 {
+  margin-top: 0;
+}
+.digest-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #DEE25A;
+  border: 1px solid #303030;
+  border-radius: 20px ;
+  padding: 1rem;
+  width: 60%;
+}
+.quest-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    height: 8rem;
+}
+
+.quest-button button {
+  border: 1px solid #303030;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.quest-button .right-button {
+  background-color: #90ee90; /* Soft green */
+  background-size: cover;
+}
+
+.quest-button .wrong-button {
+  background-color: #ffcccb; /* Soft red */
+  background-size: cover;
+}
+
+.quest-button button:active {
+  transform: translateY(4px);
+}
+
+
+.gamification-row-one,
+.gamification-row-two {
+  width: 100%;    border-radius: 10px;
+    display: flex;
+    
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gamification-row-two {
+  align-items: flex-end;
+  transform: translateY(10px);
+}
+/* .streak-week .day-one.active { background-color: #FF5733; }
+.streak-week .day-two.active { background-color: #33FF57; }
+
+.streak-week.day-three.active { background-color: #57FF33; }
+
+.streak-week.day-four.active { background-color: #3357FF; }
+
+.streak-week.day-five.active { background-color: #FF3357; }
+
+.streak-week.day-six.active { background-color: #5733FF; }
+
+.streak-week.day-seven.active { background-color: #FF3333; } */
+
 .coins-number h3 {
   margin-right: 0.8rem;
   margin-bottom: 0;
   margin-top: 0;
+  color: #303030;
+font-size: 50px;
+font-family: Recoleta;
+font-weight: 600;
+word-wrap: break-word
+}
+.coins-label {
+  color: #858585;
+font-size: 24px;
+font-family: Asap;
+font-weight: 800;
+text-transform: lowercase;
+line-height: 20.73px;
+word-wrap: break-word
 }
 .account-body {
   width: 100vw;
@@ -224,7 +539,7 @@ export default {
 .account-grid {
   display: grid;
   grid-template-columns: 1fr 1.3fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 50px 1fr 1fr 1fr ; /* Adjust the first value for the header row height */
+  grid-template-rows: 50px 1fr 1fr 2fr ; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
   height: 850px;
@@ -538,11 +853,13 @@ background-color: #FAF8ED;
 
 .gamification{
   width: 100%;
-  flex-shrink: 0;
+
   border-radius: 1.25rem;
   background: #F2E6DD;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  padding: 1rem;
 }
 </style>
