@@ -291,18 +291,24 @@ export default {
   </main>
 </template>
 <style>
+
+.dash-body {
+  transform: translateY(20rem);
+  height: fit-content;
+} 
 .gridAM{
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 50px 1fr 1fr 0.6fr 1fr; /* Adjust the first value for the header row height */
+  grid-template-columns:  1fr 3rem 11.25rem 18rem; /* repeat(4, 1fr); */ 
+  grid-template-rows: 50px 1fr 301.34px 1fr ; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
   height: 850px;
+ 
   width: 1260px;
 }
 .gridCellAM {
   background-color: #EDDED4;
-  border: 1px solid #EDDED4;
+  border: 1px solid #303030;
   border-radius: 20px;
 /*   padding: 13px 13px; */
   position: relative;
@@ -314,17 +320,52 @@ export default {
 .div0AM { grid-area: 1 / 1 / 2 / 5;
 border-radius: 50px 50px 10px 10px ;}
 
-.div1AM { grid-area: 2 / 1 / 3 / 2;}
+.div1AM { /* grid-area: 2 / 1 / 3 / 2; */
+  
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;}
 
-.div2AM { grid-area: 2 / 2 / 3 / 4;}
+.div2AM { width: ;
 
-.div3AM { grid-area: 2 / 4 / 3 / 4;}
+  grid-column-start: 2;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;}
 
-.div4AM { grid-area: 3 / 1 / 4 / 2;}
+.div3AM {
 
-.div5AM { grid-area: 3 / 2 / 4 / 4;}
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 2;
+  grid-row-end: 3;}
 
-.div6AM { grid-area: 3 / 4 / 4 / 4;}
+.div4AM { 
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 3;
+}
+
+.div5AM {  grid-column-start: 3;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;}
+
+  .div5AM.gridCellAM { justify-content: flex-start;
+   overflow: visible;
+   border: 0;
+}
+
+
+
+.div6AM { /* grid-area: 3 / 4 / 4 / 4; */
+
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 3;
+  grid-row-end: 4;}
 
 #backBtn{
 width: 3.125rem;
@@ -492,9 +533,9 @@ align-items: center;
   margin: 0;  
 }
 #basicInfoToday{
-  width: 35.4375rem;
+/*   width: 35.4375rem;
   height: 14.312rem;
-  flex-shrink: 0;
+  flex-shrink: 0; */
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: var(--Primary-Color-Palette-Sunbeam-Gold, #FAC54B);
@@ -508,11 +549,11 @@ align-items: center;
   */
 }
 #citiesContainer{
-  width: 15.5rem;
+/*   width: 15.5rem;
   height:14.312rem;
   flex-shrink: 0;
   border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--secondary-color-palette-20-saturation-orchid-flush-20-sat, #E15CC9);
   /*
   position: absolute;
@@ -600,9 +641,9 @@ margin-left: -0.5em;
 margin-bottom: -0.5em;
 }
 #temperatureGraphContainerAdvancedMode{
-  width: 34.125rem;
-  height: 17.9375rem;
-  flex-shrink: 0;
+/*   width: 34.125rem;
+  height: 17.9375rem; */
+ /*  flex-shrink: 0; */
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: #F2E6DD;
@@ -622,9 +663,9 @@ margin-bottom: -0.5em;
 
 #weatherInfoAdvancedModeContainer{
   display: flex;
-  width: 11.25rem;
+/*   width: 11.25rem;
   height: 19.6875rem;
-  flex-shrink: 0;
+  flex-shrink: 0; */
   /*
   position: absolute;
   left: 45.75em;
@@ -634,19 +675,48 @@ margin-bottom: -0.5em;
 }
 
 
-#weatherInfoAdvancedModeContainer > div:not(#pressureContainerAdvancedMode):hover {
+/* #weatherInfoAdvancedModeContainer > div:not(#pressureContainerAdvancedMode):hover {
   transform: translateY(-1.5em); 
+  transition: transform 0.3s ease-in-out;
+} */
+
+#windContainerAdvancedMode:hover {
+  transform: translateY(-1.5em);
+}
+
+#rainContainerAdvancedMode:hover {
+  transform: translateY(-4em); /* Different translate value */
+}
+
+#humidityContainerAdvancedMode:hover {
+  transform: translateY(-6.6em); /* Different translate value */
+}
+
+#wavesContainerAdvancedMode:hover {
+  transform: translateY(-9.2em); /* Different translate value */
+}
+
+#visibilityContainerAdvancedMode:hover {
+  transform: translateY(-11.6em); /* Different translate value */
+}
+
+/* Apply the transition to all divs */
+#weatherInfoAdvancedModeContainer > div {
   transition: transform 0.3s ease-in-out;
 }
 
 
+#weatherInfoAdvancedModeContainer #pressureContainerAdvancedMode {
+  border-radius: 1.25rem;
+}
 
 
 #windContainerAdvancedMode, #rainContainerAdvancedMode, #humidityContainerAdvancedMode,#wavesContainerAdvancedMode, #visibilityContainerAdvancedMode, #pressureContainerAdvancedMode{
   width: 11.25rem;
-  height: 8rem;
+  height: fit-content;
+  padding-bottom: 1rem;
   flex-shrink: 0;
-  border-radius: 1.25rem;
+  border-radius: 1.25rem 1.25rem 0rem 0rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   display: flex;
   align-items: flex-start;
@@ -654,35 +724,40 @@ margin-bottom: -0.5em;
 }
 #windContainerAdvancedMode{
   background: #C8BDFF;
-  position: absolute;
-  top:1.5em;
+/*   position: absolute;
+  top:1.5em; */
 }
 #rainContainerAdvancedMode{
   background: #43AA8B;
-  position: absolute;
-  top:4em;
+  transform: translateY(-40px);
+/*   position: absolute;
+  top:4em; */
 }
 #humidityContainerAdvancedMode{
   background: #FFEA8A;
-  position: absolute;
-  top:6.5em;
+  transform: translateY(-80px);
+/*   position: absolute;
+  top:6.5em; */
 }
 #wavesContainerAdvancedMode{
   background: #F4F4F4;
-  position: absolute;
-  top:9em;
+  transform: translateY(-120px);
+/*   position: absolute;
+  top:9em; */
 }
 #visibilityContainerAdvancedMode{
   background: #FFA646;
-  position: absolute;
-  top:11.5em;
+  transform: translateY(-160px);
+/*   position: absolute;
+  top:11.5em; */
 }
 
 #pressureContainerAdvancedMode{
   background: #FFBEED;
-  position: absolute;
+  transform: translateY(-200px);
+/*   position: absolute;
   top:14em;
-  height: 8rem;
+  height: 8rem; */
 }
 
 .headerContainers{
@@ -745,9 +820,9 @@ margin-bottom: -0.5em;
   right: 1.6em;
 }*/
 #calendarAdvancedMode{
-  width: 18rem;
+/*   width: 18rem;
   height: 18rem;
-  flex-shrink: 0;
+  flex-shrink: 0; */
   /*
   position: absolute;
   right: 14em;

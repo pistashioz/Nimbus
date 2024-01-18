@@ -117,7 +117,7 @@ a{
   width: 100%;
 /*   height: 3.125rem; */
   flex-shrink: 0;
-  border-radius: 3.125rem 3.125rem 0.625rem 0.625rem;
+/*   border-radius: 3.125rem 3.125rem 0.625rem 0.625rem; */
   /* border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--Primary-Color-Palette-Dawn-Blush, #F2E6DD);
   margin: 0;

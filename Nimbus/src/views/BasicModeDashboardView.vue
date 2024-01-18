@@ -305,8 +305,8 @@ export default {
 };
 </script>
 <template>
-  <main class="dash-body">
-    <div class="grid" v-if="(typeof weather.main != 'undefined')">
+  <main class="dash-body"><!-- v-if="(typeof weather.main != 'undefined')" -->
+    <div class="grid" >
     <div class="div0 gridCell">
       <HeaderDashboard />
     </div>
@@ -502,22 +502,20 @@ export default {
 <style>
 
 .dash-body {
-  width: 100vw;
-  height: fit-content;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
- /*  background-color: #01542C; */
-  color: #49ABFB;
-  overflow: scrol;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #01542C; */
+    color: #49ABFB;
 }
-
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 50px 1fr 1fr 0.6fr; /* Adjust the first value for the header row height */
+  grid-template-rows: 50px 1fr 1fr; /* Adjust the first value for the header row height */
   grid-column-gap: 32px;
   grid-row-gap: 32px;
   height: 850px;
