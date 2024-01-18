@@ -390,10 +390,13 @@ width: 3.125rem;
     justify-content: space-around;
     align-items: center;
 }
-#todaysWeatherIconAdvacedMode{
+/* #todaysWeatherIconAdvacedMode{
   width: 8rem;
   height: auto;
   z-index: 2;
+} */
+#locationIconAdvancedMode {
+  transform: translateY(-4px);
 }
 #currentTemperatureHeader{
   color: #303030;
@@ -423,15 +426,13 @@ width: 3.125rem;
     flex-direction: column-reverse;
     align-items: flex-end;
 }
-#locationAdvancedMode{
-  height:3em;
-  position:absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-end;
+#locationAdvancedMode {
+    height: 3em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-end;
 }
-
 .locationAdvancedMode-row {
   display: flex;
   align-items: flex-end;
@@ -807,6 +808,7 @@ margin-bottom: -0.5em;
 
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: var(--secondary-color-palette-30-saturation-spring-bud-30-sat, #E1E2CB);
@@ -849,6 +851,7 @@ margin-bottom: -0.5em;
   line-height: normal;
   margin: 0;
   margin-top: 1.3rem;
+  margin-bottom: 1.3rem;
   padding-left: 1rem;
     padding-right: 1rem;
 }
