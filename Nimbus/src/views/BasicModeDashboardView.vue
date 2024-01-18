@@ -1,28 +1,59 @@
 <script>
 import moment from 'moment';
-import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-//import { useWeatherStore } from '@/stores/weather'
-
+import ArrowButton from '@/components/ArrowButton.vue';
+import HeaderDashboard from "@/components/HeaderDashboard.vue";
+import { useUserStore } from "@/stores/user";
+import { reverseGeocode, fetchDataByCityName, fetchAirQuality, fetchFiveDayForecast } from '@/weatherService';
+import { useWeatherStore } from '@/stores/weather'
 export default {
   name: 'basicMode',
   data() {
     return {
-      api_key: '39d7058ef12ab5dae395f420fd79ec5a',
-      url_base: 'http://api.openweathermap.org/data/2.5/',
-      query: '',
       weather: {},
       five_day_forecast: {},
       air_quality: {},
     };
   },
+  components: {
+    ArrowButton,
+    HeaderDashboard,
+  },
+  created(){
+    this.fetchWeather()
+  },
   mounted() {
+    this.fetchWeather()
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
+    console.log(this.store.authenticatedUser);
+    console.log(this.userLocation);
   },
   computed: {
+    store() {
+       return useUserStore();
+     },
+     weatherStore() {
+      return useWeatherStore()
+     },
+     weatherData() {
+      return this.weatherStore.weatherData;
+    },
+    regionWeatherData(){
+      return this.weatherStore.regionWeatherData;
+    },
+     isUser() {
+       return this.store.isUser;
+     },
+     getAuthenticatedUser() {
+       return this.store.authenticatedUser;
+     },
+     userLocations() {
+       return this.getAuthenticatedUser.userLocations;
+     },
+     userLocation() {
+       return this.getAuthenticatedUser.userRegion;
+     },
     getWeatherAltText() {
     const weatherMain = this.weather.weather[0].main.toLowerCase();
 
@@ -45,6 +76,7 @@ export default {
     }
   },
     getWeatherTodayIllustration(){
+      
       console.log(this.weather.weather[0].main.toLowerCase())
       const weatherImg = this.weather.weather[0].main.toLowerCase()
       switch (weatherImg) {
@@ -73,53 +105,32 @@ export default {
   }
 },
   methods: {
-    
-    fetchWeather(e){
-      if (e.key == 'Enter'){
-        fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
-        .then(res => res.json())
-        .then(this.setResults)
-        .then(this.fetchFiveDayForecast)
-        .then(this.fetchAirQuality);
+    initializeWeatherData() {
+      this.updateWeatherData();
+    },
+    updateWeatherData() {
+      const region = this.userLocation.region;
+
+      this.weatherStore.updateUserWeather(region, this.userLocations);
+      this.weatherStore.fetchWeatherForAllLocations();
+      this.weatherStore.fetchRegionWeather();
+      
+    },
+  async fetchWeather() {
+    try {
+      await this.updateWeatherData();
+      if (this.weatherStore.regionWeatherData) {
+      this.weather = this.weatherStore.regionWeatherData.currentWeather;
+      console.log(this.weather);
+      this.air_quality = this.weatherStore.regionWeatherData.airQuality;
+      this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
+    } else {
+      console.error('Region weather data is not available.');
+    }
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
       }
-    },
-    fetchFiveDayForecast(){
-      //console.log('Fetching 5 day weather forecast...');
-      const { lat, lon } = this.weather.coord;
-      fetch(`${this.url_base}forecast?lat=${lat}&lon=${lon}&appid=${this.api_key}`)
-        .then(res => res.json()) 
-        .then(response => {
-          //console.log(response);
-          this.setFiveDayForecastResults(response);
-        })
-        .catch(error => {
-          console.error('Error fetching 5 day weather forecast:', error);
-        });
-    },
-    fetchAirQuality(){
-      const { lat, lon } = this.weather.coord;
-      fetch(`${this.url_base}air_pollution?lat=${lat}&lon=${lon}&appid=${this.api_key}`)
-        .then(res => res.json()) 
-        .then(response => {
-          //console.log('respuesta',response);
-          this.setAirQualityResults(response);
-          this.calculateSunPosition();
-        })
-        .catch(error => {
-          console.error('Error fetching air pollution data:', error);
-        });
-    },
-    setResults (results){
-      this.weather = results;
-    },
-    setFiveDayForecastResults(response){
-      this.five_day_forecast = response
-      //console.log(this.five_day_forecast.list[0].pop)
-    },
-    setAirQualityResults(response){
-      this.air_quality = response
-      //console.log(this.air_quality.list[0].main.aqi)
-    },
+  },
     dateBuilder() {
       return moment().format('dddd, D MMMM');
     },
@@ -159,25 +170,21 @@ export default {
         const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
         const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
         const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-        const formattedsunriseTime = this.formatTime(this.weather.sys.sunrise, this.weather.timezone)
-        const formattedsunsetTime =this.formatTime(this.weather.sys.sunset, this.weather.timezone)
         const timeStampCurrentTime = Math.round(cityTime / 1000);
         const sunriseTime = this.weather.sys.sunrise
         const sunsetTime = this.weather.sys.sunset
-
+        const daylightDuration = sunsetTime - sunriseTime;
+        const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
+        let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
+        console.log('Percentage of daylight:', percentageOfDaylight);
         
-          if (formattedTime > formattedsunriseTime && formattedTime < formattedsunsetTime) {
-
-            const daylightDuration = sunsetTime - sunriseTime;
-            const timeSinceSunrise = timeStampCurrentTime * 100;
-            let percentageOfDaylight = (timeSinceSunrise / daylightDuration) / 100000;
-            console.log('Percentage of daylight:', percentageOfDaylight);
-
+          if (percentageOfDaylight < 100 && percentageOfDaylight > 0) {
             smallLine.style.width = `${percentageOfDaylight}%`;
             sunCircle.style.left = `${percentageOfDaylight}%`;
-          } else {
-            smallLine.style.width = '0';
-            sunCircle.style.left = '0';
+          } else{
+            console.log('menor a 0')
+            smallLine.style.width = '0%'
+            sunCircle.style.left = '0%';
           }
 
         return formattedTime;
@@ -196,6 +203,32 @@ export default {
         min: Math.round(minTemp),
         max: Math.round(maxTemp)
       };
+    },
+    
+    getWeatherWeeklyIllustration(i){
+      console.log(this.five_day_forecast?.list?.[i * 8].weather[0].main);
+        const weatherMain = this.five_day_forecast.list[i * 8].weather[0].main
+        const imageUrl = this.mapWeatherToImage(weatherMain);
+        console.log('Image URL:', imageUrl);
+        return imageUrl;
+    },
+    mapWeatherToImage(weatherMain) {
+      switch (weatherMain) {
+      case 'Clear':
+        return '../assets/img/sunnyImg.png';
+      case 'Clouds':
+        return '../assets/img/cloudyImg.png';
+      case 'Rain':
+        return '../assets/img/rainImg.png';
+      case 'Thunderstorm':
+        return '../assets/img/thunderImg.png';
+      case 'Snow':
+        return '../assets/img/snowImg.png';
+      case 'Mist':
+        return '../assets/img/mistImg.png';
+      default:
+        return '../assets/img/sunnyImg.png';
+      }
     },
     refreshingOrDry(){
       if(this.weather.main.humidity < 30){
@@ -267,39 +300,58 @@ export default {
     sunPosition(){
       const hour = new Date().getUTCHours()
       console.log('hora',hour)
-    }
+    },
+    capitalizeDescription(description) {
+      return description
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    },
+      getWeatherIcon(iconCode) {
+  const baseUrl = 'https://openweathermap.org/img/wn/';
+  return `${baseUrl}${iconCode}@4x.png`;
+}
   }
   
 };
 </script>
 <template>
-  <main>
-    <input type = 'text' class = 'search-bar' placeholder="search..." v-model="query" @keypress = 'fetchWeather'>
-    <div id="basicModeContainer" v-if="(typeof weather.main != 'undefined')">
-      <div id = 'containerWeatherToday'>
-
-        <h3 id = 'date'>{{dateBuilder()}}</h3>
-        <img id = 'weatherTodayIllustration' :src = 'getWeatherTodayIllustration' :alt="getWeatherAltText" >
+  <main class="dash-body"><!-- v-if="(typeof weather.main != 'undefined')" -->
+    <div class="grid" >
+    <div class="div0 gridCell">
+      <HeaderDashboard />
+    </div>
+      <div class="div1 gridCell">
+        <div id = 'containerWeatherToday'>
+          <h3 id = 'date'>{{dateBuilder()}}</h3>
+          <img 
+      id="weatherTodayIllustration" 
+      :src="getWeatherIcon(weather.weather[0].icon)" 
+      :alt="getWeatherAltText"
+    >
+          
         <div id = 'location' :style="{ fontSize: computeFontSize(weather.name.length) }">
 
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
-          <h2 id = 'locationCity' >{{ weather.name }}</h2>
+          <span class = 'locationCity' >{{ weather.name }}</span>
         </div>
       </div>
+      </div>
+      <div class="div2 gridCell">
       <div id = 'containerWeatherInfoToday'>
-        <div id = 'feelsLikeContainer'>
-          <p id = 'feelsLikeTitle'>Feels Like</p>
-          <p id = 'feelsLikeData'> {{Math.round(weather.main.feels_like)}}°C</p>
-          <p id = 'ColdOrWarm'>{{ warmOrCold() }}</p>
-        </div>
-        <div id = 'expectedContainer'>
-          <p id = 'expectedTitle'>Expected</p>
-          <p id = 'expectedData'>{{ weather.weather[0].description }}</p>
-        </div>
+        <div id="feelsLikeContainer">
+  <p id="feelsLikeTitle">Feels Like</p>
+  <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
+</div>
+<div id="expectedContainer">
+  <p id="expectedTitle">Expected</p>
+  <p id="expectedData">{{ capitalizeDescription(weather.weather[0].description) }}</p>
+</div>
+
         <div id = 'humidityContainer'>
-          <div id = 'humidityContainerHeader'>
-            <img src = '../assets/img/humidityIcon.svg' id = 'humidityIcon'>
-          <p id = 'humidityTitle'>Humidity</p>
+          <div class = 'humidityContainerHeader'>
+            <img src = '../assets/img/humidityIconBasicMode.svg' class = 'humidityIcon'>
+          <p class = 'humidityTitleBasicMode'>Humidity</p>
           </div>
           <div id = 'humidityData'>
             <p id = 'humidityPercentage'>{{ weather.main.humidity}}%</p>
@@ -307,63 +359,81 @@ export default {
           </div>
         </div>
         <div id = 'rainContainer'>
-          <div id = 'rainContainerHeader'>
-            <img src = '../assets/img/rainIcon.svg' id = 'rainIcon'>
-            <p id = 'rainTitle'>Rain</p>
+          <div class = 'rainContainerHeader'>
+            <img src = '../assets/img/rainIconBasicMode.svg' class = 'rainIcon'>
+            <p class = 'rainTitleBasicMode'>Rain</p>
           </div>
-          <p id = 'rainData'>{{ Math.round(this.five_day_forecast.list[0].pop * 100) }} % Chance</p>
+          <div id = 'rainData'>
+            <p id = 'rainPercentage'>
+              {{ Math.round(this.five_day_forecast.list[0].pop * 100) }} 
+          </p> <p id = 'chance'>% Chance</p></div>
         </div>
         <div id = 'windContainer'>
-          <div id = 'windContainerHeader'>
-            <img src = '../assets/img/windIcon.svg' id = 'windIcon'>
-            <p id = 'windTitle'>Wind</p>
+          <div class = 'windContainerHeader'>
+            <img src = '../assets/img/windIconBasicMode.svg' class = 'windIcon'>
+            <p class = 'windTitleBasicMode'>Wind</p>
           </div>
           <p id = 'windData'>{{ windSpeed() }}</p>
         </div>
         <RouterLink :to="{ name: 'advancedModeDashboard', params: { city: weather.name }} " id = 'seeMoreBtn'>See more</RouterLink>
       </div>
+    </div>
+   
+    <div class="div3 gridCell">
       <div id = 'containerNimbusNudges'>
         <div id = 'headerNimbusNudges'>
           <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
           <div id = 'buttonsHeaderNimbusNudges'>
-            <button id = 'leftNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-left " style="color: #303030;"  /></button>
-            <button id = 'rightNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #303030;" /></button>
+            <ArrowButton direction="left" button-class="personalization-arrow" @clickButton="handleUpClick" />
+            <ArrowButton direction="right" button-class="personalization-arrow" @clickButton="handleDownClick" />
           </div>
         </div>
-         <div id = 'nimbusNudgesData'></div>
+         <div id = 'nimbusNudgesData'>
+          A friendly heads-up – a playful breeze is weaving its way through the city today. It's strong enough to dance with the leaves and turn a regular walk into a refreshing journey. Embrace the fresh air and let it guide you to new experiences.
+         </div>
          <div id = 'buttonsOptionsNimbusNudges'>
           <button id = 'allClearBtn'>ALL CLEAR!</button>
           <button id = 'quietTheSkiesBtn'>QUIET THE SKIES</button>
          </div>
-        <p></p>
       </div>
+    </div>
+    <div class="div4 gridCell">
       <div id = 'degreesContainer'>
-          <h1 id = 'degreesValue'>{{Math.round(weather.main.temp)}}</h1>
-          <p id = 'degrees'>degrees</p>
-          <p id = 'degreesType'>celsius</p>
-      </div>
+          <h1 id = 'degreesValue'>{{Math.round(weather.main.temp)}}
+            <div class="degress-sub-wrapper">
 
-      <div id = 'temperatureGraphContainer'>
-        <Bar
-          id="my-chart-id"
-          :data="chartData"
-        />
-      </div>
+              <div id = 'degrees'>degrees</div>
+            <div id = 'degreesType'>celsius</div>
+            </div>
 
+          </h1>
+        
+          <!-- <p id = 'degreesType'>celsius</p> -->
+      </div>
+</div>
+<div class="div5 gridCell">
+      <div id = 'temperatureGraphContainerBasicMode'>
+        <img src="../assets/img/graphBasicMode.svg" id = 'imgGraphBasicMode'>
+      </div>
+    </div>
+    <div class="div6 gridCell">
       <div id = 'airQualityContainer'>
-        <div id = 'airQualityHeader'>AirQuality</div>
+        <div id = 'airQualityHeader'>Air Quality</div>
+        <p id = 'airQualityMeaning'>{{ airQualityMeaning() }}</p>
         <div id = 'airQualityData'>
           <div id = 'circleAirQuality'>
           <h2 id = 'airQualityValue'>{{ air_quality.list[0].main.aqi }}</h2>
         </div>
-        <p id = 'airQualityMeaning'>{{ airQualityMeaning() }}</p>
+       
         </div>
       </div>
+    </div>
+    <div class="div7 gridCell">
       <section id = 'thisWeekSection'>
         <div id = 'thisWeekContainer'><p>This Week</p></div>
         <div id = 'mondayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(0) }}</h3>
-          <img id = 'mondayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'mondayImg' src='../assets/img/cloudImg.svg'>
           <div id = 'mondayTemp'>
             <p id = 'minTempMonday'>{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
             <p id = 'maxTempMonday'>/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
@@ -371,7 +441,7 @@ export default {
         </div>
         <div id = 'tuesdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(1) }}</h3>
-          <img id = 'tuesdayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'tuesdayImg' src='../assets/img/cloudImg.svg'>
           <div id = 'tuesdayTemp'>
             <p id = 'minTempTuesday'>{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
             <p id = 'maxTempTuesday'>/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
@@ -379,7 +449,7 @@ export default {
         </div>
         <div id = 'wednesdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(2) }}</h3>
-          <img id = 'wednesdayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'wednesdayImg' src='../assets/img/sunnyImg.svg'>
           <div id = 'wednesdayTemp'>
             <p id = 'minTempWednesday'>{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
             <p id = 'maxTempWednesday'>/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
@@ -387,7 +457,7 @@ export default {
         </div>
         <div id = 'thursdayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(3) }}</h3>
-          <img id = 'thursdayImg' src = '../assets/img/sunnyImg.svg'>
+          <img id = 'thursdayImg' src='../assets/img/sunnyImg.svg'>
           <div id = 'thursdayTemp'>
             <p id = 'minTempThursday'>{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
             <p id = 'maxTempThursday'>/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
@@ -395,13 +465,15 @@ export default {
         </div>
         <div id="fridayContainer">
           <h3 class = 'dayTitle'>{{ getDayOfWeek(4) }}</h3>
-          <img id="fridayImg" src="../assets/img/sunnyImg.svg">
+          <img id="fridayImg" src='../assets/img/sunnyImg.svg'>
           <div id="fridayTemp">
             <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
             <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
           </div>
         </div>
       </section>
+    </div>
+    <div class="div8 gridCell">
       <div id = 'sunshineInfo'>
         <span id = 'sunriseSunsetContainer'>
           <div id = 'sunriseContainer'>
@@ -433,80 +505,136 @@ export default {
         </span>
       </div>
     </div>
+ 
+  </div>
   </main>
 </template>
 <style>
 
-:root{
-  background-color: #EDDED4;
+.dash-body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: #01542C; */
+    color: #49ABFB;
 }
-#containerWeatherToday{
-  position: absolute;
-  left: 11.43em;
-  top: 7em;
-  width: 245px;
-  height: 248px;
-  flex-shrink: 0;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 50px 1fr 1fr; /* Adjust the first value for the header row height */
+  grid-column-gap: 32px;
+  grid-row-gap: 32px;
+  height: 850px;
+  width: 1260px;
+}
+
+.gridCell {
+  background-color: #F2E6DD;
+  border: 1px solid #303030;
   border-radius: 20px;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
-  background: #C3C3C3;
+/*   padding: 13px 13px; */
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out; 
   display: flex;
   justify-content: center;
 }
+
+.div0 { grid-area: 1 / 1 / 2 / 5;
+border-radius: 50px 50px 10px 10px ;}
+
+.div1 { grid-area: 2 / 1 / 3 / 2;}
+
+.div2 { grid-area: 2 / 2 / 3 / 4;}
+
+.div3 { grid-area: 2 / 4 / 3 / 4;}
+
+.div4 { grid-area: 3 / 1 / 4 / 2;}
+
+.div5 { grid-area: 3 / 2 / 4 / 4;}
+
+.div6 { grid-area: 3 / 4 / 4 / 4;}
+
+.div7 { grid-area: 4/ 1/  4 / 4;}
+
+.div8 { grid-area: 4 / 4/ 5 / 4;}
+:root{
+  background-color: #EDDED4;
+}
+#containerWeatherToday {
+    /* width: 245px; */
+    width: 100%;
+    /* height: 248px; */
+    flex-shrink: 0;
+    border-radius: 10px;
+    /* border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
+    background: #C3C3C3;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
 #weatherTodayIllustration{
-  max-width: 12em;
+  max-width: 10em;
   height: auto;
+}
+
+.date-icon-header {
+  display: flex;
+  width: fit-content;
+  margin-top: 1rem;
 }
 #date{
   color: #F8FAFB;
+  margin: 0;
   font-family: Asap;
   font-size: 1.5625rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  position: absolute;
 
 }
 
 #location{
-  width: 100%;
-  margin: 0;
-
-  position: absolute;
-  bottom: -2em;
-  margin-bottom: 1em;
-  padding-left: 3em;
   display: flex;
   justify-content: space-around;
   align-items: center;
   color: #303030;
-  font-family: Asap;
-  font-size: 2.75rem;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  
 }
-#locationCity {
-  max-width: calc(100% - 20px);
+.locationCity {
+
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 1.75rem;
+  z-index: 4;
 }
-#containerWeatherInfoToday{
-  position: absolute;
-  left: 28.88em;
-  top: 7em;
-  width: 34.5625rem;
-  height: 15.5rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid #000;
-  background: #B7AFE2;
+
+#containerWeatherInfoToday {
+    width: 100%;
+    border-radius: 10px;
+    background: #B7AFE2;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 }
+
 #feelsLikeContainer{
-  position: absolute;
+/*   position: absolute;
   left: 2.13em;
-  top: 2.81em;
+  top: 2.81em; */
+  flex-shrink: 1;
   width: 12.375rem;
   height: 2.75rem;
   flex-shrink: 0;
@@ -515,24 +643,23 @@ export default {
   background: #D9D5EE;
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
 }
-#expectedContainer{
-  position: absolute;
-  left: 16.38em;
-  top: 2.81em;
-  width: 16.125rem;
-  height: 2.75rem;
-  flex-shrink: 0;
-  border-radius: 3.125rem;
-  border: 1px solid #303030;
-  background: #D9D5EE;
-  display: flex;
-  align-items: center;
+#expectedContainer {
+    width: 16.125rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+    border-radius: 3.125rem;
+    border: 1px solid #303030;
+    background: #D9D5EE;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
 }
 #humidityContainer{
-  position: absolute;
+/*   position: absolute;
   left: 2.13em;
-  top: 7.44em;
+  top: 7.44em; */
   width: 9.5rem;
   height: 5.1875rem;
   flex-shrink: 0;
@@ -543,10 +670,19 @@ export default {
   align-items:center;
   flex-direction: column;
 }
+
+.humidityContainerHeader, .rainContainerHeader, .windContainerHeader {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+ 
+}
+
 #rainContainer{
-  position: absolute;
+/*   position: absolute;
   left: 13.5em;
-  top: 7.44em;
+  top: 7.44em; */
   width: 8.1875rem;
   height: 5.1875rem;
   flex-shrink: 0;
@@ -555,9 +691,9 @@ export default {
   background: #D9D5EE;
 }
 #windContainer{
-  position: absolute;
+/*   position: absolute;
   left:23.56em;
-  top: 7.44em;
+  top: 7.44em; */
   width: 8.9375rem;
   height: 5.1875rem;
   flex-shrink: 0;
@@ -578,22 +714,20 @@ export default {
   text-decoration-line: underline;
 }
 #containerNimbusNudges{
-  position: absolute;
-  left: 65em;
-  top: 7em;
-  width: 15.5rem;
-  height: 15.5rem;
-  flex-shrink: 0;
+  width: 100%;
   border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+ /*  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
-}
-#headerNimbusNudges{
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-left: 1.12em;
-  padding-right: 0.94em;
+  flex-direction: column;
+  justify-content: space-around;
+}
+#headerNimbusNudges {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8em 1rem 0rem 1rem;
+    height: 10%;
 }
 #titleNimbusNudges{
   color: #303030;
@@ -602,30 +736,55 @@ export default {
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+#nimbusNudgesData {
+  width: fit-content;
+  padding: 0.8rem 1rem 1rem 1rem;
 }
 
 #buttonsHeaderNimbusNudges{
-  width: 5em;
-  height: 2em;
+/*   width: 5em;
+  height: 2em; */
   display: flex;
   justify-content: space-around;
+  align-items: center;
+  width: 35%;
 }
-#buttonsHeaderNimbusNudges button{
+
+#buttonsHeaderNimbusNudges .personalization-arrow:first-child {
+ transform: rotate(0deg) !important;
+}
+
+#buttonsHeaderNimbusNudges .personalization-arrow:nth-child(2) {
+ transform: rotate(180deg) !important;
+}
+.arrow-button.personalization-arrow {
+background-color: #FAF8ED;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* .arrow-button.personalization-arrow .arrow-icon {
+  width: 30px;
+  height: 30px;
+} */
+/* #buttonsHeaderNimbusNudges button{
   width: 1.4375rem;
   height: 1.4375rem;
   flex-shrink: 0;
   border-radius: 50%;
   background-color: #FAF8ED;
   border: solid 0.05em #303030;
-}
+} */
 #buttonsOptionsNimbusNudges{
-  position: absolute;
-  bottom: 0;
   width: 100%;
   display: flex;
   justify-content: space-around;
-  padding-right: 0.94em;
-  padding-bottom: 0.94em;
 }
 
 #allClearBtn{
@@ -665,17 +824,17 @@ export default {
   text-transform: uppercase;
 }
 
-#feelsLikeTitle, #expectedTitle, #humidityTitle, #rainTitle, #windTitle{
+#feelsLikeTitle, #expectedTitle, .humidityTitleBasicMode, .rainTitleBasicMode, .windTitleBasicMode{
   color: #303030;
-  position: absolute;
-  left: 1.44em;
+/*   position: absolute;
+  left: 1.44em; */
   text-align: right;
   font-family: Asap;
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  position: absolute;
+/*   position: absolute; */
 }
 #feelsLikeData, #ColdOrWarm, #expectedData{
   color: var(--Textual-Elements-Stormcloud-Grey, #858585);
@@ -684,38 +843,45 @@ export default {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  position: absolute;
+/*   position: absolute; */
 }
-#ColdOrWarm{
-  left: 1em;
+/* #ColdOrWarm{
+  transform: translateX(-32%);
 }
-#humidityIcon, #rainIcon, #windIcon{
-  position: absolute;
-  left: 1.25em;
-  top: 1em;
-}
-
-#humidityTitle, #rainTitle, #windTitle{
-  left: 4.25em;
-}
-#feelsLikeData{
-  left: 6em;
-}
-#ColdOrWarm{
-  left: 8.3em;
+ */
+.humidityIcon, .rainIcon, .windIcon{
+margin-left: 0.8rem;
+margin-top: 0.8rem; 
 }
 
-#expectedTitle{
-  left: 1.75em;
+#humidityPercentage, #rainPercentage, #windData{
+margin-left: 0.8rem;
+
 }
 
-#expectedData{
-  left:6.5em;
+#rainPercentage, #chance, #windData {
+  margin-top: 0.8rem;
 }
+
+#refreshingOrDry, #chance{
+  margin-right: 0.8rem;
+}
+
+.humidityTitleBasicMode, .rainTitleBasicMode, .windTitleBasicMode{
+  margin-right: 0.8rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0;
+}
+
+.rainTitleBasicMode {
+  transform: translateY(-15%);
+}
+
 
 #rainData, #humidityData, #windData{
   display: flex;
   align-items: center;
+  justify-content: space-between;
   color: var(--Textual-Elements-Stormcloud-Grey, #858585);
   text-align: right;
   font-family: Asap;
@@ -723,27 +889,15 @@ export default {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  position: absolute;
-  bottom: 0.05em;
-  left: 1.19em;
-}
-#humidityData{
-  width: 8em;
-  left: 1em;
-  display: flex;
-  justify-content: space-around;
+  width: 100%;
 }
 
 #degreesContainer{
-  width: 10rem;
-  height: 8.625rem;
-  flex-shrink: 0;
+  width: 100%;
   border-radius: 1.25rem;
-  border: 1px solid #000;
+ /*  border: 1px solid #000; */
   background: rgba(156, 200, 161, 0.80);
-  position: absolute;
-  top:24em;
-  left:11.44em;
+
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -752,52 +906,56 @@ export default {
   color: #303030;
   margin: 0;
   font-family: Recoleta;
-  font-size: 6.25rem;
+  font-size: 11rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   align-self: center;
+  height: fit-content;
+}
+
+.degress-sub-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rem 0.2rem;
 }
 #degreesType, #degrees{
   color: var(--textual-elements-20-saturation-midnight-onyx-20-sat, #302727);
   font-family: Asap;
-  font-size: 0.75rem;
+  font-size: 1.0rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  position: absolute;
-  bottom:0.2em;
-}
-#degrees{
-  left:2.5em;
-}
-#degreesType{
-  
-  right:2.5em;
+  margin: 0;
+  transform: translateY(-200%);
+  display: flex;
 }
 
-#temperatureGraphContainer{
-  width: 38.9375rem;
-  height: 8.5625rem;
+#temperatureGraphContainerBasicMode{
+  width: 100%;
   flex-shrink: 0;
   border-radius: 1.25rem;
-  border: 1px solid #000;
+ /*  border: 1px solid #000; */
   background: #F2E6DD;
-  position: absolute;
-  left: 24.5em;
-  top:24em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+/* #imgGraphBasicMode{
+  margin-top: 0.5em;
+} */
 
 #airQualityContainer{
-  width: 15.4375rem;
-  height: 8.75rem;
+  width: 100%;
   flex-shrink: 0;
   border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+ /*  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: #FF87AB;
-  position: absolute;
+/*   position: absolute;
   right: 11.44em;
-  top: 24em;
+  top: 24em; */
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -805,65 +963,55 @@ export default {
 #airQualityHeader{
   color: #303030;
   font-family: Asap;
-  font-size: 1rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  position: absolute;
-  left: 1.18em;
-  top:0.69em;
+  padding: 0.7rem 0rem 0rem 1rem;
 }
 
 #airQualityData{
   width: 100%;
-  height: auto;
   margin: 0;
-  position: absolute;
-  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  margin-bottom: 1em;
 }
 
 #circleAirQuality{
-  width: 5.0625rem;
-  height: 5.0625rem;
+  width: 8rem;
+  height: 8rem;
   flex-shrink: 0;
   background-color: #FFECA7;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  bottom: 1.2em ;
-  left:1em;
   color: #303030;
   font-family: Recoleta;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin-bottom: 0.5rem;
 }
-#airQualityMeaning{
-  margin-left: 6em;
-  margin-bottom:2em;
-  color: #F8FAFB;
-  text-align: right;
-  font-family: Asap;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  width: 7.16244rem;
-  height: 3.3125rem;
-  flex-shrink: 0;
+
+#airQualityMeaning {
+    margin-left: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #F8FAFB;
+    text-align: left;
+    font-family: Asap;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }
+
 #thisWeekSection{
   display: flex;
-  width: 55rem;
-  height: 8.3125rem;
-  position: absolute;
-  left: 10.5em;
-  bottom: 1em;
+  width: 100%;
   justify-content: space-around;
   align-items: center;
 }
@@ -953,19 +1101,16 @@ line-height: normal;
 }
 
 #sunshineInfo{
-  width: 14.25rem;
-  height: 8.3125rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid #303030;
-  background: var(--primary-color-palette-40-saturation-sunbeam-gold-40-sat, #FAE3AF);
-  position: absolute;
-  left: 66.31em;
-  bottom: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-direction: column;
+  width: 100%;
+    /* height: 8.3125rem; */
+    flex-shrink: 0;
+    border-radius: 1.25rem;
+  /*   border: 1px solid #303030; */
+    background: var(--primary-color-palette-40-saturation-sunbeam-gold-40-sat, #FAE3AF);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
 }
 #sunriseSunsetContainer, #uvLightContainer{
   width: 12.0625rem;
@@ -1047,19 +1192,23 @@ line-height: normal;
   margin: 0;
 }
 #uvLightContainer{
-  display: flex;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 
 }
 #uvHeader{
-  align-self:baseline;
-  width: 10.5rem;
-  height: 1rem;
-  padding-top: 0.4em;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 1em;
+
+    /* align-self: baseline; */
+    width: 100%;
+    height: 1rem;
+    padding-top: 0.4em;
+    /* flex-shrink: 0; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
 }
 
 #uvRec{
@@ -1079,47 +1228,49 @@ line-height: normal;
   font-style: normal;
   font-weight: 900;
   line-height: normal;
+  margin-left: 1rem;
 
 }
 
-#uvIllustration{
-  align-self: center;
-  width: 2em;
-  height:1em;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 75%;
-  left: 10%;
-
+#uvIllustration {
+    width: 90%;
+    height: 1em;
+    margin-left: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    position: relative;
 }
 #uvBigLine{
-  width: 10.5rem;
+  width: 100%;
   height: 0.25rem;
-  flex-shrink: 0;
+/*   flex-shrink: 0; */
   border-radius: 0.625rem;
   background: #D9D9D9;
   z-index: 2;
 }
 #uvSmallLine{
-  width: 8.8125rem;
+  width: 30%;
+  justify-self: flex-end;
   height: 0.25rem;
-  flex-shrink: 0;
+  transform: translateY(-0.25rem);
+ /*  flex-shrink: 0; */
   z-index: 4;
   border-radius: 0.625rem;
   background: var(--secondary-color-palette-20-saturation-autumn-blaze-20-sat, #E64000);
-  position: absolute;
-  left: 0;
+
 }
 #uvCircle{
-  width: 0.6875rem;
-  height: 0.6875rem;
+  width: 0.9rem;
+  position: absolute;
+  height: 0.9rem;
+  top: -0.40rem;
+  left: 30%;
+  /* transform: translateY(-0.3rem); */
   border-radius: 50%;
-  flex-shrink: 0;
+/*   flex-shrink: 0; */
   background-color: #FABE32;
   z-index: 5;
-  position: absolute;
-  left: 8.5em;
 }
 </style>

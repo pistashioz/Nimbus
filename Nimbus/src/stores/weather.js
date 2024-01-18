@@ -1,59 +1,94 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
+import { fetchDataByCityName, fetchFiveDayForecast, fetchAirQuality } from '@/weatherService';
 
-export const useWeatherStore = defineStore("weather", {
+export const useWeatherStore = defineStore({
+  id: 'weather',
   state: () => ({
-    api_key: '39d7058ef12ab5dae395f420fd79ec5a',
-    url_base: 'http://api.openweathermap.org/data/2.5/',
-    query: '',
-    weather: {},
-    five_day_forecast: {},
-    air_quality: {},
+    userWeather: {
+      region: '',
+      locations: [],
+    },
+    weatherData: {},
+    regionWeatherData: {},
   }),
   actions: {
-    async fetchWeather() {
-      try {
-        if (e.key == "Enter") {
-          const response = await fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`);
-          const results = await response.json();
-          this.setResults(results);
-        }
-      } catch (error) {
-        console.error('Error fetching weather data:', error);
-      }
-    },
-    setResults(results) {
-      this.weather = results;
-      console.log(results);
-    },
-    async fetchFiveDayForecast() {
-      try {
-        const { lat, lon } = this.weather.coord;
-        const response = await fetch(`${this.url_base}forecast?lat=${lat}&lon=${lon}&appid=${this.api_key}`);
-        const data = await response.json();
-        this.setFiveDayForecastResults(data);
-      } catch (error) {
-        console.error('Error fetching 5 day weather forecast:', error);
-      }
-    },
-    setFiveDayForecastResults(response) {
-      this.five_day_forecast = response;
-      //console.log(this.five_day_forecast.list[0].pop)
-    },
-    async fetchAirQuality() {
-      try {
-        const { lat, lon } = this.weather.coord;
-        const response = await fetch(`${this.url_base}air_pollution?lat=${lat}&lon=${lon}&appid=${this.api_key}`);
-        const data = await response.json();
-        this.setAirQualityResults(data);
-        this.calculateSunPosition();
-      } catch (error) {
-        console.error('Error fetching air pollution data:', error);
-      }
-    },
+    updateUserWeather(region, locations) {
+        this.userWeather.region = region;
+      console.log(region, locations);
+        // Extract city names from the descriptions
+        const cityNames = locations.map(location => location.main_text);
+        
+        this.userWeather.locations = cityNames;
+        console.log(this.userWeather);
+        // Fetch weather data for the region
+        this.fetchRegionWeather();
   
-    setAirQualityResults(response) {
-      this.air_quality = response;
-      //console.log(this.air_quality.list[0].main.aqi)
+        // Fetch weather data for all locations
+        this.fetchWeatherForAllLocations();
+      },
+      async fetchRegionWeather() {
+        try {
+          const { region } = this.userWeather;
+  
+          // Fetch weather data for the region
+          const currentWeather = await fetchDataByCityName(region);
+          const fiveDayForecast = await fetchFiveDayForecast(region);
+          const airQuality = await fetchAirQuality(region);
+  
+          this.regionWeatherData = {
+            currentWeather,
+            fiveDayForecast,
+            airQuality,
+          };
+          return this.regionWeatherData
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      async fetchWeatherForAllLocations() {
+        try {
+          const { locations } = this.userWeather;
+          console.log(locations)
+          // Fetch weather data for each location
+          const weatherDataPromises = locations.map(async (location) => {
+            const currentWeather = await fetchDataByCityName(location);
+            const fiveDayForecast = await fetchFiveDayForecast(location);
+            const airQuality = await fetchAirQuality(location);
+  
+            return {
+              currentWeather,
+              fiveDayForecast,
+              airQuality,
+            };
+          });
+  
+          const weatherDataArray = await Promise.all(weatherDataPromises);
+  
+          this.weatherData = {
+            region: this.userWeather.region,
+            locations: weatherDataArray,
+          };
+          console.log('weather data',this.weatherData)
+        } catch (error) {
+          console.error(error);
+        }
+      },
     },
-  },
+    async fetchWeatherByCity(cityName) {
+        try {
+          const currentWeather = await fetchDataByCityName(cityName);
+          const airQuality = await fetchAirQuality(cityName);
+          const fiveDayForecast = await fetchFiveDayForecast(cityName);
+  
+          return {
+            currentWeather,
+            airQuality,
+            fiveDayForecast,
+          };
+        } catch (error) {
+          console.error('Error fetching weather data by city:', error);
+          throw error;
+        }
+      },
+  persist: true, 
 });
