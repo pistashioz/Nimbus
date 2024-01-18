@@ -121,6 +121,7 @@ export default {
       await this.updateWeatherData();
       if (this.weatherStore.regionWeatherData) {
       this.weather = this.weatherStore.regionWeatherData.currentWeather;
+      console.log(this.weather);
       this.air_quality = this.weatherStore.regionWeatherData.airQuality;
       this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
     } else {
@@ -384,7 +385,6 @@ export default {
           <button id = 'allClearBtn'>ALL CLEAR!</button>
           <button id = 'quietTheSkiesBtn'>QUIET THE SKIES</button>
          </div>
-        <p></p>
       </div>
     </div>
     <div class="div4 gridCell">
@@ -710,6 +710,9 @@ border-radius: 50px 50px 10px 10px ;}
   border-radius: 1.25rem;
  /*  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 #headerNimbusNudges {
     display: flex;
@@ -743,8 +746,12 @@ border-radius: 50px 50px 10px 10px ;}
   width: 35%;
 }
 
-.personalization-arrow:first-child {
- /*  margin-bottom: 1rem; */
+#buttonsHeaderNimbusNudges .personalization-arrow:first-child {
+ transform: rotate(0deg) !important;
+}
+
+#buttonsHeaderNimbusNudges .personalization-arrow:nth-child(2) {
+ transform: rotate(180deg) !important;
 }
 .arrow-button.personalization-arrow {
 background-color: #FAF8ED;
@@ -770,8 +777,6 @@ background-color: #FAF8ED;
   width: 100%;
   display: flex;
   justify-content: space-around;
-  padding-right: 0.94em;
-  padding-bottom: 0.94em;
 }
 
 #allClearBtn{

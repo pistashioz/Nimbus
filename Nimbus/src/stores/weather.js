@@ -14,12 +14,12 @@ export const useWeatherStore = defineStore({
   actions: {
     updateUserWeather(region, locations) {
         this.userWeather.region = region;
-  
+      console.log(region, locations);
         // Extract city names from the descriptions
-        const cityNames = locations.map(location => location.description.split(',')[0]);
+        const cityNames = locations.map(location => location.main_text);
         
         this.userWeather.locations = cityNames;
-  
+        console.log(this.userWeather);
         // Fetch weather data for the region
         this.fetchRegionWeather();
   
@@ -48,7 +48,7 @@ export const useWeatherStore = defineStore({
       async fetchWeatherForAllLocations() {
         try {
           const { locations } = this.userWeather;
-          console.log('loactions')
+          console.log(locations)
           // Fetch weather data for each location
           const weatherDataPromises = locations.map(async (location) => {
             const currentWeather = await fetchDataByCityName(location);

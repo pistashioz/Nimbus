@@ -26,8 +26,14 @@ export default {
   created() {
     this.fetchWeather()
     this.startUpdatingTime();
+    console.log(this.weatherCity);
     this.currentMonth = this.getMonthName(this.monthIndex);
     this.currentDay = new Date().getDate();
+    console.log(this.currentDay);
+  },
+  mounted() {
+    console.log(this.weatherCity);
+    console.log(this.weather);
   },
   computed: {
     store() {
@@ -87,14 +93,14 @@ export default {
     },
     updateCurrentTime() {
       const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      this.currentTime = `${hours}:${minutes}`;
-      const daysOfWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
-      const dayIndex = now.getDay();
-      this.currentDay = daysOfWeek[dayIndex];
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  this.currentTime = `${hours}:${minutes}`;
+  // Removed the part that sets currentDay to a string representing the day of the week
+  const date = now.getDate();
+  this.currentDate = date < 10 ? `0${date}` : date.toString();
 
-      const date = now.getDate();
+    
       this.currentDate = date < 10 ? `0${date}` : date.toString();
       const monthIndex = now.getMonth();
       const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -126,29 +132,35 @@ export default {
     };
 
     return iconMap[weatherMain] || '../assets/img/sunnyImg.svg';
-  }
-
+  },
+  getWeatherIcon(iconCode) {
+  const baseUrl = 'https://openweathermap.org/img/wn/';
+  return `${baseUrl}${iconCode}@2x.png`;
+}
 
   }
   
 }
 </script>
 <template>
-  <main class = 'dash-body'>
-    <RouterLink :to="{ name: 'basicModeDashboard' }" id = 'backBtn'><font-awesome-icon icon="fa-solid fa-chevron-left" id = 'backIcon'/></RouterLink>
+   <RouterLink :to="{ name: 'basicModeDashboard' }" id = 'backBtn'><font-awesome-icon icon="fa-solid fa-chevron-left" id = 'backIcon'/></RouterLink>
+  <main class = 'dash-body2'>
+   
     <div class = 'gridAM '>
     <div class="div0AM gridCellAM">
       <HeaderDashboard />
     </div>
     <section v-if="weather" id='basicInfoToday' class="div1AM gridCellAM" >
       <div id = 'containerBasicWeatherInfo'>
-        <img src="../assets/img/sunnyImg.svg" id = 'todaysWeatherIconAdvacedMode'>
+        <!-- <img src="../assets/img/sunnyImg.svg" id = 'todaysWeatherIconAdvacedMode'> -->
+        <img :src="getWeatherIcon(weather.weather[0].icon)" id='todaysWeatherIconAdvacedMode' alt="Weather Icon">
         <div id = 'headerBasicWeatherInfo'>
           <h1 id = 'currentTemperatureHeader'>{{Math.round(weather.main.temp)}}°</h1>
           <h2 id = 'degreeTypeHeader'>C</h2>
           <div id = 'locationAdvancedMode'>
-            <font-awesome-icon icon="location-dot" style="color: #303030;" id ='locationIconAdvancedMode' />
-            <h2 id = 'locationCityAdvancedMode'>{{ weather.name }}</h2>
+            <div class="locationAdvancedMode-row">            <font-awesome-icon icon="location-dot" style="color: #303030;" id ='locationIconAdvancedMode' />
+            <h2 id = 'locationCityAdvancedMode'>{{ weather.name }}</h2></div>
+
             <p v-if="weather.main" id='time'>{{ currentTime }}</p>
           </div>
         </div>
@@ -161,52 +173,20 @@ export default {
         </div>
       </div>
     </section>
-    <section id = 'citiesContainer' v-if="weatherCity" class="div2AM gridCellAM">
-      <div class = 'cityContainer'>
-        <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ weatherCity[0].name }}</div> 
-          <div class = 'countryName'>{{userLocations[0].description.split(',')[1] }}</div>
-        </div>
-        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
-        <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[0].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[0].main.temp_max) }}°</h3>
-        </div>
-      </div>
-      <div class = 'cityContainer'>
-        <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ weatherCity[1].name }}</div> 
-          <div class = 'countryName'>{{userLocations[1].description.split(',')[1] }}</div>
-        </div>
-        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
-        <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[1].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[1].main.temp_max) }}°</h3>
-        </div>
-      </div>
-      <div class = 'cityContainer'>
-        <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ weatherCity[2].name }}</div> 
-          <div class = 'countryName'>{{userLocations[2].description.split(',')[1] }}</div>
-        </div>
-        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
-        <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[2].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[2].main.temp_max) }}°</h3>
-        </div>
-      </div>
-      <div class = 'cityContainer'>
-        <div class = 'cityContainerHeader'>
-          <div class = 'cityName'>{{ weatherCity[3].name }}</div> 
-          <div class = 'countryName'>{{userLocations[3].description.split(',')[1] }}</div>
-        </div>
-        <img class = 'cityWeatherIcon' src  = '../assets/img/sunnyImg.svg'>
-        <div class = 'cityContainerTemperature'>
-          <h2 class = 'currentTempCityContainer'>{{ Math.round(weatherCity[3].main.temp) }}°</h2>
-          <h3 class = 'maxTempCityContainer'>/{{ Math.round(weatherCity[3].main.temp_max) }}°</h3>
-        </div>
-      </div>
-    </section>
+    <section id='citiesContainer' class="div2AM gridCellAM">
+  <div v-for="(city, index) in weatherCity" :key="index" class='cityContainer' >
+    <div class='cityContainerHeader'>
+      <div class='cityName'>{{ city.name }}</div> 
+      <div class='countryName'>{{ userLocations[index].description.split(',')[1] }}</div>
+    </div>
+    <img class='cityWeatherIcon' :src="getWeatherIcon(city.weather[0].icon)" alt="Weather Icon">
+    <div class='cityContainerTemperature'>
+      <h2 class='currentTempCityContainer'>{{ Math.round(city.main.temp) }}° </h2>
+      <h3 class='maxTempCityContainer'> / {{ Math.round(city.main.temp_max) }}°</h3>
+    </div>
+  </div>
+</section>
+
 
     <div class="div3AM gridCellAM">
       <section id = 'containerNimbusNudges' >
@@ -283,7 +263,8 @@ export default {
         <div class="calendar-days">
           <div v-for="day in daysOfWeek" :key="day" class="day">{{ day }}</div>
           <div v-for="blank in firstDayOfMonth" :key="blank" class="blank"></div>
-          <div v-for="date in daysInMonth" :key="date" :class="{ 'today': date === parseInt(currentDay) }" class="date">{{ date }}</div>
+          <div v-for="date in daysInMonth" :key="date" :class="{ 'today': date === currentDay }" class="date">{{ date }}</div>
+
 
         </div>
       </section>
@@ -291,9 +272,11 @@ export default {
   </main>
 </template>
 <style>
+.v-main {align-items: center;
+overflow: hidden;}
 
-.dash-body {
-  transform: translateY(20rem);
+.dash-body2 {
+  transform: translateY(8.8rem);
   height: fit-content;
 } 
 .gridAM{
@@ -374,8 +357,9 @@ width: 3.125rem;
   border: 0.1em solid #303030;
   cursor: pointer;
   position: absolute;
-  top: 1.13em;
-  left: 1.37em;
+  top: 0;
+  left: 0;
+  margin: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -383,31 +367,28 @@ width: 3.125rem;
 #backIcon{
   font-size: 1.5em;
 }
-#containerNimbusNudgesAdvancedMode{
-  /*
-  position: absolute;
-  left: 63em;
-  top: 7em;
-  */
-  width: 15.5rem;
-  height: 14.312rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
-  background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
+#containerTodayCalendar {
+    width: 7.875rem;
+    height: 9.625rem;
+    flex-shrink: 0;
+    border-radius: 1.25rem;
+    border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+    background: #F2E6DD;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
 }
-#containerBasicWeatherInfo{
-  
-width: 21.0625rem;
-height: 10.0625rem;
-flex-shrink: 0;
-border-radius: 1.25rem;
-border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
-background: var(--secondary-color-palette-20-saturation-sky-wash-20-sat, #DFEFFB);
-display: flex;
-margin-left: 2rem;
-justify-content: space-around;
-align-items: center;
+#containerBasicWeatherInfo {
+    width: 60%;
+    /* height: 10.0625rem; */
+    flex-shrink: 0;
+    border-radius: 1.25rem;
+    border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+    background: var(--secondary-color-palette-20-saturation-sky-wash-20-sat, #DFEFFB);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 #todaysWeatherIconAdvacedMode{
   width: 8rem;
@@ -433,26 +414,36 @@ align-items: center;
   font-weight: 600;
   line-height: normal;
   position:absolute;
-  left:6em;
+  /* left:6em; */
+  transform: translateY(7%);
 }
-#headerBasicWeatherInfo{
-  width: 12rem;
-  height: 8.1875rem;
-  /*
-  position: absolute;
-  top:1.5em;
-  right:1.25em;
-  */
-  z-index: 3;
-  display: flex;
-  flex-direction: column-reverse;
+#headerBasicWeatherInfo {
+    z-index: 3;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
 }
 #locationAdvancedMode{
   height:3em;
   position:absolute;
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
-  align-items: center;
+  align-items: flex-end;
+}
+
+.locationAdvancedMode-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+#locationAdvancedMode p {
+  margin-top: 0;
+}
+
+#locationAdvancedMode h2 {
+  margin-left: 0.3rem;
+  margin-bottom: 0;
 }
 #locationCityAdvancedMode, #locationIconAdvancedMode{
   align-items: center;
@@ -482,29 +473,29 @@ align-items: center;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: #F2E6DD;
-  position: absolute;
+/*   position: absolute;
   top:2.37em;
-  right:2.19em;
+  right:2.19em; */
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-#month{
-  width: 7.875rem;
-  height: 2.75rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem 1.25rem 0rem 0rem;
-  border: 1px solid #000;
-  background: #E74727;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #303030;
-  font-family: Asap;
-  font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
+#month {
+    width: 7.875rem;
+    height: 2.75rem;
+    flex-shrink: 0;
+    border-radius: 1.0rem 1.0rem 0rem 0rem;
+    /* border: 1px solid #000; */
+    background: #E74727;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #303030;
+    font-family: Asap;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
 }
 #dateAndDayAdvancedMode{
   width: 7.875em;
@@ -513,6 +504,7 @@ align-items: center;
   flex-direction: column;
   align-items: center;
   margin: 0;
+  z-index: 1;
 }
 #dateAdvancedMode{
   color: #303030;
@@ -541,7 +533,7 @@ align-items: center;
   background: var(--Primary-Color-Palette-Sunbeam-Gold, #FAC54B);
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-around;
   /*
   position: absolute;
   left: 8.44em;
@@ -567,20 +559,21 @@ align-items: center;
   flex-wrap: wrap;
   
 }
-.cityContainer{
-  width:6rem;
-  height:6rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
-  background: #F2E6DD;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+.cityContainer {
+    width: 7rem;
+    height: 7rem;
+    /* flex-shrink: 0; */
+    border-radius: 1.25rem;
+    border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
+    background: #F2E6DD;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 0.8rem;
 }
 .cityContainerHeader{
   width: 100%;
-  margin-top: 0.5em;
+ /*  margin-top: 0.5em; */
   justify-self: flex-start;
   height: 1.55625rem;
   flex-shrink: 0;
@@ -626,6 +619,7 @@ font-size: 1.5625rem;
 font-style: normal;
 font-weight: 700;
 line-height: normal;
+margin-right: 0.3rem;
 }
 
 .maxTempCityContainer{
@@ -813,47 +807,44 @@ margin-bottom: -0.5em;
   margin-top: 0.2em;
   margin-left: 1.13em;
 }
-/*
-.weatherInfoIllustrations{
-  background-color: red;
-  position: absolute;
-  right: 1.6em;
-}*/
+
 #calendarAdvancedMode{
-/*   width: 18rem;
-  height: 18rem;
-  flex-shrink: 0; */
-  /*
-  position: absolute;
-  right: 14em;
-  bottom:2em;
-  */
+
+  display: flex;
+  flex-direction: column;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: var(--secondary-color-palette-30-saturation-spring-bud-30-sat, #E1E2CB);
 }
 
 .calendarHeaderAdvancedMode {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: #303030;
-  font-family: Asap;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
-  margin: 0;
-  width: 5em;
-  margin-top: 1em;
-  padding-left: 2em;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #303030;
+    font-family: Asap;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    margin: 0;
+    /* width: 5em; */
+    margin-top: 1em;
+    margin-left: 1.3rem;
+    /* padding-left: 2em; */
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.calendarHeaderAdvancedMode #monthCalendar {
+  margin-right: 1rem;
 }
 
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  align-self: center;
   gap: 0.4rem;
   color: #000;
   font-family: Asap;
@@ -863,8 +854,8 @@ margin-bottom: -0.5em;
   line-height: normal;
   margin: 0;
   margin-top: 0.5em;
-  padding-right: 0.5em;
-  padding-left: 0.5em;
+  padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .day,
@@ -883,16 +874,16 @@ margin-bottom: -0.5em;
 }
 
 .today {
+  background-color: #E18AD1; /* Pink background */
+  border: 1px solid #303030; /* Solid border */
+  color: #303030; /* Text color for better contrast */
   width: 2.0625rem;
   height: 2.0625rem;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  fill: #E18AD1;
-  stroke-width: 1px;
-  stroke: var(--Textual-Elements-Midnight-Onyx, #303030);
 }
+
 
 </style>
