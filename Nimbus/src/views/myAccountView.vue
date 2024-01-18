@@ -25,7 +25,14 @@ export default {
       dayFive: false,
       daySix: false,
       daySeven: false
-    },
+    }, bgColors: ['#FAC54B', '#858585', '#DFE287', '#E6612E', '#E18AD1', '#ADD8FB'],
+      selectedBgColor: '',
+      avatars: [
+        { src: 'path-to-avatar1', price: 10 },
+        { src: 'path-to-avatar2', price: 15 },
+        { src: 'path-to-avatar3', price: 20 },
+      ],
+      currentAvatarIndex: 0,
     rightButtonIcon,
     wrongButtonIcon
     };
@@ -53,7 +60,12 @@ export default {
      userLocation() {
        return this.getAuthenticatedUser.userRegion;
      },
-
+     firstThreeColors() {
+    return this.bgColors.slice(0, 3);
+  },
+  lastThreeColors() {
+    return this.bgColors.slice(3);
+  },
 
 },
   methods: {
@@ -79,6 +91,27 @@ export default {
       // Implement logic for wrong button click
       console.log("Wrong button clicked");
     },
+    selectBgColor(color) {
+      this.selectedBgColor = color;
+    },
+    slideAvatar(direction) {
+      if (direction === 'left' && this.currentAvatarIndex > 0) {
+        this.currentAvatarIndex--;
+      } else if (direction === 'right' && this.currentAvatarIndex < this.avatars.length - 1) {
+        this.currentAvatarIndex++;
+      }
+    },
+    claimAvatar() {
+      const avatarPrice = this.avatars[this.currentAvatarIndex].price;
+      const totalPrice = avatarPrice + 2/* price of selected background color */;
+      if (this.getAuthenticatedUser.nimbusCoins >= totalPrice) {
+        this.getAuthenticatedUser.nimbusCoins -= totalPrice;
+        // Handle avatar claiming logic
+      } else {
+        alert("Insufficient nimbus coins.");
+      }
+    },
+
   }
   
 };
@@ -136,11 +169,61 @@ export default {
       </div>
     </div>
 
-    <div class="div3-5 gridCell">
-      <div class = 'gamification-avatar'>
+  <div class="div3-5 gridCell">
+    <div class="gamification-avatar">
+      <!-- Small Circles for Background Colors -->
+      <div class="bg-colors-container">
+  <!-- First Container for the first three colors -->
+  <div class="bg-3">
+    <div v-for="(color, index) in firstThreeColors" 
+         :key="index" 
+         class="small-circle" 
+         :class="{'active': selectedBgColor === color}" 
+         :style="{backgroundColor: color}" 
+         @click="selectBgColor(color)">
+    </div>
+  </div>
 
-      </div>
+  <!-- Second Container for the last three colors -->
+  <div class="bg-4">
+    <div v-for="(color, index) in lastThreeColors" 
+         :key="index" 
+         class="small-circle" 
+         :class="{'active': selectedBgColor === color}" 
+         :style="{backgroundColor: color}" 
+         @click="selectBgColor(color)">
+    </div>
+  </div>
 </div>
+
+
+      <!-- Avatar Display Area -->
+      <div class="avatar-display-container">
+        <ArrowButton direction="down" 
+                     button-class="personalization-arrow" 
+                     @clickButton="slideAvatar('left')" 
+                     :disabled="currentAvatarIndex === 0" />
+        <div class="avatar-display" 
+             :style="{backgroundColor: selectedBgColor}">
+          <img :src="avatars[currentAvatarIndex].src" alt="Avatar">
+        </div>
+        <ArrowButton direction="up" 
+                     button-class="personalization-arrow" 
+                     @clickButton="slideAvatar('right')" 
+                     :disabled="currentAvatarIndex === avatars.length - 1" />
+      </div>
+
+      <!-- Total Price and Claim Button -->
+      <div class="claim-avatar-container">
+        <div class="total-price">
+          <span class="price">Price:</span> <span class="sum-price">{{ avatars[currentAvatarIndex].price + 2/* price of selected background color */ }} </span>
+        </div>
+        <button class="claim-avatar-button" @click="claimAvatar">CLAIM WITH COINS</button>
+      </div>
+    </div>
+  </div>
+
+
 
     <div class="div4 gridCell">
       <div class = 'experiences'>
@@ -294,6 +377,91 @@ export default {
   </main>
 </template>
 <style>
+/* ... existing styles */
+.bg-colors-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 25%;
+}
+.small-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #303030;
+  box-shadow: 0 1px 0 #000;
+  cursor: pointer;
+  transition: box-shadow 0.1s ease, background-color 0.3s ease;
+}
+
+.small-circle.active {
+  box-shadow: 0 0 0 #000;
+}
+
+.claim-avatar-container {
+display: flex;
+flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.total-price .price {
+  color: #303030;
+font-size: 12px;
+font-family: Asap;
+font-weight: bold;
+text-transform: uppercase;
+}
+
+.total-price .sum-price {
+  color: #303030;
+font-size: 12px;
+font-family: Asap;
+font-weight: light;
+text-transform: uppercase;
+word-wrap: break-word
+}
+.claim-avatar-button {
+  border: 1px solid #303030;
+  padding: 0.5rem;
+  border-radius: 20px;
+  color: #303030;
+font-size: 11px;
+font-family: Asap;
+font-weight: bold;
+text-transform: uppercase;
+word-wrap: break-word
+}
+/* Add specific colors for each small circle */
+.small-circle.color1 { background-color: /* color1 */; }
+.small-circle.color2 { background-color: /* color2 */; }
+/* ... more colors */
+.avatar-display-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.avatar-display {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #FAC54B /* dynamic based on selectedBgColor */;
+  /* Style for avatar image display */
+  border: 1px solid #303030;
+}
+
+/* Style for ArrowButton components */
+.avatar-display-container button:nth-child(1) {
+  transform: translateX(55%) !important;
+}
+
+.avatar-display-container button:nth-child(3) {
+  transform: translateX(-55%) rotate(180deg) !important;
+}
+
+/* ... other styles */
+
+
+
 .run-streak-container {
   display: flex;
   flex-direction: column;
@@ -741,7 +909,7 @@ grid-row-end: 4;
     padding: 1rem;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+  /*   flex-wrap: wrap; */
     justify-content: space-between;
     align-items: center;
 }
@@ -828,7 +996,7 @@ grid-row-end: 4;
 
  }
 
-.exp-price .arrow-button.personalization-arrow {
+.exp-price .arrow-button.personalization-arrow button{
 background-color: #FAF8ED;
   width: 52px;
   height: 12px;
