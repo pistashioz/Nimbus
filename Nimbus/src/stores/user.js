@@ -49,7 +49,7 @@ export const useUserStore = defineStore("user", {
                 username: username, 
                 email: email, 
                 password: password,
-                nimbusCoins: 0 // Initial coins set to 0
+                nimbusCoins: 50 // Initial coins set to 0
             };
         
             
@@ -80,20 +80,37 @@ export const useUserStore = defineStore("user", {
             this.isUserAuthenticated = false;
             this.user = null;
         },
-        // Action to update user's data
-        updateUser(username, newUserData) {
-            const userIndex = this.users.findIndex((user) => user.username === username);
-            if (userIndex !== -1) {
-                // Update user data and maintain reactivity
-                this.users[userIndex] = { ...this.users[userIndex], ...newUserData };
-                // Update the current user data if the user is logged in
-                if (this.user && this.user.username === username) {
-                    this.user = { ...this.user, ...newUserData };
-                }
-            } else {
-                throw Error("User not found!");
+// Action to update user's data including preferences
+updateUser(username, newUserData) {
+    const userIndex = this.users.findIndex((user) => user.username === username);
+    if (userIndex !== -1) {
+        // Update general user data and maintain reactivity
+        this.users[userIndex] = { ...this.users[userIndex], ...newUserData };
+
+        // Check if newUserData contains userPreferences and update it separately
+        if (newUserData.userPreferences) {
+            this.users[userIndex].userPreferences = [...newUserData.userPreferences];
+        }
+
+          // Additional logic for updating userLang
+          if (newUserData.userLang) {
+            this.user.userLang = newUserData.userLang;
+          }
+
+        // Update the current user data if the user is logged in
+        if (this.user && this.user.username === username) {
+            this.user = { ...this.user, ...newUserData };
+
+            // Update userPreferences for the current user if it's included in newUserData
+            if (newUserData.userPreferences) {
+                this.user.userPreferences = [...newUserData.userPreferences];
             }
         }
+    } else {
+        throw Error("User not found!");
+    }
+}
+
     },  
     persist: true,  // Enables data persistence using Pinia's persist plugin
 });

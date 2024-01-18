@@ -1,10 +1,11 @@
 <script>
 import { RouterLink } from "vue-router";
 import { useUserStore } from "@/stores/user";
+import nimbusLogo from "@/assets/icons/logo.svg";
 export default {
   data() {
     return {
-      
+      nimbusLogo
     };
   },
   computed: {
@@ -47,7 +48,7 @@ export default {
     <span v-else id='logged'>
       <div id='leftNav'>
         <RouterLink :to="{ name: 'landingPage' }" id='logo'>
-          <img src='../assets/logo.svg' alt='logo' id='logoImg'> nimbus
+          <img :src='nimbusLogo' alt='logo' id='logoImg'> nimbus
         </RouterLink>
         <span class='username'>Hello, {{ name }}</span>
       </div>

@@ -1,10 +1,12 @@
 <script>
 import { RouterLink } from "vue-router";
 import { useUserStore } from "@/stores/user";
+import nimbusLogo from "@/assets/icons/logo.svg";
 export default {
   data() {
     return {
-      store: useUserStore()
+      store: useUserStore(),
+      nimbusLogo,
     };
   },
   computed: {
@@ -27,7 +29,7 @@ export default {
 <template>
       <span v-if="!isUser" id = 'unlogged'>
       <div id = 'leftNav'>
-        <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img src = '../assets/logo.svg' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
+        <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img :src = 'nimbusLogo' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
         <RouterLink :to="{ name: 'login' }"  id  ='login'>Login</RouterLink>
       </div>
       <div id = 'rightNav'>
@@ -36,7 +38,7 @@ export default {
     </span> 
   
     <span v-else id = 'logged2'>
-      <div id = 'nimbusLogo'>nimbus</div>
+      <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><div id = 'nimbusLogo'><img :src = 'nimbusLogo' alt = 'logo' id = 'logoImg'>nimbus</div></RouterLink>
       <div class="header-links">
         <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
       <RouterLink :to="{name: 'myAccount'}" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
@@ -127,6 +129,15 @@ a{
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+#logged2 #nimbusLogo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#logged2 #logoImg {
+  width: 40px;
+  height: 40px;
 }
 #nimbusLogo{
   width: 5.37075rem;

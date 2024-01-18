@@ -4,7 +4,16 @@ import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
 import rightButtonIcon from "@/assets/icons/right-button.svg";
 import wrongButtonIcon from "@/assets/icons/wrong-button.svg";
+import user1 from "@/assets/img/user1.png";
+import user2 from "@/assets/img/user2.png";
+import user3 from "@/assets/img/user3.png";
+import {fetchPlaceDetails , reverseGeocodeOpenWeather, reverseGeocode, getAutocompletePredictions , loadGoogleMapsAPI, ProvidesLocation } from "@/weatherService.js";
 
+import nationalGeoImg from "@/assets/img/nationalgeographic.jpg";
+import adventureGearImg from "@/assets/img/adventure.jpg";
+import wellnessRetreatImg from "@/assets/img/spa.jpg";
+import ecoFriendlyProductsImg from "@/assets/img/eco goods.jpg";
+import chapterByChapterImg from "@/assets/img/bookstore.jpg";
 
 export default {
   name: 'basicMode',
@@ -17,6 +26,13 @@ export default {
         ecoFriendlyProducts: 7,
         chapterByChapter: 16
       },
+      expImages: {
+        nationalGeographic: nationalGeoImg,
+        adventureGear: adventureGearImg,
+        wellnessRetreat: wellnessRetreatImg,
+        ecoFriendlyProducts: ecoFriendlyProductsImg,
+        chapterByChapter: chapterByChapterImg
+      },
       daysActive: {
       dayOne: false,
       dayTwo: false,
@@ -28,22 +44,36 @@ export default {
     }, bgColors: ['#FAC54B', '#858585', '#DFE287', '#E6612E', '#E18AD1', '#ADD8FB'],
       selectedBgColor: '',
       avatars: [
-        { src: 'path-to-avatar1', price: 10 },
-        { src: 'path-to-avatar2', price: 15 },
-        { src: 'path-to-avatar3', price: 20 },
+        { src: user1, price: 10 },
+        { src: user2, price: 15 },
+        { src: user3, price: 20 },
       ],
       currentAvatarIndex: 0,
     rightButtonIcon,
-    wrongButtonIcon
+    wrongButtonIcon,
+    editableEmail: '',
+      editablePassword: '',
+      // Initialize with user's current preferences
+      userPreferences: [],
+      userLang: '',
+      userRegion: {},
+      
     };
   },
   components: {
     ArrowButton, 
     HeaderDashboard,
   },
-  mounted() {
-    this.query=this.userLocation.region;
+  created() {
+    this.editableEmail = this.store.getUser?.email || '';
+    this.editablePassword = this.store.getUser?.password || '';
+    this.userPreferences =  this.getAuthenticatedUser.userPreferences || [];
+    this.userLang =  this.getAuthenticatedUser.userLang || '';
+    this.userRegion =  this.getAuthenticatedUser.userRegion || {};
   },
+/*   mounted() {
+    this.query=this.userLocation.region;
+  }, */
   computed: {
     store() {
        return useUserStore();
@@ -108,10 +138,104 @@ export default {
         this.getAuthenticatedUser.nimbusCoins -= totalPrice;
         // Handle avatar claiming logic
       } else {
-        alert("Insufficient nimbus coins.");
+        console.log("Insufficient nimbus coins.");
       }
     },
+    saveEmail() {
+      this.store.updateUser(this.getAuthenticatedUser.username, { email: this.editableEmail });
+    },
+    savePassword() {
+      this.store.updateUser(this.getAuthenticatedUser.username, { password: this.editablePassword });
+    },
+    togglePreference(preference) {
+    const index = this.userPreferences.indexOf(preference);
+    if (index === -1) {
+      // Add the preference if not already selected
+      this.userPreferences.push(preference);
+    } else {
+      // Remove the preference if already selected
+      this.userPreferences.splice(index, 1);
+    }
+    
+  },
+  togglePreference(preference) {
+      const index = this.userPreferences.indexOf(preference);
+      if (index === -1) {
+        // Add preference if not already in the array
+        this.userPreferences.push(preference);
+      } else {
+        // Remove preference if it's already in the array
+        this.userPreferences.splice(index, 1);
+      }
+      // Update the user store with new preferences
+      this.updateUserPreferences();
+    },
+    updateUserPreferences() {
+      this.store.updateUser(this.getAuthenticatedUser.username, { userPreferences: this.userPreferences });
+    },
+    selectLanguage(lang) {
+      this.userLang = lang;
+      this.updateUserLang();
+    },
+    updateUserLang() {
+      this.store.updateUser(this.getAuthenticatedUser.username, { userLang: this.userLang });
+    },
+    fetchLocationNameFromOpenWeather() {
+    
 
+    // Check if the browser supports geolocation
+    if (navigator.geolocation) {
+      // Use the Geolocation API to get the current position
+      navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          // Extract latitude and longitude from the position object
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          console.log(`latitude: ${latitude}, longitude: ${longitude}`);
+          
+          // Call reverseGeocodeOpenWeather with the obtained coordinates
+          const result = await reverseGeocodeOpenWeather(latitude, longitude);
+          
+          // Check if the result has data
+          if (result.length > 0) {
+            // Log the first location name from the result
+            console.log('Location name:', result[0].name);
+            // Update the region data property with relevant information
+            this.userRegion = {
+              latitude: latitude,
+              longitude: longitude,
+              region: result[0].name, // Human-readable address
+            };
+
+          //  console.log(`The user region is: ${this.userRegion.region} with latitude: ${this.userRegion.latitude}, longitude: ${this.userRegion.longitude}`);
+          }
+
+          if (this.userRegion.latitude !== latitude || this.userRegion.longitude !== longitude) {
+        this.updateUserRegion(latitude, longitude, result[0].name);
+      }
+          
+        } catch (error) {
+          // Handle any errors during the API call or processing
+          console.error('Error fetching location name:', error);
+        }
+      },
+      (error) => {
+        // Handle errors related to the Geolocation API
+        console.error('Error fetching location name:', error);
+      }
+      );
+    } else {
+      // Browser does not support Geolocation
+      console.error("Geolocation is not supported by this browser.");
+      this.errorMessage = "Geolocation is not supported by your browser."; 
+    }
+  },
+  updateUserRegion(latitude, longitude, regionName) {
+      this.store.updateUser(this.getAuthenticatedUser.username, { 
+        userRegion: { latitude, longitude, region: regionName }
+      });
+    },
   }
   
 };
@@ -135,22 +259,24 @@ export default {
   </div>
   <div class="credentials">  
     <div class="personal-username" >
-      <div class="username" > {{ this.getAuthenticatedUser.username }}</div>
+      <div class="username" > <h1>{{ this.getAuthenticatedUser.username }}</h1> </div>
       <div class="joined" > Joined in 16th Jan, 2024<!-- {{ this.getAuthenticatedUser.joinedDate }} --></div>
     </div>
     <div class="personal-email" >
     <div class="email" >
       <div class="label" >  <h1>Email</h1></div>
-      <div class="email" > {{ this.getAuthenticatedUser.email }}</div>
+      <input class="email" v-model="editableEmail" />
+      <!-- <div class="email" > {{ this.getAuthenticatedUser.email }}</div> -->
     </div>  
-    <button type="button" class="change-email"> Change Email</button>
+    <button type="button" class="change-email"  @click="savePassword">Change Email</button>
   </div>
     <div class="personal-password" >
       <div class="password">
         <div class="label" >  <h1>Password</h1></div>
-      <div class="password" >{{ this.getAuthenticatedUser.password }}</div>
+        <input class="password" type="password" v-model="editablePassword" />
+      <!-- <div class="password" >{{ this.getAuthenticatedUser.password }}</div> -->
       </div>
-      <button type="button" class="change-password"> Change Password</button>
+      <button type="button" class="change-password"  @click="savePassword">Change Password</button>
     </div>
   </div>
 </div>
@@ -164,9 +290,97 @@ export default {
     </div>
    
     <div class="div3 gridCell">
-      <div class = 'alter-preferences'>
-  
+      <div class="alter-wrapper">
+        <div class = 'alter-preferences'>
+        <h2>Alert Preferences</h2>
+  <div class="preferences">
+    <button 
+    type="button"
+      v-for="preference in ['Temperature', 'Wind', 'Moon Phases', 'Precipitation', 'Waves']" 
+      :key="preference" 
+      :class="{ selected: userPreferences.includes(preference) }" 
+      @click="togglePreference(preference)"
+    >
+      {{ preference }}
+    </button>
+  </div>
       </div>
+      <div class = 'alter-lgrg'>
+        <h2>Language and Region</h2>
+        <div class="lg-rg">
+  <label class="section-label">Language</label>
+  <div class="lang-btn-wrapper">
+    <button 
+      type="button"
+      v-for="lang in ['pt', 'en']" 
+      :key="lang" 
+      :class="{ selected: userLang === lang }" 
+      @click="selectLanguage(lang)"
+    >
+      {{ lang.toUpperCase() }}
+    </button>
+  </div>
+</div>
+
+<div class="lg-rg">
+  <label class="section-label">Region</label>
+  <div class="lang-btn-wrapper">
+    <input 
+      type="text" 
+      readonly 
+      @click="fetchLocationNameFromOpenWeather"
+      :placeholder="userRegion.region || 'Select your region'" 
+      :value="userRegion.region || ''"
+      class="region-input"
+    />
+  </div>
+</div>
+      </div>
+      </div>
+
+<!--       <h2>Language and Region</h2>
+  
+  <div class="language-selection">
+    <label class="section-label">Language</label>
+    <div class="languages">
+      <img
+            :src="langIcon" 
+            @click="togglePasswordConfirmationVisibility" 
+            class="lang-icon" 
+          />
+    <button type="button" @click="selectLanguage('pt')" :class="{ selected: userLang === 'pt' } " >PT
+
+    </button>
+    <button type="button" @click="selectLanguage('en')" :class="{ selected: userLang === 'en' }">ENG
+
+    </button>
+  </div>
+  </div>
+
+  <div class="region-detection">
+    <div class="region-label"><label class="section-label">Region </label>
+      <button type="button" @click="  fetchLocationNameFromOpenWeather">Detect Region</button></div>
+    <div class="region">
+    <img
+            :src="regionIcon" 
+            @click="togglePasswordConfirmationVisibility" 
+            class="lang-icon" 
+          />
+          <div class="userRegion">
+     <p>Latitude: {{ userRegion.latitude }}</p>
+      <p>Longitude: {{ userRegion.longitude }}</p>
+      <input 
+      type="text" 
+      disabled 
+      :placeholder="userRegion ? userRegion.region : 'Select your region'" 
+      :value="userRegion ? userRegion.region : ''"
+      class="region-input"
+    />
+    </div>
+    
+
+  </div>
+  </div> -->
     </div>
 
   <div class="div3-5 gridCell">
@@ -229,7 +443,7 @@ export default {
       <div class = 'experiences'>
         <div class="exp one">
           <div class="exp-img">
-            <!-- <img src="" alt=""> -->
+            <img :src="expImages.nationalGeographic" alt="National Geographic">
           </div>
           <div class="exp-content">
             <h3 class="exp-title">     National Geographic Subscription</h3>
@@ -244,7 +458,7 @@ export default {
         <div class="exp two">
           
           <div class="exp-img">
-            <!-- <img src="" alt=""> -->
+            <img :src="expImages.adventureGear" alt="National Geographic">
           </div>
           <div class="exp-content">
             <h3 class="exp-title">    Adventure Gear Vouchers</h3>
@@ -256,7 +470,7 @@ export default {
         <div class="exp three">
           
           <div class="exp-img">
-            <!-- <img src="" alt=""> -->
+            <img :src="expImages.wellnessRetreat" alt="National Geographic">
           </div>
           <div class="exp-content">
             <h3 class="exp-title">    Wellness Retreat Discounts</h3>
@@ -268,7 +482,7 @@ export default {
         <div class="exp four">
           
           <div class="exp-img">
-            <!-- <img src="" alt=""> -->
+            <img :src="expImages.ecoFriendlyProducts" alt="National Geographic">
           </div>
           <div class="exp-content">
             <h3 class="exp-title">    Eco-Friendly Product Deals</h3>
@@ -280,7 +494,7 @@ export default {
         <div class="exp five">
           
           <div class="exp-img">
-            <!-- <img src="" alt=""> -->
+            <img :src="expImages.chapterByChapter" alt="National Geographic">
           </div>
           <div class="exp-content">
             <h3 class="exp-title">   Chapter-by-Chapter Savings</h3>
@@ -295,7 +509,7 @@ export default {
       <div class = 'gamification'>
         <div class="gamification-row-one" >
     <div class="nimbus-coins" >
-      <div class="coins-number" > <h3>185</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
+      <div class="coins-number" > <h3>{{this.getAuthenticatedUser.nimbusCoins}}</h3> <!-- {{ this.getAuthenticatedUser.nimbusCoins }} --></div>
       <div class="coins-label" > nimbus coins</div>
     </div>
     <div class="run-streak-container">
@@ -377,6 +591,100 @@ export default {
   </main>
 </template>
 <style>
+.alter-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.alter-preferences {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+ padding-left: 1rem;
+ padding-top: 1rem;
+
+}
+.alter-lgrg{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+  width: 100%;
+}
+.lg-rg {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.lang-btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.lang-btn-wrapper button {
+  text-transform: uppercase;
+}
+.lang-btn-wrapper button:nth-child(2) {
+  margin-right: 0;
+}
+.alter-lgrg h2 {
+  margin-right: 0.4rem;
+  text-align: right;
+}
+.alter-preferences h2 {
+  margin-left: 0.4rem;
+  margin-top: 0;
+}
+/* .preferences {
+width: 80%;  
+} */
+.preferences button,
+.lg-rg button {
+  margin: 5px;
+  padding: 10px;
+  background-color: #f0f0f0; 
+  border: 1px solid #303030;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #303030;
+
+font-family: 'Asap Regular', sans-serif;
+font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.region-input {
+  margin: 5px;
+  padding: 10px;
+  background-color: #f0f0f0; 
+  border: 1px solid #303030;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #303030;
+text-align: center;
+font-family: 'Asap Regular', sans-serif;
+font-size: 1rem;
+  transition: background-color 0.3s;
+margin-right: 0;
+}
+
+.preferences button:hover {
+  background-color: #e7e7e7; 
+}
+
+.preferences button.selected {
+  background-color: #DFE287;; 
+  color: #303030;
+}
+
+
 /* ... existing styles */
 .bg-colors-container {
     display: flex;
@@ -449,6 +757,11 @@ word-wrap: break-word
   border: 1px solid #303030;
 }
 
+.avatar-display img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
 /* Style for ArrowButton components */
 .avatar-display-container button:nth-child(1) {
   transform: translateX(55%) !important;
@@ -752,8 +1065,8 @@ border-radius: 50px 50px 10px 10px ;}
   grid-column-end: 7;
   grid-row-start: 2;
   grid-row-end: 4;
+  background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
 }
-
 .account-grid .div3-5 { 
 
 grid-column-start: 3;
@@ -806,12 +1119,26 @@ grid-row-end: 4;
     align-items: flex-start;
 }
 
+input {
+  font-family: 'Asap Regular', sans-serif; 
+  font-size: 1rem; 
+   padding-left: 0.5rem; 
+   padding-right: 0.5rem;
+  color: #303030;
+  border: none;
+  border-radius: 10px;
+  background-color: transparent;
+  outline: none; /* remove the default focus outline */
+}
+
+
 .change-email,
 .change-password {
   width: 40%;    border-radius: 10px;
+  height: 2rem;
   background-color: #f1f1f1;
   border: 1px solid #303030;
-  padding: 1rem;
+  /* padding: 1rem; */
   color: #c3c3c3;
   font-family: 'Asap', sans-serif;
   font-weight: bold;
@@ -828,7 +1155,6 @@ grid-row-end: 4;
 
 .label h1 {
   margin: 0;
-  height: 2.2rem
 }
 .gamification-options {
   display: flex;
@@ -868,11 +1194,20 @@ grid-row-end: 4;
 .username {
   width: fit-content;
 }
+.username h1 {
+  margin: 0;
+}
+.username, .email .label, .password .label {
+  font-size: 0.7rem;
+}
 
+.email input {
+  text-decoration: underline;
+}
 
 .default-avatar {
-  width: 170px;
-  height: 170px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   background-color: #303030;
   /* margin-right: 20px; */
@@ -941,6 +1276,10 @@ grid-row-end: 4;
 .exp.one {
   background: #E1B6D9;
 }
+.exp-img img {
+  width: 185px;
+  height: auto;
+}
 
 .exp.two {
   background: #E8AC82;
@@ -960,9 +1299,13 @@ grid-row-end: 4;
 .exp-img {
   background-color: red;
   width: 222px;
-  height: 100%;
+  height: 120px;
+  overflow: hidden;
   border: 1px solid #303030;
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
 }
 .exp-title {

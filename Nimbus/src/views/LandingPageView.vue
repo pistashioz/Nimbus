@@ -25,8 +25,29 @@ document.addEventListener('DOMContentLoaded', function () {
  -->
  <script>
  import { useUserStore } from "@/stores/user";
- 
+ import nimbusLogo from "@/assets/icons/logo.svg";
+
  export default {
+  data() {
+    return {
+      nimbusLogo,
+      selectedTab: 'introduction', // Default tab
+      nimbusLogo,
+      selectedTab: 'introduction', // Default tab
+      selectedSubSection: 'missionAndVision', // Default sub-section
+      nimbusLogo,
+      tabContent: {
+        introduction: 'Introduction content here...',
+        features: 'Features content here...',
+        team: 'Team content here...'
+      },
+      subSectionContent: {
+        missionAndVision: 'Content for Mission and Vision...',
+        benefits: 'Content for Benefits...',
+        impact: 'Content for Impact...'
+      }
+    }
+  },
    computed: {
      store() {
        return useUserStore();
@@ -66,6 +87,18 @@ document.addEventListener('DOMContentLoaded', function () {
          // Handle for other cases if necessary
        }
      },
+     selectTab(tabName) {
+      this.selectedTab = tabName;
+      if (tabName === 'introduction') {
+        this.selectedSubSection = 'missionAndVision'; // Reset to default when Introduction is selected
+      }
+    },
+    selectSubSection(section) {
+      this.selectedSubSection = section;
+    },
+    isActiveSubSection(section) {
+      return this.selectedSubSection === section;
+    }
    },
  };
  </script>
@@ -88,27 +121,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
       <div id = 'aboutTitle'>
         <h1 id = 'forecasting'>Forecasting</h1>
-        <img id = 'logoImgAbout' src = '../assets/logo.svg'>
+        <img id = 'logoImgAbout' :src = 'nimbusLogo'>
         <h1 id = 'reimagined'>REIMAGINED</h1>
         <h1 id = 'welcomeToNimbus'>Welcome to Nimbus.</h1>
       </div>
       <div id = 'aboutContent'>
         <div class="aboutButtons">
-          <button id = 'introductionBtn'>01. INTRODUCTION</button> 
-        <button id = 'featuresBtn'>02. FEATURES</button>
-        <button id = 'teamBtn'>03. TEAM</button>
-        </div>
-        <div class="aboutText">
-          <div class = 'introductionText'>
-            At Nimbus, our mission is to redefine the way the world interacts with weather, and our vision is to become an indispensable part of daily life. We strive to empower our users with the tools to not only navigate but also to appreciate the beauty and intricacy of the Earth's atmosphere.
-          </div>
-        </div>
+    <button id="introductionBtn"
+            :class="{ active: selectedTab === 'introduction' }"
+            @click="selectTab('introduction')">01. INTRODUCTION</button>
+    <button id="featuresBtn"
+            :class="{ active: selectedTab === 'features' }"
+            @click="selectTab('features')">02. FEATURES</button>
+    <button id="teamBtn"
+            :class="{ active: selectedTab === 'team' }"
+            @click="selectTab('team')">03. TEAM</button>
+  </div>
+
+  <div class="aboutText">
+    <div class="introductionText">
+      {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
+    </div>
+  </div>
       </div>
-      <div class="about-sub-sec">
-        <div class="sub-sec-one">mission and vision</div>
-        <div class="sub-sec-two">benefits</div>
-        <div class="sub-sec-three">impact</div>
-      </div>
+      <div class="about-sub-sec" v-if="selectedTab === 'introduction'">
+    <div class="sub-sec-one"
+         :class="{ 'active': isActiveSubSection('missionAndVision') }"
+         @click="selectSubSection('missionAndVision')">
+      mission and vision
+    </div>
+    <div class="sub-sec-two"
+         :class="{ 'active': isActiveSubSection('benefits') }"
+         @click="selectSubSection('benefits')">
+      benefits
+    </div>
+    <div class="sub-sec-three"
+         :class="{ 'active': isActiveSubSection('impact') }"
+         @click="selectSubSection('impact')">
+      impact
+    </div>
+  </div>
       <button class = 'scrollTopBtn'>Scroll</button>
 
   </div>
@@ -231,6 +283,12 @@ document.addEventListener('DOMContentLoaded', function () {
   top: 0;
 } */
 
+#realTimeUpd {
+  margin-left:  5rem;
+}
+#presonalizedWeather {
+  margin-right:  5rem;
+}
 .v-main {
   display: flex;
   flex-direction: column;
@@ -244,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
   align-items: flex-start;
 } */
 .first-vp{
-  height: 80vh;
+  height: 65vh;
 /*   background-color: aqua; */
   width: 100vw;
   display: flex;
@@ -354,10 +412,12 @@ margin-top: 2rem;
 }
 
 .second-vp{
-  height: 90vh;
+  height: 85vh;
 /*   background-color: red; */
-  width: 100vw;
+  /* width: 100vw; */
   display: flex;
+  padding-left: 5rem;
+  padding-right: 5rem;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -485,6 +545,16 @@ margin-top: 2rem;
     justify-self: center;
 }
 
+#aboutContent button:hover {
+    background-color: #F0E6D2; /* Change as per your color scheme */
+    cursor: pointer;
+}
+
+#aboutContent button.active {
+    background-color: #E2D8D1; /* Change as per your color scheme */
+    border: 2px solid #303030;
+}
+
 .aboutText {
   font-family: 'Asap Regular' sans-serif;
   font-size: 1.2rem;
@@ -511,17 +581,32 @@ margin-top: 2rem;
   font-weight: 500;
 }
 
-.sub-sec-one{
-text-decoration: underline;
-}
-.sub-sec-two:hover{
-  text-decoration: underline;
+.sub-sec-one, .sub-sec-two, .sub-sec-three {
   cursor: pointer;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5;
+  padding-bottom: 0.5;
+  /* Add common styles for sub-sec buttons here */
 }
-.sub-sec-three:hover{
+
+.sub-sec-one:hover, .sub-sec-two:hover, .sub-sec-three:hover {
   text-decoration: underline;
-  cursor: pointer;
+  /* Add more hover styles as needed */
 }
+
+.sub-sec-one.active:hover, .sub-sec-two.active:hover, .sub-sec-three.active:hover {
+  text-decoration: none;
+  /* Add more hover styles as needed */
+}
+
+
+.sub-sec-one.active, .sub-sec-two.active, .sub-sec-three.active {
+  background-color: pink; /* Example active state style */
+  border: 1px solid #303030;
+  /* Add more active styles as needed */
+}
+
 
 
 .third-vp{

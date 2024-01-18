@@ -300,7 +300,17 @@ export default {
     sunPosition(){
       const hour = new Date().getUTCHours()
       console.log('hora',hour)
-    }
+    },
+    capitalizeDescription(description) {
+      return description
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    },
+      getWeatherIcon(iconCode) {
+  const baseUrl = 'https://openweathermap.org/img/wn/';
+  return `${baseUrl}${iconCode}@4x.png`;
+}
   }
   
 };
@@ -314,12 +324,12 @@ export default {
       <div class="div1 gridCell">
         <div id = 'containerWeatherToday'>
           <h3 id = 'date'>{{dateBuilder()}}</h3>
-        <img id = 'weatherTodayIllustration' src = '../assets/img/rainImg.svg' :alt="getWeatherAltText" > 
-          <div class="date-icon-header">
-        
-          </div>
-
-        
+          <img 
+      id="weatherTodayIllustration" 
+      :src="getWeatherIcon(weather.weather[0].icon)" 
+      :alt="getWeatherAltText"
+    >
+          
         <div id = 'location' :style="{ fontSize: computeFontSize(weather.name.length) }">
 
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
@@ -333,11 +343,11 @@ export default {
   <p id="feelsLikeTitle">Feels Like</p>
   <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
 </div>
+<div id="expectedContainer">
+  <p id="expectedTitle">Expected</p>
+  <p id="expectedData">{{ capitalizeDescription(weather.weather[0].description) }}</p>
+</div>
 
-        <div id = 'expectedContainer'>
-          <p id = 'expectedTitle'>Expected</p>
-          <p id = 'expectedData'>{{ weather.weather[0].description }}</p>
-        </div>
         <div id = 'humidityContainer'>
           <div class = 'humidityContainerHeader'>
             <img src = '../assets/img/humidityIconBasicMode.svg' class = 'humidityIcon'>
@@ -564,14 +574,13 @@ border-radius: 50px 50px 10px 10px ;}
     /* border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
     background: #C3C3C3;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: column;
     align-items: center;
 }
 #weatherTodayIllustration{
   max-width: 10em;
   height: auto;
-  margin:auto;
 }
 
 .date-icon-header {
@@ -587,7 +596,7 @@ border-radius: 50px 50px 10px 10px ;}
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  margin-top: 2em;
+
 }
 
 #location{
@@ -599,7 +608,6 @@ border-radius: 50px 50px 10px 10px ;}
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: 1rem;
   
 }
 .locationCity {
