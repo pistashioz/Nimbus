@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
  };
  </script>
 <template>
+  
   <main class="landing-page">
     <div class="first-vp">
       <div id = 'introText' class = 'text'>

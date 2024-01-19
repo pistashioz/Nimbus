@@ -442,6 +442,7 @@ async signUp() {
     // Perform validations first
     validateEmail(this.email);
     validateUsername(this.username);
+    validatePassword(this.password);
     validatePasswordMatch(this.password, this.passwordConfirmation);
     if (!this.agreedToTerms) {
       throw new Error('You must agree to the Terms & Conditions and Privacy Policy.');
@@ -565,7 +566,7 @@ selectLanguage(lang) {
               longitude: longitude,
               region: result[0].name, // Human-readable address
             };
-            console.log(this.triedToleave);
+/*             console.log(this.triedToleave); // this was to try to keep the user on the form but the beforeroute lifecycle hook was creating an infinite loop don't know why
            if (this.triedToleave) {
               
               // Save preferences
@@ -577,7 +578,7 @@ selectLanguage(lang) {
                 this.$router.push({ name: this.triedToleave.name });
                 this.triedToLeave = null; // Reset the variable
             
-            } 
+            }  */
             
           //  console.log(`The user region is: ${this.userRegion.region} with latitude: ${this.userRegion.latitude}, longitude: ${this.userRegion.longitude}`);
           }
@@ -605,6 +606,11 @@ async persSave() {
           this.errorMessage = 'No username provided.';
         return;
       } 
+      if (!this.userRegion) {
+      this.activeArea = 4;
+      this.errorMessage = "Please select at least your region so we can show you some meteorological information.";
+      return;
+    }
       try {
         // Construct the preferences object
         this.preferences = {
@@ -627,12 +633,13 @@ async persSave() {
       }
     },
     skipPersonalization() {
-    // Redirect to the landing page
     // Check if neither userLocations nor userRegion are set
-    if (this.userLocations.length === 0 && !this.userRegion) {
+    
+    if (!this.userRegion) {
+      this.activeArea = 4;
       console.log(this.userLocations);
       console.log(this.userRegion);
-      this.errorMessage = "Please select at least one location either from the Weather Watchlist or from Language and Region section";
+      this.errorMessage = "Please select at least your region so we can show you some meteorological information.";
       return;
     }
 
@@ -666,6 +673,7 @@ next(false);
 
 
 <style scoped>
+
 
 .language-selection,
 .region-detection {
@@ -937,6 +945,7 @@ font-size: 1rem;
   opacity: 1;
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-out;
 }
+
 
 .sign-up.form.concluded {
   transform: translateY(100%);

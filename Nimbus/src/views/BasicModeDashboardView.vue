@@ -12,22 +12,38 @@ export default {
       weather: {},
       five_day_forecast: {},
       air_quality: {},
+      region: ''
     };
   },
   components: {
     ArrowButton,
     HeaderDashboard,
   },
-  created(){
-    this.fetchWeather()
-  },
+  created() {
+    console.log(this.userLocation);
+    this.region = this.userLocation.region || '';
+  this.fetchWeather().then(() => {
+    console.log(this.fetchWeather());
+    // Actions to perform after data is fetched
+    console.log("Weather data fetched");
+  }).catch(error => {
+    // Handle errors that occurred during fetchWeather
+    console.error("Error fetching weather data:", error);
+  });
+},
+
   mounted() {
-    this.fetchWeather()
+/*     this.fetchWeather() */
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
     console.log(this.store.authenticatedUser);
-    console.log(this.userLocation);
+    console.log(this.userLocation);   
+/*       this.weatherStore.updateUserWeather(this.userLocation, this.userLocations);
+      this.weatherStore.fetchWeatherForAllLocations();
+      this.weatherStore.fetchRegionWeather(); */
+      
+    
   },
   computed: {
     store() {
@@ -54,6 +70,7 @@ export default {
      userLocation() {
        return this.getAuthenticatedUser.userRegion;
      },
+     
     getWeatherAltText() {
     const weatherMain = this.weather.weather[0].main.toLowerCase();
 
@@ -105,23 +122,19 @@ export default {
   }
 },
   methods: {
-    initializeWeatherData() {
+/*     initializeWeatherData() {
       this.updateWeatherData();
-    },
-    updateWeatherData() {
-      const region = this.userLocation.region;
+    }, */
 
-      this.weatherStore.updateUserWeather(region, this.userLocations);
-      this.weatherStore.fetchWeatherForAllLocations();
-      this.weatherStore.fetchRegionWeather();
-      
-    },
-  async fetchWeather() {
+/*   async fetchWeather() {
     try {
       await this.updateWeatherData();
+      console.log(this.weatherStore);
+      console.log(this.weatherStore.regionWeatherData);
       if (this.weatherStore.regionWeatherData) {
       this.weather = this.weatherStore.regionWeatherData.currentWeather;
       console.log(this.weather);
+      console.log(this.weather.weather);
       this.air_quality = this.weatherStore.regionWeatherData.airQuality;
       this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
     } else {
@@ -130,7 +143,33 @@ export default {
       } catch (error) {
         console.error('Error fetching weather data:', error);
       }
-  },
+  }, */
+  async fetchWeather() {
+  try {
+
+    if (this.weatherStore.regionWeatherData) {
+      console.log('Weather data is available.');
+      this.weather = this.weatherStore.regionWeatherData.currentWeather || {};
+      console.log(this.weather);
+      console.log(this.weather.main.feels_like);
+      this.air_quality = this.weatherStore.regionWeatherData.airQuality || {};
+      this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast || {};
+    } else {
+      console.error('Region weather data is not available.');
+      // Set default values or handle the absence of data
+      this.weather = {};
+      this.air_quality = {};
+      this.five_day_forecast = {};
+    }
+  } catch (error) {
+    console.error('Error fetching weather data:', error);
+    // Handle the error, set default values
+    this.weather = {};
+    this.air_quality = {};
+    this.five_day_forecast = {};
+  }
+}
+,
     dateBuilder() {
       return moment().format('dddd, D MMMM');
     },
@@ -330,7 +369,7 @@ export default {
       :alt="getWeatherAltText"
     >
           
-        <div id = 'location' :style="{ fontSize: computeFontSize(weather.name.length) }">
+        <div id = 'location' :style="{ fontSize: computeFontSize(weather.name) }">
 
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
           <span class = 'locationCity' >{{ weather.name }}</span>

@@ -15,9 +15,10 @@ export default {
       daysOfWeek: ["M", "T", "W", "T", "F", "S", "S"],
       currentYear: new Date().getFullYear(),
       currentMonth: "",
-      currentDay: "",
+      currentDayOfWeek: "",
       weatherCity: [],
-      weather: []
+      weather: [],
+      countryMapping: {},
     }
   },
   components: {
@@ -26,15 +27,15 @@ export default {
   created() {
     this.fetchWeather()
     this.startUpdatingTime();
-    console.log(this.weatherCity);
+  
     this.currentMonth = this.getMonthName(this.monthIndex);
     this.currentDay = new Date().getDate();
-    console.log(this.currentDay);
+
+    this.fetchCountries();
   },
-  mounted() {
-    console.log(this.weatherCity);
-    console.log(this.weather);
-  },
+/*   mounted() {
+
+  }, */
   computed: {
     store() {
        return useUserStore();
@@ -48,6 +49,7 @@ export default {
     regionWeatherData(){
       return this.weatherStore.regionWeatherData;
     },
+    
      isUser() {
        return this.store.isUser;
      },
@@ -72,19 +74,35 @@ export default {
     }
     },
   methods:{
-        
+    async fetchCountries() {
+      try {
+        const response = await fetch("https://restcountries.com/v3.1/all");
+        if (!response.ok) {
+          throw new Error('Failed to fetch countries');
+        }
+        const countries = await response.json();
+        this.countryMapping = countries.reduce((acc, country) => {
+          // Use alpha2Code (e.g., "PT") as the key
+          acc[country.cca2] = country.name.common;
+          return acc;
+        }, {});
+      } catch (error) {
+        console.error('Error fetching country data:', error);
+      }
+    },
     async fetchWeather(){
       try {
-        const region = this.userLocation.region;
-        this.weatherStore.updateUserWeather(region, this.userLocations);
-        console.log(this.weatherStore.weatherData.locations)
+/*         const region = this.userLocation.region;
+        console.log(this.getAuthenticatedUser);
+        console.log(this.userLocation);
+        console.log(this.userLocations);
+        this.weatherStore.updateUserWeather(region, this.userLocations); */
         this.weatherCity = this.weatherStore.weatherData.locations.map((locationData) => {
           return locationData.currentWeather;
         });
         this.weather = this.weatherStore.regionWeatherData.currentWeather
         console.log(this.weather)
         console.log('weather city: ',this.weatherCity)
-        this.isWeatherLoaded = true;
 
         
       } catch (error) {
@@ -92,14 +110,17 @@ export default {
       }
     },
     updateCurrentTime() {
-      const now = new Date();
+  const now = new Date();
   const hours = now.getHours();
   const minutes = now.getMinutes();
-  this.currentTime = `${hours}:${minutes}`;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
+  this.currentTime = `${hours}:${formattedMinutes}`;
   // Removed the part that sets currentDay to a string representing the day of the week
   const date = now.getDate();
   this.currentDate = date < 10 ? `0${date}` : date.toString();
-
+  const daysOfWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+      const dayIndex = now.getDay();
+      this.currentDayOfWeek = daysOfWeek[dayIndex];
     
       this.currentDate = date < 10 ? `0${date}` : date.toString();
       const monthIndex = now.getMonth();
@@ -169,16 +190,17 @@ export default {
         <div id = 'month'>{{ currentMonth }}</div>
         <div id = 'dateAndDayAdvancedMode'>
           <h2 id = 'dateAdvancedMode'>{{ currentDate }}</h2>
-          <h3 id = 'dayAdvancedMode'>{{ currentDay }}</h3>
+          <h3 id = 'dayAdvancedMode'>{{ currentDayOfWeek }}</h3>
         </div>
       </div>
     </section>
     <section id='citiesContainer' class="div2AM gridCellAM">
   <div v-for="(city, index) in weatherCity" :key="index" class='cityContainer' >
     <div class='cityContainerHeader'>
-      <div class='cityName'>{{ city.name }}</div> 
-      <div class='countryName'>{{ userLocations[index].description.split(',')[1] }}</div>
-    </div>
+  <div class='cityName'>{{ city.name }}</div>
+  <div class='countryName' v-if="countryMapping[city.sys.country]">{{ countryMapping[city.sys.country] }}</div>
+</div>
+
     <img class='cityWeatherIcon' :src="getWeatherIcon(city.weather[0].icon)" alt="Weather Icon">
     <div class='cityContainerTemperature'>
       <h2 class='currentTempCityContainer'>{{ Math.round(city.main.temp) }}° </h2>
@@ -202,7 +224,6 @@ export default {
           <button id = 'allClearBtn'>ALL CLEAR!</button>
           <button id = 'quietTheSkiesBtn'>QUIET THE SKIES</button>
          </div>
-        <p></p>
       </section>
     </div>
 
@@ -279,15 +300,14 @@ overflow: hidden;}
   transform: translateY(8.8rem);
   height: fit-content;
 } 
-.gridAM{
-  display: grid;
-  grid-template-columns:  1fr 3rem 11.25rem 18rem; /* repeat(4, 1fr); */ 
-  grid-template-rows: 50px 1fr 301.34px 1fr ; /* Adjust the first value for the header row height */
-  grid-column-gap: 32px;
-  grid-row-gap: 32px;
-  height: 850px;
- 
-  width: 1260px;
+.gridAM {
+    display: grid;
+    grid-template-columns: 1fr 3rem 11.25rem 18rem;
+    grid-template-rows: 50px 300px 300.34px;
+    grid-column-gap: 32px;
+    grid-row-gap: 32px;
+    height: 860px;
+    width: 1260px;
 }
 .gridCellAM {
   background-color: #EDDED4;
@@ -310,8 +330,7 @@ border-radius: 50px 50px 10px 10px ;}
   grid-row-start: 2;
   grid-row-end: 3;}
 
-.div2AM { width: ;
-
+.div2AM { 
   grid-column-start: 2;
   grid-column-end: 4;
   grid-row-start: 2;
@@ -331,11 +350,12 @@ border-radius: 50px 50px 10px 10px ;}
   grid-row-end: 3;
 }
 
-.div5AM {  grid-column-start: 3;
-  grid-column-end: 3;
-  grid-row-start: 3;
-  grid-row-end: 4;}
-
+.div5AM {
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
   .div5AM.gridCellAM { justify-content: flex-start;
    overflow: visible;
    border: 0;
@@ -381,6 +401,7 @@ width: 3.125rem;
 }
 #containerBasicWeatherInfo {
     width: 60%;
+    padding: 1rem;
     /* height: 10.0625rem; */
     flex-shrink: 0;
     border-radius: 1.25rem;
@@ -390,10 +411,13 @@ width: 3.125rem;
     justify-content: space-around;
     align-items: center;
 }
-#todaysWeatherIconAdvacedMode{
+/* #todaysWeatherIconAdvacedMode{
   width: 8rem;
   height: auto;
   z-index: 2;
+} */
+#locationIconAdvancedMode {
+  transform: translateY(-4px);
 }
 #currentTemperatureHeader{
   color: #303030;
@@ -402,9 +426,7 @@ width: 3.125rem;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  align-self: start;
   margin: 0;
-  margin-bottom: 0.2em;
 }
 #degreeTypeHeader{
   color: #303030;
@@ -415,35 +437,39 @@ width: 3.125rem;
   line-height: normal;
   position:absolute;
   /* left:6em; */
-  transform: translateY(7%);
+  transform: translateY(4%);
+  margin: 0;
 }
 #headerBasicWeatherInfo {
     z-index: 3;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
+    justify-content: space-around;
     align-items: flex-end;
 }
-#locationAdvancedMode{
-  height:3em;
-  position:absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-end;
+#locationAdvancedMode {
+    /* height: 3em; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
-
 .locationAdvancedMode-row {
   display: flex;
   align-items: flex-end;
 }
 
+
 #locationAdvancedMode p {
   margin-top: 0;
+  margin-bottom: 0;
+  transform: translateY(1px);
 }
 
 #locationAdvancedMode h2 {
   margin-left: 0.3rem;
   margin-bottom: 0;
+  margin-top: 0;
 }
 #locationCityAdvancedMode, #locationIconAdvancedMode{
   align-items: center;
@@ -541,31 +567,23 @@ width: 3.125rem;
   */
 }
 #citiesContainer{
-/*   width: 15.5rem;
-  height:14.312rem;
-  flex-shrink: 0;
-  border-radius: 1.25rem;
-  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
-  background: var(--secondary-color-palette-20-saturation-orchid-flush-20-sat, #E15CC9);
-  /*
-  position: absolute;
-  left:45.75em;
-  top:7em;
-  */
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  
+    background: var(--secondary-color-palette-20-saturation-orchid-flush-20-sat, #E15CC9);
+    display: flex;
+    align-items: center;
+    /* flex-direction: column; */
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 .cityContainer {
-    width: 7rem;
-    height: 7rem;
+/*     width: 7rem;
+    height: 7rem; */
     /* flex-shrink: 0; */
     border-radius: 1.25rem;
     border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
     background: #F2E6DD;
+    width: 5rem;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -584,14 +602,23 @@ width: 3.125rem;
   z-index: 5;
 }
 
-.cityName{
+#headerNimbusNudges{
+  padding-top: 0;
+}
+.cityName {
   color: #E65E2A;
   font-family: Asap;
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  white-space: nowrap;       
+  overflow: hidden;          
+  text-overflow: ellipsis;   
+  width: 100%;              
+  text-align: center;     
 }
+
 .countryName{
   color: #303030;
   font-family: Asap;
@@ -812,6 +839,7 @@ margin-bottom: -0.5em;
 
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
   background: var(--secondary-color-palette-30-saturation-spring-bud-30-sat, #E1E2CB);
@@ -845,7 +873,7 @@ margin-bottom: -0.5em;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   align-self: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   color: #000;
   font-family: Asap;
   font-size: 0.9rem;
@@ -853,7 +881,8 @@ margin-bottom: -0.5em;
   font-weight: 250;
   line-height: normal;
   margin: 0;
-  margin-top: 0.5em;
+  margin-top: 1.3rem;
+  margin-bottom: 1.3rem;
   padding-left: 1rem;
     padding-right: 1rem;
 }
