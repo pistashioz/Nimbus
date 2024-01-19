@@ -5,7 +5,6 @@ import nimbusLogo from "@/assets/icons/logo.svg";
 export default {
   data() {
     return {
-      store: useUserStore(),
       nimbusLogo,
     };
   },
@@ -15,12 +14,20 @@ export default {
     },
     isUser() {
       return this.store.isUser
+    },
+    store() {
+      return useUserStore();
     }
+  },
+  mounted() {
+    console.log("mounted");~
+    console.log(this.store);
   },
   methods: {
     logout() {
-      this.store.logout();
-      this.$router.push({ name: "landingPage" });
+        this.store.logout();
+
+    this.$router.push({ name: "landingPage" });
     },
   },
 };

@@ -20,6 +20,7 @@ export default {
     HeaderDashboard,
   },
   created() {
+    console.log(this.userLocation);
     this.region = this.userLocation.region || '';
   this.fetchWeather().then(() => {
     console.log(this.fetchWeather());
@@ -37,7 +38,12 @@ export default {
       this.calculateSunPosition();
     });
     console.log(this.store.authenticatedUser);
-    console.log(this.userLocation);
+    console.log(this.userLocation);   
+/*       this.weatherStore.updateUserWeather(this.userLocation, this.userLocations);
+      this.weatherStore.fetchWeatherForAllLocations();
+      this.weatherStore.fetchRegionWeather(); */
+      
+    
   },
   computed: {
     store() {
@@ -64,6 +70,7 @@ export default {
      userLocation() {
        return this.getAuthenticatedUser.userRegion;
      },
+     
     getWeatherAltText() {
     const weatherMain = this.weather.weather[0].main.toLowerCase();
 
@@ -115,17 +122,10 @@ export default {
   }
 },
   methods: {
-    initializeWeatherData() {
+/*     initializeWeatherData() {
       this.updateWeatherData();
-    },
-    updateWeatherData() {
-      console.log(this.userLocation.region);
-      console.log(this.region);
-      this.weatherStore.updateUserWeather(this.region, this.userLocations);
-      this.weatherStore.fetchWeatherForAllLocations();
-      this.weatherStore.fetchRegionWeather();
-      
-    },
+    }, */
+
 /*   async fetchWeather() {
     try {
       await this.updateWeatherData();
@@ -146,10 +146,12 @@ export default {
   }, */
   async fetchWeather() {
   try {
-    await this.updateWeatherData();
+
     if (this.weatherStore.regionWeatherData) {
       console.log('Weather data is available.');
       this.weather = this.weatherStore.regionWeatherData.currentWeather || {};
+      console.log(this.weather);
+      console.log(this.weather.main.feels_like);
       this.air_quality = this.weatherStore.regionWeatherData.airQuality || {};
       this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast || {};
     } else {
@@ -367,7 +369,7 @@ export default {
       :alt="getWeatherAltText"
     >
           
-        <div id = 'location' :style="{ fontSize: computeFontSize(weather.name.length) }">
+        <div id = 'location' :style="{ fontSize: computeFontSize(weather.name) }">
 
           <font-awesome-icon icon="location-dot" style="color: #303030;" />
           <span class = 'locationCity' >{{ weather.name }}</span>

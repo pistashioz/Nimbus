@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useWeatherStore } from "@/stores/weather"; // Import weather store
 
 export const useUserStore = defineStore("user", {
     state: () => ({
@@ -6,8 +7,8 @@ export const useUserStore = defineStore("user", {
         isUserAuthenticated: false,
         // Stores the current authenticated user's data
         user: null,
-        // Store the just registered user's data
-        registeredUser: null,
+/*         // Store the just registered user's data
+        registeredUser: null, */
 
         // Array of user objects
         users: [
@@ -32,33 +33,43 @@ export const useUserStore = defineStore("user", {
             if (user) {
                 this.isUserAuthenticated = true;
                 this.user = { ...user };
-            } else {
+        
+                // Update weather data after successful login
+                const weatherStore = useWeatherStore();
+                weatherStore.updateUserWeather(this.user.userRegion, this.user.userLocations);
+              } else {
                 throw Error("Invalid credentials!");
-            }
-        },
-        // Action to register a new user
-        register(email, username, password) {
-            // Existing user check
-            const existingUser = this.users.find(user => user.email === email || user.username === username);
-            if (existingUser) {
-                throw Error("User already exists!");
-            }
-        
-            // Create new user with initial nimbusCoin value
-            const newUser = {
-                username: username, 
-                email: email, 
-                password: password,
-                nimbusCoins: 50 // Initial coins set to 0
-            };
-        
-            
-            // Add new user to users array
-            this.users.push(newUser);
-        
-            // Setting the registered user to the store - deal with this if time is available
-            this.registeredUser = newUser.username;
-        },        
+              }
+            },
+            // Action to register a new user
+            register(email, username, password) {
+                // Check if the email already exists
+                const emailExists = this.users.some(user => user.email === email);
+                if (emailExists) {
+                    throw Error("Email already exists!");
+                }
+
+                // Check if the username already exists
+                const usernameExists = this.users.some(user => user.username === username);
+                if (usernameExists) {
+                    throw Error("Username already exists!");
+                }
+
+                // Create new user with initial nimbusCoin value
+                const newUser = {
+                    username: username,
+                    email: email,
+                    password: password,
+                    nimbusCoins: 50 // Initial coins set to 50
+                };
+
+                // Add new user to users array
+                this.users.push(newUser);
+
+                // Optionally set the registered user in the store
+                /* this.registeredUser = newUser.username; */ // this was supposed to be to be used on the beforerouteleave on the personalization form...
+            },
+       
         savePreferences(username, preferences) {
             // Find the user by username
             const userIndex = this.users.findIndex((user) => user.username === username);
@@ -77,8 +88,10 @@ export const useUserStore = defineStore("user", {
         },
         // Action to log out the current user
         logout() {
+            console.log('logging out');
             this.isUserAuthenticated = false;
             this.user = null;
+            this.registeredUser = null;
         },
 // Action to update user's data including preferences
 updateUser(username, newUserData) {

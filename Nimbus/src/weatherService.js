@@ -120,6 +120,56 @@ export const reverseGeocodeOpenWeather = async (latitude, longitude, limit = 1) 
   }
 };
 
+
+export const fetchWeatherDataByCoordinates = async (latitude, longitude) => {
+  try {
+    const weatherResponse = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&APPID=${API_KEY}`);
+
+    if (!weatherResponse.ok) {
+      throw new Error("Could not fetch weather data.");
+    }
+
+    const data = await weatherResponse.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const fetchFiveDayForecastByCoordinates = async (latitude, longitude) => {
+  try {
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+
+    if (!response.ok) {
+      throw new Error("Error fetching 5-day weather forecast.");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const fetchAirQualityByCoordinates = async (latitude, longitude) => {
+  try {
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`);
+
+    if (!response.ok) {
+      throw new Error("Error fetching air pollution data.");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
 export const fetchDataByCityName = async (cityName) => {
   try {
     console.log(cityName)
