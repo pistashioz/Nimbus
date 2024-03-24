@@ -33,7 +33,7 @@ To get started with Nimbus on your local machine, follow these steps:
 
 1. Clone the repository: git clone [git@github.com:pistashioz/Nimbus.git](git@github.com:pistashioz/Nimbus.git)
 2. Install dependencies: npm install
-3. Run the development server: npm run serve
+3. Run the development server: npm run dev
    
 Visit Nimbus Documentation for detailed information on configuration and usage.
 
