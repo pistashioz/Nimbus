@@ -62,26 +62,15 @@
    },
    methods: {
      navigateToDashboard() {
-       if (this.isUser) {
-        console.log(this.getAuthenticatedUser);
-        console.log(this.userLocation);
-        //console.log(this.store.userLocations.length);
-        console.log(this.userLocations);
-         if (this.userLocations && this.userLocations.length > 0) {
-          // this.$router.push({ name: 'advancedModeDashboard' }); //ACTIVATE THIS AFTER
-          this.userLocations.forEach((location) => {
-            console.log(location);
-          });
-          console.log(`GOT THIS LOCATION: ${this.userLocations}`);
-            this.$router.push({ name: 'basicModeDashboard' }); 
-         } else {
-          console.log('no locations');
-            this.$router.push({ name: 'basicModeDashboard' }); 
-         }
-       } else {
-         // Handle for other cases if necessary
-       }
-     },
+    if (this.isUser) {
+      const { userLocations } = this.userLocations;
+      if (userLocations && userLocations.length > 0) {
+        this.$router.push({ name: 'basicModeDashboard' });
+      } else {
+        this.$router.push({ name: 'basicModeDashboard' });
+      }
+    }
+  },
      selectTab(tabName) {
       this.selectedTab = tabName;
       if (tabName === 'introduction') {
@@ -111,16 +100,16 @@
       </div>
       <div class="first-vp-bg">
 
-        <img :src="sunLandingPage" key="secondImage" rel="preload" id="sunLandingPage">
-        <img :src="cloud1LandingPage" key="secondImage" rel="preload" id="cloud1LandingPage">
-        <img :src="cloud2LandingPage" key="secondImage" rel="preload" id="cloud2LandingPage"> 
+        <img :src="sunLandingPage" rel="preload" id="sunLandingPage">
+        <img :src="cloud1LandingPage"  rel="preload" id="cloud1LandingPage">
+        <img :src="cloud2LandingPage" rel="preload" id="cloud2LandingPage"> 
       </div>
     </div>
 <div class="second-vp">
 
       <div id = 'aboutTitle'>
         <h1 id = 'forecasting'>Forecasting</h1>
-        <img id = 'logoImgAbout' :src = 'nimbusLogo'>
+        <img rel="preload" :src="nimbusLogo" width="100px" height="auto">
         <h1 id = 'reimagined'>REIMAGINED</h1>
         <h1 id = 'welcomeToNimbus'>Welcome to Nimbus.</h1>
       </div>
