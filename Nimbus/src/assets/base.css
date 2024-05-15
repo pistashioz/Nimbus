@@ -1,10 +1,18 @@
 @font-face {
-    font-family: 'Recoleta';
-    src: url(./fonts/recoleta);
+  font-family: "Recoleta";
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: local("Recoleta"), url("../../public/fonts/recoleta/Recoleta-Black.woff") format("woff")
 }
 @font-face {
-    font-family: 'Asap';
-    src: url(./fonts/Asap);
+  font-family: "Asap";
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: local("Asap"), url("../../public/fonts/Asap/Asap-VariableFont_wdth\,wght.ttf") format("woff2")
 }
 
 :root {

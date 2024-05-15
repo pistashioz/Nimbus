@@ -1,41 +1,36 @@
-<!-- <script>
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  const goTopBtn = document.querySelector('.scrollTopBtn');
-  console.log(goTopBtn)
-  window.addEventListener('scroll', checkHeight);
-
-  function checkHeight() {
-    if (window.scrollY > 800) {
-      goTopBtn.style.display = 'flex';
-    } else {
-      goTopBtn.style.display = 'none';
-    }
-  }
-
- goTopBtn.addEventListener('click', ()=>{
-    window.scrollTo({
-      top: 0
-    })
-  }) 
-});
-
-</script>
- -->
  <script>
  import { useUserStore } from "@/stores/user";
  import nimbusLogo from "@/assets/icons/logo.svg";
-
+  import sunLandingPage from '@/assets/img/sunLandingPage.webp'
+  import cloud1LandingPage from '@/assets/img/cloud1LandingPage.webp'
+  import cloud2LandingPage from '@/assets/img/cloud2LandingPage.webp'
+  import underlineImg from '@/assets/img/underline.webp'
+  import attributesImg from '@/assets/img/Attribute1Img.webp'
+  import attributes2Img from '@/assets/img/Attribute2Img.webp'
+  import attributes3Img from '@/assets/img/Attribute3Img.webp'
+  import quotationMarkReview from '@/assets/img/quotationMarkReview.webp'
+  import lglRsrcImg from '@/assets/img/EllipseLegalResources.webp' 
+  import addInfoImg from '@/assets/img/EllipseAdditionalInfo.webp'
+  import Reviews from '@/components/Reviews.vue';
  export default {
+  components: {
+    Reviews, 
+  },
   data() {
     return {
       nimbusLogo,
       selectedTab: 'introduction', // Default tab
-      nimbusLogo,
-      selectedTab: 'introduction', // Default tab
       selectedSubSection: 'missionAndVision', // Default sub-section
-      nimbusLogo,
+      sunLandingPage,
+      cloud1LandingPage,
+      cloud2LandingPage,
+      underlineImg,
+      attributesImg,
+      attributes2Img,
+      attributes3Img,
+      quotationMarkReview,
+      lglRsrcImg,
+      addInfoImg,
       tabContent: {
         introduction: 'Introduction content here...',
         features: 'Features content here...',
@@ -103,8 +98,10 @@ document.addEventListener('DOMContentLoaded', function () {
  };
  </script>
 <template>
-  
   <main class="landing-page">
+    <head>
+      <link rel="preload" href="/images/photo.jpg" as="image" fetchpriority="high" />
+    </head>
     <div class="first-vp">
       <div id = 'introText' class = 'text'>
         Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.
@@ -113,9 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
       </button>
       </div>
       <div class="first-vp-bg">
-        <img id = 'sunLandingPage' src = '../assets/img/sunLandingPage.svg'>
-      <img id = 'cloud1LandingPage' src = '../assets/img/cloud1LandingPage.svg'>
-      <img id = 'cloud2LandingPage' src = '../assets/img/cloud2LandingPage.svg'> 
+
+        <img :src="sunLandingPage" key="secondImage" rel="preload" id="sunLandingPage">
+        <img :src="cloud1LandingPage" key="secondImage" rel="preload" id="cloud1LandingPage">
+        <img :src="cloud2LandingPage" key="secondImage" rel="preload" id="cloud2LandingPage"> 
       </div>
     </div>
 <div class="second-vp">
@@ -169,12 +167,12 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class = 'nimbusAttributes'>
       <div id  = 'attTitle'>
         <h2 class = 'attributesTitleText'>From Clouds to Clarify: Your Weather Ally.</h2>
-        <img id = 'underlineImg' src = '../assets/img/underline.svg'>
+        <img :src="underlineImg" id = 'underlineImg' width="500px" height="auto"> 
       </div>
       <div class = 'attributesContent'>
         <div class= 'containersAttributes' id = 'realTimeUpd'>
-          <div class="icon-header">          
-            <img class = 'attributesImg' src = '../assets/img/Attribute1Img.svg'>
+          <div class="icon-header">     
+            <img :src="attributesImg" class = 'attributesImg' width="100px" height="auto" loading="lazy"> 
         </div>
           <div class = 'header-text'>
             <h3 class = 'attributesHeader' id = 'realTimeUpdHeader'>Real-Time Updates</h3>
@@ -182,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
         <div class= 'containersAttributes' id = 'precisionForecast'>
           <div class="icon-header">  
-          <img class = 'attributesImg' src = '../assets/img/Attribute2Img.svg'>
+            <img :src="attributes2Img" class = 'attributesImg' width="150px" height="auto" loading="lazy"> 
           </div>
           <div class = 'header-text'>
           <h3 class = 'attributesHeader' id = 'presicionForecastHeader'>Precision Forecasting</h3>
@@ -191,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
         <div class= 'containersAttributes' id = 'presonalizedWeather'>
           <div class="icon-header"> 
-          <img class = 'attributesImg' src = '../assets/img/Attribute3Img.svg'>
+            <img :src="attributes3Img" class = 'attributesImg' width="100px" height="auto" loading="lazy"> 
           </div>
           <div class = 'header-text'>
           <h3 class = 'attributesHeader'>Unique Experience</h3>
@@ -200,78 +198,15 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
     </div>
-    <div id = 'reviews'>
-      <div class="review-titles">
-        <h3 id = 'subHeadingReviews'>Beyond the forecast</h3>
-      <h2 id = 'headingReviews'>Nimbus awaits</h2>
-      </div>
-
-      <div class = 'containerReview'>
-        <div class = 'cardContainer'>
-        <div class = 'cardContent'>
-          <div class = 'swipper-wrapper'>
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Top-notch weather app! Nimbus keeps me informed with accurate forecasts and handy features. The attention to detail in both design and data sets it apart.</p>
-                <small class = 'cardName'>Freya, Norway</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Five stars for Nimbus! The app delivers precise weather updates with an elegant interface. The interactive map is a great touch, providing a comprehensive view.</p>
-                <small class = 'cardName'>Isabella, Sweeden</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Nimbus is my weather go-to! Accurate forecasts, user-friendly interface, and an interactive radar map for a complete experience. Highly recommended!</p>
-                <small class = 'cardName'>Alex, Canada</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Informative and customizable. Real-time notifications for severe weather are a plus. A reliable weather companion</p>
-                <small class = 'cardName'>Zoe, UK</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Outstanding! Nimbus provides precise forecasts with a sleek design. Love the real-time notifications for severe weather. A top-notch weather app!</p>
-                <small class = 'cardName'>Aisha, UAE</small>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
+    <Reviews /> 
   </div>
     <footer>
       <div id = 'legalRsrc'>
-        <img id = 'lglRsrcImg' src = '../assets/img/EllipseLegalResources.svg'>
+        <img :src="lglRsrcImg"  id = 'lglRsrcImg' loading="lazy" width="25px"> 
         <RouterLink :to="{ name: 'legalResources' }" id = 'legalResourcesBtn'>legal resources</RouterLink>
       </div>
       <div id = 'addInfo'>
-        <img id = 'addInfoImg' src = '../assets/img/EllipseAdditionalInfo.svg'>
+        <img :src="addInfoImg"  id = 'addInfoImg' loading="lazy" width="25px"> 
         <RouterLink :to="{ name: 'additionalInformation' }" id = 'additionalInfoBtn'>additional info</RouterLink>
       </div>
     </footer> 
@@ -722,86 +657,6 @@ hr.solid {
   top: 10em;
 }
 
-#reviews {
-    width: 100%;
-    display: flex;
-    /* height: 25em; */
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-}
-.review-titles {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 3rem;
-  margin-top: 5em;
-}
-#subHeadingReviews{
-  color: #303030;
-  text-align: center;
-  font-family: Asap;
-  font-size: 25px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  margin: 0;
-/*   position: relative;
-  top: -5em; */
-}
-#headingReviews{
-  color: #303030;
-  text-align: center;
-  font-family: Recoleta;
-  font-size: 60px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
-  margin: 0;
-/*   position: relative;
-  top: -3em; */
-}
-
-.containerReview{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-/*   position: relative;
-  top: -17em; */
-  
-}
-
-
-.cardContainer{
-  margin-left:auto;
-  margin-right:auto;
-  position:relative;
-  overflow:hidden;
-  list-style:none;
-  padding:0;
-  z-index:1;
-}
-
-.cardContent{
-  
-  margin-inline-start: 2.5rem;
-  border-radius: 1.25rem;
-  overflow: hidden;
-}
-
-.cardArticle{
-  border-radius: 20px;
-background: #F2E6DD;
-  flex-shrink:0;
-  width:340px;
-  height:auto;
-  margin-right: 80px;
-  position:relative;
-  transition-property:transform;
-}
 
 .cardImage{
   position: relative;
@@ -809,13 +664,6 @@ padding-top: 1rem;
 padding-left: 1rem;
 margin-bottom: -0.75rem;
 }
-.swipper-wrapper {
-  display: grid;
-  grid-auto-flow: column;
-  overflow: auto; 
-  transform: translateX(0px); /* play with this from swipe of the reviews */
-}
-
 .cardData{
   padding: 0rem 1.5rem 1.5rem 1.5rem;
   border-radius: 1rem;
