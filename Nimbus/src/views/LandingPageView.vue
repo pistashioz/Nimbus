@@ -1,28 +1,3 @@
-<!-- <script>
-
-
-document.addEventListener('DOMContentLoaded', function () {
-  const goTopBtn = document.querySelector('.scrollTopBtn');
-  console.log(goTopBtn)
-  window.addEventListener('scroll', checkHeight);
-
-  function checkHeight() {
-    if (window.scrollY > 800) {
-      goTopBtn.style.display = 'flex';
-    } else {
-      goTopBtn.style.display = 'none';
-    }
-  }
-
- goTopBtn.addEventListener('click', ()=>{
-    window.scrollTo({
-      top: 0
-    })
-  }) 
-});
-
-</script>
- -->
  <script>
  import { useUserStore } from "@/stores/user";
  import nimbusLogo from "@/assets/icons/logo.svg";

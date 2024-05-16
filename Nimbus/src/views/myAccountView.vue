@@ -11,7 +11,7 @@ import {fetchPlaceDetails , reverseGeocodeOpenWeather, reverseGeocode, getAutoco
 
 import nationalGeoImg from "@/assets/img/nationalgeographic.jpg";
 import adventureGearImg from "@/assets/img/adventure.jpg";
-import wellnessRetreatImg from "@/assets/img/spa.jpg";
+import wellnessRetreatImg from "@/assets/img/Spa.jpg";
 import ecoFriendlyProductsImg from "@/assets/img/eco goods.jpg";
 import chapterByChapterImg from "@/assets/img/bookstore.jpg";
 
@@ -338,49 +338,7 @@ export default {
       </div>
       </div>
 
-<!--       <h2>Language and Region</h2>
-  
-  <div class="language-selection">
-    <label class="section-label">Language</label>
-    <div class="languages">
-      <img
-            :src="langIcon" 
-            @click="togglePasswordConfirmationVisibility" 
-            class="lang-icon" 
-          />
-    <button type="button" @click="selectLanguage('pt')" :class="{ selected: userLang === 'pt' } " >PT
 
-    </button>
-    <button type="button" @click="selectLanguage('en')" :class="{ selected: userLang === 'en' }">ENG
-
-    </button>
-  </div>
-  </div>
-
-  <div class="region-detection">
-    <div class="region-label"><label class="section-label">Region </label>
-      <button type="button" @click="  fetchLocationNameFromOpenWeather">Detect Region</button></div>
-    <div class="region">
-    <img
-            :src="regionIcon" 
-            @click="togglePasswordConfirmationVisibility" 
-            class="lang-icon" 
-          />
-          <div class="userRegion">
-     <p>Latitude: {{ userRegion.latitude }}</p>
-      <p>Longitude: {{ userRegion.longitude }}</p>
-      <input 
-      type="text" 
-      disabled 
-      :placeholder="userRegion ? userRegion.region : 'Select your region'" 
-      :value="userRegion ? userRegion.region : ''"
-      class="region-input"
-    />
-    </div>
-    
-
-  </div>
-  </div> -->
     </div>
 
   <div class="div3-5 gridCell">

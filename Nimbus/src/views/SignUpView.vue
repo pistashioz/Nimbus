@@ -442,11 +442,11 @@ async signUp() {
     // Perform validations first
     validateEmail(this.email);
     validateUsername(this.username);
-    validatePassword(this.password);
+    // validatePassword(this.password);
     validatePasswordMatch(this.password, this.passwordConfirmation);
-    if (!this.agreedToTerms) {
+/*     if (!this.agreedToTerms) {
       throw new Error('You must agree to the Terms & Conditions and Privacy Policy.');
-    }
+    } */
 
     // Attempting to sign up with provided credentials
     await this.store.register(this.email, this.username, this.password);
@@ -511,34 +511,7 @@ selectLanguage(lang) {
   }
     },
     // Method to do reverse geocoding with google maps API
-/*     detectRegion() {
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const address = await reverseGeocode(position.coords.latitude, position.coords.longitude);
-            this.region = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              address: address, // human-readable address
-            };
-            console.log(this.region);
-          } catch (error) {
-            console.error("Error in reverse geocoding:", error);
-            this.errorMessage = "Error obtaining address.";
-          }
-        },
-        (error) => {
-          console.error("Error detecting region:", error);
-          this.errorMessage = "Error detecting region.";
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-      this.errorMessage = "Geolocation is not supported by your browser.";
-    }
-  }, */
   fetchLocationNameFromOpenWeather() {
     
 
