@@ -1,16 +1,13 @@
- <script>
- import { useUserStore } from "@/stores/user";
- import nimbusLogo from "@/assets/icons/logo.svg";
+<script>
+import { useUserStore } from "@/stores/user";
+import nimbusLogo from "@/assets/icons/logo.svg";
 
- export default {
+export default {
   data() {
     return {
       nimbusLogo,
-      selectedTab: 'introduction', // Default tab
-      nimbusLogo,
-      selectedTab: 'introduction', // Default tab
-      selectedSubSection: 'missionAndVision', // Default sub-section
-      nimbusLogo,
+      selectedTab: 'introduction',
+      selectedSubSection: 'missionAndVision',
       tabContent: {
         introduction: 'Introduction content here...',
         features: 'Features content here...',
@@ -23,49 +20,40 @@
       }
     }
   },
-   computed: {
-     store() {
-       return useUserStore();
-     },
-     isUser() {
-       return this.store.isUser;
-     },
-     getAuthenticatedUser() {
-       return this.store.authenticatedUser;
-     },
-     userLocations() {
-       return this.getAuthenticatedUser.userLocations;
-     },
-     userLocation() {
-       return this.getAuthenticatedUser.userRegion;
-     },
-   },
-   methods: {
-     navigateToDashboard() {
-       if (this.isUser) {
-        console.log(this.getAuthenticatedUser);
-        console.log(this.userLocation);
-        //console.log(this.store.userLocations.length);
-        console.log(this.userLocations);
-         if (this.userLocations && this.userLocations.length > 0) {
-          // this.$router.push({ name: 'advancedModeDashboard' }); //ACTIVATE THIS AFTER
-          this.userLocations.forEach((location) => {
-            console.log(location);
-          });
-          console.log(`GOT THIS LOCATION: ${this.userLocations}`);
-            this.$router.push({ name: 'basicModeDashboard' }); 
-         } else {
-          console.log('no locations');
-            this.$router.push({ name: 'basicModeDashboard' }); 
-         }
-       } else {
-         // Handle for other cases if necessary
-       }
-     },
-     selectTab(tabName) {
+  computed: {
+    store() {
+      return useUserStore();
+    },
+    isUser() {
+      return this.store.isUser;
+    },
+    getAuthenticatedUser() {
+      return this.store.authenticatedUser;
+    },
+    userLocations() {
+      return this.getAuthenticatedUser.userLocations;
+    },
+    userLocation() {
+      return this.getAuthenticatedUser.userRegion;
+    },
+  },
+  methods: {
+    navigateToDashboard() {
+      if (this.isUser) {
+        const userCity = this.userLocation.region;
+        if (userCity) {
+          this.$router.push({ name: 'advancedModeDashboard', params: { city: userCity } });
+        } else {
+          console.error("User city is not available");
+        }
+      } else {
+        console.error("User is not authenticated");
+      }
+    },
+    selectTab(tabName) {
       this.selectedTab = tabName;
       if (tabName === 'introduction') {
-        this.selectedSubSection = 'missionAndVision'; // Reset to default when Introduction is selected
+        this.selectedSubSection = 'missionAndVision';
       }
     },
     selectSubSection(section) {
@@ -74,185 +62,178 @@
     isActiveSubSection(section) {
       return this.selectedSubSection === section;
     }
-   },
- };
- </script>
+  },
+};
+</script>
+
 <template>
-  
   <main class="landing-page">
     <div class="first-vp">
-      <div id = 'introText' class = 'text'>
+      <div id='introText' class='text'>
         Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.
         <button v-if="isUser" class='accDashboardBtn' @click="navigateToDashboard">
-        Access the Dashboard
-      </button>
+          Access the Dashboard
+        </button>
       </div>
       <div class="first-vp-bg">
-        <img id = 'sunLandingPage' src = '../assets/img/sunLandingPage.svg'>
-      <img id = 'cloud1LandingPage' src = '../assets/img/cloud1LandingPage.svg'>
-      <img id = 'cloud2LandingPage' src = '../assets/img/cloud2LandingPage.svg'> 
+        <img id='sunLandingPage' src='../assets/img/sunLandingPage.svg'>
+        <img id='cloud1LandingPage' src='../assets/img/cloud1LandingPage.svg'>
+        <img id='cloud2LandingPage' src='../assets/img/cloud2LandingPage.svg'> 
       </div>
     </div>
-<div class="second-vp">
-
-      <div id = 'aboutTitle'>
-        <h1 id = 'forecasting'>Forecasting</h1>
-        <img id = 'logoImgAbout' :src = 'nimbusLogo'>
-        <h1 id = 'reimagined'>REIMAGINED</h1>
-        <h1 id = 'welcomeToNimbus'>Welcome to Nimbus.</h1>
+    <div class="second-vp">
+      <div id='aboutTitle'>
+        <h1 id='forecasting'>Forecasting</h1>
+        <img id='logoImgAbout' :src='nimbusLogo'>
+        <h1 id='reimagined'>REIMAGINED</h1>
+        <h1 id='welcomeToNimbus'>Welcome to Nimbus.</h1>
       </div>
-      <div id = 'aboutContent'>
+      <div id='aboutContent'>
         <div class="aboutButtons">
-    <button id="introductionBtn"
-            :class="{ active: selectedTab === 'introduction' }"
-            @click="selectTab('introduction')">01. INTRODUCTION</button>
-    <button id="featuresBtn"
-            :class="{ active: selectedTab === 'features' }"
-            @click="selectTab('features')">02. FEATURES</button>
-    <button id="teamBtn"
-            :class="{ active: selectedTab === 'team' }"
-            @click="selectTab('team')">03. TEAM</button>
-  </div>
-
-  <div class="aboutText">
-    <div class="introductionText">
-      {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
-    </div>
-  </div>
+          <button id="introductionBtn"
+                  :class="{ active: selectedTab === 'introduction' }"
+                  @click="selectTab('introduction')">01. INTRODUCTION</button>
+          <button id="featuresBtn"
+                  :class="{ active: selectedTab === 'features' }"
+                  @click="selectTab('features')">02. FEATURES</button>
+          <button id="teamBtn"
+                  :class="{ active: selectedTab === 'team' }"
+                  @click="selectTab('team')">03. TEAM</button>
+        </div>
+        <div class="aboutText">
+          <div class="introductionText">
+            {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
+          </div>
+        </div>
       </div>
       <div class="about-sub-sec" v-if="selectedTab === 'introduction'">
-    <div class="sub-sec-one"
-         :class="{ 'active': isActiveSubSection('missionAndVision') }"
-         @click="selectSubSection('missionAndVision')">
-      mission and vision
-    </div>
-    <div class="sub-sec-two"
-         :class="{ 'active': isActiveSubSection('benefits') }"
-         @click="selectSubSection('benefits')">
-      benefits
-    </div>
-    <div class="sub-sec-three"
-         :class="{ 'active': isActiveSubSection('impact') }"
-         @click="selectSubSection('impact')">
-      impact
-    </div>
-  </div>
-      <button class = 'scrollTopBtn'>Scroll</button>
-
-  </div>
-  <div class="third-vp">
-    <div class = 'nimbusAttributes'>
-      <div id  = 'attTitle'>
-        <h2 class = 'attributesTitleText'>From Clouds to Clarify: Your Weather Ally.</h2>
-        <img id = 'underlineImg' src = '../assets/img/underline.svg'>
-      </div>
-      <div class = 'attributesContent'>
-        <div class= 'containersAttributes' id = 'realTimeUpd'>
-          <div class="icon-header">          
-            <img class = 'attributesImg' src = '../assets/img/Attribute1Img.svg'>
+        <div class="sub-sec-one"
+             :class="{ 'active': isActiveSubSection('missionAndVision') }"
+             @click="selectSubSection('missionAndVision')">
+          mission and vision
         </div>
-          <div class = 'header-text'>
-            <h3 class = 'attributesHeader' id = 'realTimeUpdHeader'>Real-Time Updates</h3>
-            Stay informed with real-time weather updates that ensure you're never caught off guard.</div>
+        <div class="sub-sec-two"
+             :class="{ 'active': isActiveSubSection('benefits') }"
+             @click="selectSubSection('benefits')">
+          benefits
         </div>
-        <div class= 'containersAttributes' id = 'precisionForecast'>
-          <div class="icon-header">  
-          <img class = 'attributesImg' src = '../assets/img/Attribute2Img.svg'>
-          </div>
-          <div class = 'header-text'>
-          <h3 class = 'attributesHeader' id = 'presicionForecastHeader'>Precision Forecasting</h3>
-         Our state-of-the-art prediction algorithms mean you’re always one step ahead of the weather.
-          </div>
-        </div>
-        <div class= 'containersAttributes' id = 'presonalizedWeather'>
-          <div class="icon-header"> 
-          <img class = 'attributesImg' src = '../assets/img/Attribute3Img.svg'>
-          </div>
-          <div class = 'header-text'>
-          <h3 class = 'attributesHeader'>Unique Experience</h3>
-          <p class = 'attributesText'>Customize your alerts to receive the information that matters most to you.</p>
-          </div>
+        <div class="sub-sec-three"
+             :class="{ 'active': isActiveSubSection('impact') }"
+             @click="selectSubSection('impact')">
+          impact
         </div>
       </div>
+      <button class='scrollTopBtn'>Scroll</button>
     </div>
-    <div id = 'reviews'>
-      <div class="review-titles">
-        <h3 id = 'subHeadingReviews'>Beyond the forecast</h3>
-      <h2 id = 'headingReviews'>Nimbus awaits</h2>
+    <div class="third-vp">
+      <div class='nimbusAttributes'>
+        <div id='attTitle'>
+          <h2 class='attributesTitleText'>From Clouds to Clarify: Your Weather Ally.</h2>
+          <img id='underlineImg' src='../assets/img/underline.svg'>
+        </div>
+        <div class='attributesContent'>
+          <div class='containersAttributes' id='realTimeUpd'>
+            <div class="icon-header">          
+              <img class='attributesImg' src='../assets/img/Attribute1Img.svg'>
+            </div>
+            <div class='header-text'>
+              <h3 class='attributesHeader' id='realTimeUpdHeader'>Real-Time Updates</h3>
+              Stay informed with real-time weather updates that ensure you're never caught off guard.
+            </div>
+          </div>
+          <div class='containersAttributes' id='precisionForecast'>
+            <div class="icon-header">  
+              <img class='attributesImg' src='../assets/img/Attribute2Img.svg'>
+            </div>
+            <div class='header-text'>
+              <h3 class='attributesHeader' id='presicionForecastHeader'>Precision Forecasting</h3>
+              Our state-of-the-art prediction algorithms mean you’re always one step ahead of the weather.
+            </div>
+          </div>
+          <div class='containersAttributes' id='presonalizedWeather'>
+            <div class="icon-header"> 
+              <img class='attributesImg' src='../assets/img/Attribute3Img.svg'>
+            </div>
+            <div class='header-text'>
+              <h3 class='attributesHeader'>Unique Experience</h3>
+              <p class='attributesText'>Customize your alerts to receive the information that matters most to you.</p>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class = 'containerReview'>
-        <div class = 'cardContainer'>
-        <div class = 'cardContent'>
-          <div class = 'swipper-wrapper'>
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
+      <div id='reviews'>
+        <div class="review-titles">
+          <h3 id='subHeadingReviews'>Beyond the forecast</h3>
+          <h2 id='headingReviews'>Nimbus awaits</h2>
+        </div>
+        <div class='containerReview'>
+          <div class='cardContainer'>
+            <div class='cardContent'>
+              <div class='swipper-wrapper'>
+                <article class='cardArticle'>
+                  <div class='cardImage'>
+                    <img src='../assets/img/quotationMarkReview.svg'>
+                  </div>
+                  <div class='cardData'>
+                    <p class='cardDescription'>Top-notch weather app! Nimbus keeps me informed with accurate forecasts and handy features. The attention to detail in both design and data sets it apart.</p>
+                    <small class='cardName'>Freya, Norway</small>
+                  </div>
+                </article>
+                <article class='cardArticle'>
+                  <div class='cardImage'>
+                    <img src='../assets/img/quotationMarkReview.svg'>
+                  </div>
+                  <div class='cardData'>
+                    <p class='cardDescription'>Five stars for Nimbus! The app delivers precise weather updates with an elegant interface. The interactive map is a great touch, providing a comprehensive view.</p>
+                    <small class='cardName'>Isabella, Sweden</small>
+                  </div>
+                </article>
+                <article class='cardArticle'>
+                  <div class='cardImage'>
+                    <img src='../assets/img/quotationMarkReview.svg'>
+                  </div>
+                  <div class='cardData'>
+                    <p class='cardDescription'>Nimbus is my weather go-to! Accurate forecasts, user-friendly interface, and an interactive radar map for a complete experience. Highly recommended!</p>
+                    <small class='cardName'>Alex, Canada</small>
+                  </div>
+                </article>
+                <article class='cardArticle'>
+                  <div class='cardImage'>
+                    <img src='../assets/img/quotationMarkReview.svg'>
+                  </div>
+                  <div class='cardData'>
+                    <p class='cardDescription'>Informative and customizable. Real-time notifications for severe weather are a plus. A reliable weather companion.</p>
+                    <small class='cardName'>Zoe, UK</small>
+                  </div>
+                </article>
+                <article class='cardArticle'>
+                  <div class='cardImage'>
+                    <img src='../assets/img/quotationMarkReview.svg'>
+                  </div>
+                  <div class='cardData'>
+                    <p class='cardDescription'>Outstanding! Nimbus provides precise forecasts with a sleek design. Love the real-time notifications for severe weather. A top-notch weather app!</p>
+                    <small class='cardName'>Aisha, UAE</small>
+                  </div>
+                </article>
               </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Top-notch weather app! Nimbus keeps me informed with accurate forecasts and handy features. The attention to detail in both design and data sets it apart.</p>
-                <small class = 'cardName'>Freya, Norway</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Five stars for Nimbus! The app delivers precise weather updates with an elegant interface. The interactive map is a great touch, providing a comprehensive view.</p>
-                <small class = 'cardName'>Isabella, Sweeden</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Nimbus is my weather go-to! Accurate forecasts, user-friendly interface, and an interactive radar map for a complete experience. Highly recommended!</p>
-                <small class = 'cardName'>Alex, Canada</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Informative and customizable. Real-time notifications for severe weather are a plus. A reliable weather companion</p>
-                <small class = 'cardName'>Zoe, UK</small>
-              </div>
-            </article>
-
-            <article class = 'cardArticle'>
-              <div class = 'cardImage'>
-                <img src = '../assets/img/quotationMarkReview.svg'>
-              </div>
-              <div class = 'cardData'>
-                <p class = 'cardDescription'>Outstanding! Nimbus provides precise forecasts with a sleek design. Love the real-time notifications for severe weather. A top-notch weather app!</p>
-                <small class = 'cardName'>Aisha, UAE</small>
-              </div>
-            </article>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
-  </div>
     <footer>
-      <div id = 'legalRsrc'>
-        <img id = 'lglRsrcImg' src = '../assets/img/EllipseLegalResources.svg'>
-        <RouterLink :to="{ name: 'legalResources' }" id = 'legalResourcesBtn'>legal resources</RouterLink>
+      <div id='legalRsrc'>
+        <img id='lglRsrcImg' src='../assets/img/EllipseLegalResources.svg'>
+        <RouterLink :to="{ name: '' }" id='legalResourcesBtn'>legal resources</RouterLink>
       </div>
-      <div id = 'addInfo'>
-        <img id = 'addInfoImg' src = '../assets/img/EllipseAdditionalInfo.svg'>
-        <RouterLink :to="{ name: 'additionalInformation' }" id = 'additionalInfoBtn'>additional info</RouterLink>
+      <div id='addInfo'>
+        <img id='addInfoImg' src='../assets/img/EllipseAdditionalInfo.svg'>
+        <RouterLink :to="{ name: '' }" id='additionalInfoBtn'>additional info</RouterLink>
       </div>
     </footer> 
   </main>
-
 </template>
+
 <style>
 /* .v-main {
   position: absolute;

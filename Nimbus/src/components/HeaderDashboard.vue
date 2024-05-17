@@ -47,9 +47,9 @@ export default {
     <span v-else id = 'logged2'>
       <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><div id = 'nimbusLogo'><img :src = 'nimbusLogo' alt = 'logo' id = 'logoImg'>nimbus</div></RouterLink>
       <div class="header-links">
-        <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
+        <Router-link :to="{name: ''}" id = 'todayBtn'  :class="{ active: $route.name === '' }">TODAY</Router-link>
       <RouterLink :to="{name: 'myAccount'}" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
-      <RouterLink :to="{ name: 'helpAndSupport' }" id='helpAndSupportBtn' :class="{ active: $route.name === 'helpAndSupport' }">HELP & SUPPORT</RouterLink>
+      <RouterLink :to="{ name: '' }" id='helpAndSupportBtn' :class="{ active: $route.name === '' }">HELP & SUPPORT</RouterLink>
       <button @click="logout" id = 'logoutBtn'>LOG OUT</button>
       </div>
       
@@ -168,7 +168,7 @@ a{
 #todayBtn, #myAccBtn, #helpAndSupportBtn, #logoutBtn{
   display: flex;
   padding: 0.4375rem 1.1875rem;
-  color: #9E9E9E;
+  color: #303030;
   font-family: Asap;
   font-size: 0.75rem;
   font-style: normal;

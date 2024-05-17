@@ -1,23 +1,27 @@
 <template>
-  <RouterLink :to="{ name: 'basicModeDashboard' }" id='backBtn'>
-    <font-awesome-icon icon="fa-solid fa-chevron-left" id='backIcon'/>
-  </RouterLink>
-  <main class='dash-body2'>
-    <div class='gridAM '>
+  <main class="dash-body2">
+    <div class="gridAM">
       <div class="div0AM gridCellAM">
         <HeaderDashboard />
       </div>
-      <section v-if="isWeatherLoaded" id='basicInfoToday' class="div1AM gridCellAM">
-        <div id='containerBasicWeatherInfo'>
-          <img :src="getWeatherIcon(weather.weather[0]?.icon)" id='todaysWeatherIconAdvancedMode' width="100" height="100" alt="Weather Icon">
-          <div id='headerBasicWeatherInfo'>
-            <h1 id='currentTemperatureHeader'>{{Math.round(weather.main.temp)}}°</h1>
-            <h2 id='degreeTypeHeader'>C</h2>
-            <div id='locationAdvancedMode'>
+      <section v-if="isWeatherLoaded" id="basicInfoToday" class="div1AM gridCellAM">
+        <div id="containerBasicWeatherInfo">
+          <img
+            :src="getWeatherIcon(weather?.weather?.[0]?.icon)"
+            id="todaysWeatherIconAdvancedMode"
+            width="100"
+            height="100"
+            alt="Weather Icon"
+          />
+          <div id="headerBasicWeatherInfo">
+            <div v-if="!isWeatherLoaded" class="skeleton-loader"></div>
+            <h1 v-else id="currentTemperatureHeader">{{ Math.round(weather?.main?.temp || 0) }}°</h1>
+            <h2 id="degreeTypeHeader">C</h2>
+            <div id="locationAdvancedMode">
               <div class="locationAdvancedMode-row">
-    <font-awesome-icon icon="location-dot" style="color: #303030;" id='locationIconAdvancedMode' aria-label="Location Icon"/>
-    <h2 id='locationCityAdvancedMode'>{{ weather.name }}</h2>
-  </div>
+                <font-awesome-icon icon="location-dot" style="color: #303030;" id="locationIconAdvancedMode" aria-label="Location Icon" />
+                <h2 id="locationCityAdvancedMode">{{ weather?.name || 'Unknown' }}</h2>
+              </div>
               <p v-if="currentTime" id="time">{{ currentTime }}</p>
             </div>
           </div>
@@ -30,123 +34,131 @@
           </div>
         </div>
       </section>
-      <section id='citiesContainer' class="div2AM gridCellAM">
-        <div v-for="(city, index) in weatherCity" :key="index" class='cityContainer'>
-          <div class='cityContainerHeader'>
-            <div class='cityName'>{{ city.name }}</div>
-            <div class='countryName' v-if="countryMapping[city.sys.country]">{{ countryMapping[city.sys.country] }}</div>
+      <section id="citiesContainer" class="div2AM gridCellAM">
+        <div v-for="(city, index) in weatherCity" :key="index" class="cityContainer">
+          <div class="cityContainerHeader">
+            <div class="cityName">{{ city?.name || 'Unknown' }}</div>
+            <div class="countryName" v-if="countryMapping[city?.sys?.country]">{{ countryMapping[city?.sys?.country] }}</div>
           </div>
-          <img class='cityWeatherIcon' :src="getWeatherIcon(city.weather[0]?.icon)" width="50" height="50" alt="Weather Icon">
-          <div class='cityContainerTemperature'>
-            <h2 class='currentTempCityContainer'>{{ Math.round(city.main.temp) }}° </h2>
-            <h3 class='maxTempCityContainer'> / {{ Math.round(city.main.temp_max) }}°</h3>
+          <img
+            class="cityWeatherIcon"
+            :src="getWeatherIcon(city?.weather?.[0]?.icon)"
+            width="50"
+            height="50"
+            alt="Weather Icon"
+          />
+          <div class="cityContainerTemperature">
+            <h2 class="currentTempCityContainer">{{ Math.round(city?.main?.temp || 0) }}°</h2>
+            <h3 class="maxTempCityContainer"> / {{ Math.round(city?.main?.temp_max || 0) }}°</h3>
           </div>
         </div>
       </section>
-
       <div class="div3AM gridCellAM">
-        <section id='containerNimbusNudges'>
-          <div id='headerNimbusNudges'>
-            <h3 id='titleNimbusNudges'>Nimbus Nudges</h3>
-            <div id='buttonsHeaderNimbusNudges'>
-    <button id='leftNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-left" style="color: #303030;" /></button>
-    <button id='rightNimbusNudges'><font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #303030;" /></button>
-  </div>
+        <section id="containerNimbusNudges">
+          <div id="headerNimbusNudges">
+            <h3 id="titleNimbusNudges">Nimbus Nudges</h3>
+            <div id="buttonsHeaderNimbusNudges">
+              <button id="leftNimbusNudges" aria-label="Previous Nudge">
+                <font-awesome-icon icon="fa-solid fa-arrow-left" style="color: #303030;" />
+              </button>
+              <button id="rightNimbusNudges" aria-label="Next Nudge">
+                <font-awesome-icon icon="fa-solid fa-arrow-right" style="color: #303030;" />
+              </button>
+            </div>
           </div>
-          <div id='nimbusNudgesData'>Step into the sun's embrace for a mood-lifting dose of vitamin D, but ensure skin protection by applying sunscreen. Make the most of this radiant day! ☀️</div>
-          <div id='buttonsOptionsNimbusNudges'>
-            <button id='allClearBtn'>ALL CLEAR!</button>
-            <button id='quietTheSkiesBtn'>QUIET THE SKIES</button>
+          <div id="nimbusNudgesData">Step into the sun's embrace for a mood-lifting dose of vitamin D, but ensure skin protection by applying sunscreen. Make the most of this radiant day! ☀️</div>
+          <div id="buttonsOptionsNimbusNudges">
+            <button id="allClearBtn" aria-label="All Clear">ALL CLEAR!</button>
+            <button id="quietTheSkiesBtn" aria-label="Quiet the Skies">QUIET THE SKIES</button>
           </div>
         </section>
       </div>
       <section id="temperatureGraphContainerAdvancedMode" class="div4AM gridCellAM">
-  <picture>
-    <source 
-      srcset="../assets/img/graphAdvancedMode_small.webp 960w,
-              ../assets/img/graphAdvancedMode_medium.webp 1024w,
-              ../assets/img/graphAdvancedMode_large.webp 1920w"
-      sizes="(max-width: 600px) 90vw, 
-             (max-width: 900px) 50vw, 
-             30vw"
-      type="image/webp">
-    <source 
-      srcset="../assets/img/graphAdvancedMode_small.jpg 960w,
-              ../assets/img/graphAdvancedMode_medium.jpg 1024w,
-              ../assets/img/graphAdvancedMode_large.jpg 1920w"
-      sizes="(max-width: 600px) 90vw, 
-             (max-width: 900px) 50vw, 
-             100vw"
-      type="image/jpeg">
-    <img src="../assets/img/graphAdvancedMode.jpg" id="imgGraphAdvancedMode" alt="Descrição da imagem" width="800" height="400">
-  </picture>
-</section>
-
-
-<section id='weatherInfoAdvancedModeContainer' class="div5AM gridCellAM">
-  <div id='windContainerAdvancedMode'>
-    <div class='headerContainers'>
-      <h2 class='weatherInfoContainerHeader' id='windTitle'>Wind</h2>
-      <img class='weatherInfoIllustrations' src='../assets/img/windIcon.min.svg' width="24" height="24" alt="Wind">
-    </div>
-    <h3 class='dataContainers'>{{ weather.wind?.speed }} m/s</h3>
-  </div>
-  <div id='rainContainerAdvancedMode'>
-    <div class='headerContainers'>
-      <h2 class='weatherInfoContainerHeader' id='rainTitle'>Rain</h2>
-      <img class='weatherInfoIllustrations' src='../assets/img/rainIcon.min.svg' width="24" height="24" alt="Rain">
-    </div>
-    <h3 class='dataContainers'>{{ weatherStore.regionWeatherData.fiveDayForecast?.list[0]?.pop ? Math.round(weatherStore.regionWeatherData.fiveDayForecast.list[0].pop * 100) : 'N/A' }} %</h3>
-  </div>
-  <div id='humidityContainerAdvancedMode'>
-    <div class='headerContainers'>
-  <h2 class='weatherInfoContainerHeader' id='humidityTitle'>Humidity</h2>
-  <img class='weatherInfoIllustrations' src='../assets/img/humidityIcon.min.svg' width="18" height="24" alt="Humidity" style="padding-right: 0.2em;">
-</div>
-
-    <h3 class='dataContainers'>{{ weather.main?.humidity }} %</h3>
-  </div>
-  <div id='wavesContainerAdvancedMode'>
-    <div class='headerContainers'>
-      <h2 class='weatherInfoContainerHeader' id='wavesTitle'>Sea Levels</h2>
-      <img class='weatherInfoIllustrations' src='../assets/img/water-waves.min.svg' width="24" height="24" alt="Waves">
-    </div>
-    <h3 class='dataContainers' v-if="weather.main?.sea_level">{{ weather.main.sea_level }} hPa</h3>
-    <h3 class='dataContainers' v-else>N/A</h3>
-  </div>
-  <div id='visibilityContainerAdvancedMode'>
-    <div class='headerContainers'>
-      <h2 class='weatherInfoContainerHeader' id='visibilityTitle'>Visibility</h2>
-      <img class='weatherInfoIllustrations' src='../assets/img/eye.min.svg' width="24" height="24" alt="Visibility">
-    </div>
-    <h3 class='dataContainers'>{{ weather.visibility ? weather.visibility / 1000 : 'N/A' }} km</h3>
-  </div>
-  <div id='pressureContainerAdvancedMode'>
-    <div class='headerContainers'>
-      <h2 class='weatherInfoContainerHeader' id='pressureTitle'>Pressure</h2>
-      <img class='weatherInfoIllustrations' src='../assets/img/pressureIcon.min.svg' width="20" height="24" alt="Pressure" style="padding-right: 0.1em;">
-    </div>
-    <h3 class='dataContainers'>{{ weather.main?.pressure }} hPa</h3>
-  </div>
-</section>
+        <picture>
+          <source 
+            srcset="@/assets/img/graphAdvancedMode_small.webp 960w,
+                    @/assets/img/graphAdvancedMode_medium.webp 1024w,
+                    @/assets/img/graphAdvancedMode_large.webp 1920w"
+            sizes="(max-width: 600px) 90vw, 
+                   (max-width: 900px) 70vw, 
+                   (max-width: 1200px) 50vw, 
+                   40vw"
+            type="image/webp">
+          <source 
+            srcset="@/assets/img/graphAdvancedMode_small.png 960w,
+                    @/assets/img/graphAdvancedMode_medium.png 1024w,
+                    @/assets/img/graphAdvancedMode_large.png 1920w"
+            sizes="(max-width: 600px) 90vw, 
+                   (max-width: 900px) 70vw, 
+                   (max-width: 1200px) 50vw, 
+                   80vw"
+            type="image/jpeg">
+          <img src="@/assets/img/graphAdvancedMode_large.png" id="imgGraphAdvancedMode" alt="Graph of temperature over time" width="800" height="400" loading="lazy">
+        </picture>
+      </section>
+      <section id='weatherInfoAdvancedModeContainer' class="div5AM gridCellAM">
+        <div id='windContainerAdvancedMode'>
+          <div class='headerContainers'>
+            <h2 class='weatherInfoContainerHeader' id='windTitle'>Wind</h2>
+            <img class='weatherInfoIllustrations' src='@/assets/img/windIcon.min.svg' width="24" height="24" alt="Wind" loading="lazy">
+          </div>
+          <h3 class='dataContainers'>{{ weather.wind?.speed }} m/s</h3>
+        </div>
+        <div id='rainContainerAdvancedMode'>
+          <div class='headerContainers'>
+            <h2 class='weatherInfoContainerHeader' id='rainTitle'>Rain</h2>
+            <img class='weatherInfoIllustrations' src='@/assets/img/rainIcon.min.svg' width="24" height="24" alt="Rain" loading="lazy">
+          </div>
+          <h3 class='dataContainers'>
+            {{ weatherStore.regionWeatherData.fiveDayForecast?.list[0]?.pop !== undefined ? Math.round(weatherStore.regionWeatherData.fiveDayForecast.list[0].pop * 100) : 'N/A' }} %
+          </h3>
+        </div>
+        <div id='humidityContainerAdvancedMode'>
+          <div class='headerContainers'>
+            <h2 class='weatherInfoContainerHeader' id='humidityTitle'>Humidity</h2>
+            <img class='weatherInfoIllustrations' src='@/assets/img/humidityIcon.min.svg' width="18" height="24" alt="Humidity" style="padding-right: 0.2em;" loading="lazy">
+          </div>
+          <h3 class='dataContainers'>{{ weather.main?.humidity }} %</h3>
+        </div>
+        <div id='wavesContainerAdvancedMode'>
+          <div class='headerContainers'>
+            <h2 class='weatherInfoContainerHeader' id='wavesTitle'>Sea Levels</h2>
+            <img class='weatherInfoIllustrations' src='@/assets/img/water-waves.min.svg' width="24" height="24" alt="Sea Levels" loading="lazy">
+          </div>
+          <h3 class='dataContainers' v-if="weather.main?.sea_level">{{ weather.main.sea_level }} hPa</h3>
+          <h3 class='dataContainers' v-else>N/A</h3>
+        </div>
+        <div id='visibilityContainerAdvancedMode'>
+          <div class='headerContainers'>
+            <h2 class='weatherInfoContainerHeader' id='visibilityTitle'>Visibility</h2>
+            <img class='weatherInfoIllustrations' src='@/assets/img/eye.min.svg' width="24" height="24" alt="Visibility" loading="lazy">
+          </div>
+          <h3 class='dataContainers'>{{ weather.visibility ? weather.visibility / 1000 : 'N/A' }} km</h3>
+        </div>
+        <div id='pressureContainerAdvancedMode'>
+          <div class='headerContainers'>
+            <h2 class='weatherInfoContainerHeader' id='pressureTitle'>Pressure</h2>
+            <img class='weatherInfoIllustrations' src='@/assets/img/pressureIcon.min.svg' width="20" height="24" alt="Pressure" style="padding-right: 0.1em;" loading="lazy">
+          </div>
+          <h3 class='dataContainers'>{{ weather.main?.pressure }} hPa</h3>
+        </div>
+      </section>
       <section id='calendarAdvancedMode' class="div6AM gridCellAM">
-  <div class="calendarHeaderAdvancedMode">
-    <span id="monthCalendar">{{ currentMonth }}</span>
-    <span id="yearCalendar">{{ currentYear }}</span>
-  </div>
-  <div class="calendar-days">
-    <div v-for="day in daysOfWeek" :key="day" class="day">{{ day }}</div>
-    <div v-for="blank in firstDayOfMonth" :key="blank" class="blank"></div>
-    <div v-for="date in daysInMonth" :key="date" :class="{ 'today': date === currentDay }" class="date">{{ date }}</div>
-  </div>
-</section>
-
+        <div class="calendarHeaderAdvancedMode">
+          <span id="monthCalendar">{{ currentMonth }}</span>
+          <span id="yearCalendar">{{ currentYear }}</span>
+        </div>
+        <div class="calendar-days">
+          <div v-for="day in daysOfWeek" :key="day" class="day">{{ day }}</div>
+          <div v-for="blank in firstDayOfMonth" :key="blank" class="blank"></div>
+          <div v-for="date in daysInMonth" :key="date" :class="{ 'today': date === currentDay }" class="date">{{ date }}</div>
+        </div>
+      </section>
     </div>
   </main>
 </template>
 
 <script>
-import { useUserStore } from "@/stores/user";
 import { useWeatherStore } from '@/stores/weather';
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 
@@ -161,28 +173,19 @@ export default {
       countryMapping: {},
       daysOfWeek: ["M", "T", "W", "T", "F", "S", "S"],
       currentYear: new Date().getFullYear(),
-      currentDay: new Date().getDate(),  // Keep currentDay in data for today's highlight
+      currentDay: new Date().getDate(),
     };
   },
   components: {
     HeaderDashboard,
   },
-  created() {
-    this.initData();
-    this.startUpdatingTime();
+  async beforeMount() {
+    await this.initData();
+    this.isWeatherLoaded = true;
   },
   computed: {
-    store() {
-      return useUserStore();
-    },
     weatherStore() {
       return useWeatherStore();
-    },
-    weatherData() {
-      return this.weatherStore.weatherData;
-    },
-    regionWeatherData() {
-      return this.weatherStore.regionWeatherData;
     },
     currentDate() {
       const date = new Date().getDate();
@@ -198,37 +201,26 @@ export default {
       const dayIndex = new Date().getDay();
       return daysOfWeek[dayIndex];
     },
-    isUser() {
-      return this.store.isUser;
-    },
-    getAuthenticatedUser() {
-      return this.store.authenticatedUser;
-    },
-    userLocations() {
-      return this.getAuthenticatedUser.userLocations;
-    },
-    userLocation() {
-      return this.getAuthenticatedUser.userRegion;
-    },
-    firstDayOfMonth() {
-      const firstDay = new Date(this.currentYear, new Date().getMonth(), 1).getDay();
-      return firstDay === 0 ? 6 : firstDay - 1;
-    },
     daysInMonth() {
       return new Date(this.currentYear, new Date().getMonth() + 1, 0).getDate();
     },
   },
+  watch: {
+    weatherStore: {
+      immediate: true,
+      handler(newVal) {
+        console.log("Weather Store:", newVal);
+      }
+    }
+  },
   methods: {
     async initData() {
-      this.fetchWeather();
-      this.fetchCountries();
+      await Promise.all([this.fetchWeather(), this.fetchCountries()]);
     },
     async fetchCountries() {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
-        if (!response.ok) {
-          throw new Error('Failed to fetch countries');
-        }
+        if (!response.ok) throw new Error('Failed to fetch countries');
         const countries = await response.json();
         this.countryMapping = countries.reduce((acc, country) => {
           acc[country.cca2] = country.name.common;
@@ -240,15 +232,15 @@ export default {
     },
     async fetchWeather() {
       try {
-        if (this.weatherStore.weatherData.locations) {
-          this.weatherCity = this.weatherStore.weatherData.locations.map((locationData) => {
-            return locationData.currentWeather;
-          });
+        if (!this.weatherStore.regionWeatherData.currentWeather) {
+          await this.weatherStore.fetchRegionWeather();
         }
-        if (this.weatherStore.regionWeatherData.currentWeather) {
-          this.weather = this.weatherStore.regionWeatherData.currentWeather;
+        this.weather = this.weatherStore.regionWeatherData.currentWeather;
+
+        if (this.weatherStore.weatherData.locations.length === 0) {
+          await this.weatherStore.fetchWeatherForAllLocations();
         }
-        this.isWeatherLoaded = true; // Add a flag to check if weather data is loaded
+        this.weatherCity = this.weatherStore.weatherData.locations.map(locationData => locationData.currentWeather).filter(city => city !== null);
       } catch (error) {
         console.error('Error fetching weather data:', error);
       }
@@ -257,14 +249,11 @@ export default {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
-      this.currentTime = `${hours}:${formattedMinutes}`;
+      this.currentTime = `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
     },
     startUpdatingTime() {
       this.updateCurrentTime();
-      setInterval(() => {
-        this.updateCurrentTime();
-      }, 1000);
+      setInterval(this.updateCurrentTime, 1000);
     },
     getWeatherIcon(iconCode) {
       const baseUrl = 'https://openweathermap.org/img/wn/';
@@ -274,24 +263,27 @@ export default {
 };
 </script>
 
-
 <style>
-.v-main {align-items: center;
-overflow: hidden;}
+.v-main {
+  align-items: center;
+  overflow: hidden;
+}
 
 .dash-body2 {
   transform: translateY(8.8rem);
   height: fit-content;
 } 
+
 .gridAM {
-    display: grid;
-    grid-template-columns: 1fr 3rem 11.25rem 18rem;
-    grid-template-rows: 50px 300px 300.34px;
-    grid-column-gap: 32px;
-    grid-row-gap: 32px;
-    height: 860px;
-    width: 1260px;
+  display: grid;
+  grid-template-columns: 1fr 3rem 11.25rem 18rem;
+  grid-template-rows: 50px 300px 300.34px;
+  grid-column-gap: 32px;
+  grid-row-gap: 32px;
+  height: 860px;
+  width: 1260px;
 }
+
 .gridCellAM {
   background-color: #EDDED4;
   border: 1px solid #303030;
@@ -301,9 +293,13 @@ overflow: hidden;}
   transition: transform 0.3s ease-in-out; 
   display: flex;
   justify-content: center;
+  align-items: center;
 }
-.div0AM { grid-area: 1 / 1 / 2 / 5;
-border-radius: 50px 50px 10px 10px ;}
+
+.div0AM { 
+  grid-area: 1 / 1 / 2 / 5;
+  border-radius: 50px 50px 10px 10px;
+}
 
 .div1AM {
   grid-column-start: 1;
@@ -316,14 +312,15 @@ border-radius: 50px 50px 10px 10px ;}
   grid-column-start: 2;
   grid-column-end: 4;
   grid-row-start: 2;
-  grid-row-end: 3;}
+  grid-row-end: 3;
+}
 
 .div3AM {
-
   grid-column-start: 4;
   grid-column-end: 5;
   grid-row-start: 2;
-  grid-row-end: 3;}
+  grid-row-end: 3;
+}
 
 .div4AM { 
   grid-column-start: 1;
@@ -333,14 +330,16 @@ border-radius: 50px 50px 10px 10px ;}
 }
 
 .div5AM {
-    grid-column-start: 3;
-    grid-column-end: 3;
-    grid-row-start: 3;
-    grid-row-end: 4;
+  grid-column-start: 3;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
 }
-  .div5AM.gridCellAM { justify-content: flex-start;
-   overflow: visible;
-   border: 0;
+
+.div5AM.gridCellAM { 
+  justify-content: flex-start;
+  overflow: visible;
+  border: 0;
 }
 
 .div6AM {
@@ -350,8 +349,8 @@ border-radius: 50px 50px 10px 10px ;}
   grid-row-end: 4;
 }
 
-#backBtn{
-width: 3.125rem;
+#backBtn {
+  width: 3.125rem;
   height: 3.125rem;
   border-radius: 100px;
   border: 0.1em solid #303030;
@@ -364,9 +363,11 @@ width: 3.125rem;
   justify-content: center;
   align-items: center;
 }
-#backIcon{
+
+#backIcon {
   font-size: 1.5em;
 }
+
 #containerTodayCalendar {
   width: 7.875rem;
   height: 9.625rem;
@@ -424,6 +425,23 @@ width: 3.125rem;
   margin: 0;
 }
 
+.skeleton-loader {
+  width: 100px;
+  height: 50px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: shimmer 1s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100%;
+  }
+  100% {
+    background-position: 100%;
+  }
+}
+
 #currentTemperatureHeader {
   color: #303030;
   font-family: Recoleta;
@@ -471,9 +489,11 @@ width: 3.125rem;
   font-weight: 700;
   line-height: normal;
 }
+
 #locationCityAdvancedMode {
   padding-right: 0.3em;
 }
+
 #locationCity {
   margin-right: 2em;
 }
@@ -573,6 +593,80 @@ width: 3.125rem;
   line-height: normal;
 }
 
+#containerNimbusNudges {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.25rem;
+  background: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1rem;
+}
+
+#headerNimbusNudges {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#titleNimbusNudges {
+  color: var(--text-color);
+  font-family: Asap;
+  font-size: 1.125rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+#nimbusNudgesData {
+  width: 100%;
+  padding: 0.8rem 1rem;
+}
+
+#buttonsHeaderNimbusNudges {
+  display: flex;
+  gap: 1rem;
+}
+
+#buttonsHeaderNimbusNudges button {
+  background-color: var(--secondary-background-color);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 50%;
+}
+
+#buttonsOptionsNimbusNudges {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+#buttonsOptionsNimbusNudges button {
+  display: inline-flex;
+  padding: 0.375rem 0.625rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1.25rem;
+  border: 1px solid #000;
+  font-family: Asap;
+  font-size: 0.8rem;
+  font-weight: 250;
+  text-transform: uppercase;
+}
+
+#allClearBtn {
+  background: var(--spring-bud-color);
+  color: var(--text-color);
+}
+
+#quietTheSkiesBtn {
+  background: var(--orchid-flush-color);
+  color: var(--text-color);
+}
 
 #todaysWeatherIconAdvancedMode {
   width: 100px;
@@ -621,21 +715,39 @@ width: 3.125rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow:auto /* Ensure the content doesn't overflow */
+  overflow: hidden; /* Ensure the content doesn't overflow */
+  max-width: 100%;
 }
 
 #imgGraphAdvancedMode {
   width: 100%;
-  max-width: 100%;
   height: auto;
-  max-height: 100%;
   object-fit: contain; /* Ensure the image scales without distortion */
 }
-
 
 #weatherInfoAdvancedModeContainer {
   display: flex;
   flex-direction: column;
+}
+
+#windContainerAdvancedMode:hover {
+  transform: translateY(-1.5em);
+}
+
+#rainContainerAdvancedMode:hover {
+  transform: translateY(-4em); /* Different translate value */
+}
+
+#humidityContainerAdvancedMode:hover {
+  transform: translateY(-6.6em); /* Different translate value */
+}
+
+#wavesContainerAdvancedMode:hover {
+  transform: translateY(-9.2em); /* Different translate value */
+}
+
+#visibilityContainerAdvancedMode:hover {
+  transform: translateY(-11.6em); /* Different translate value */
 }
 
 #weatherInfoAdvancedModeContainer > div {

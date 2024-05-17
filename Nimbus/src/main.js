@@ -1,16 +1,15 @@
-// Importing the main stylesheet for the app
-import './assets/main.css'
+
 
 // Importing essential Vue and Pinia modules
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
 // Importing the persisted state plugin for Pinia
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 // Importing the root component and router configuration
-import App from './App.vue'
-import router from './router'
+import App from './App.vue';
+import router from './router';
 
 // Import the script to populate localStorage
 import './populateLocalStorage';
@@ -23,16 +22,15 @@ library.add(faArrowLeft, faArrowRight, faLocationDot, faChevronLeft);
 
 const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon);
 
-
 // Creating a Pinia store instance
-const pinia = createPinia()
+const pinia = createPinia();
 
 // Applying the persisted state plugin to the Pinia store
-pinia.use(piniaPluginPersistedstate)
+pinia.use(piniaPluginPersistedstate);
 
 // Integrating Pinia and router with the Vue application
-app.use(pinia)
-app.use(router)
+app.use(pinia);
+app.use(router);
 
 // Automatically log in the dummy user
 import { useUserStore } from '@/stores/user';
@@ -51,13 +49,14 @@ if (!userStore.isUser) {
 // Register the service worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./public/service-worker.js').then((registration) => {
-            console.log('Service Worker registered with scope:', registration.scope);
-        }).catch((error) => {
-            console.error('Service Worker registration failed:', error);
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }).catch(error => {
+          console.error('Service Worker registration failed:', error);
         });
     });
-}
-
+  }
+  
 // Mounting the Vue application to the DOM
-app.mount('#app')
+app.mount('#app');
