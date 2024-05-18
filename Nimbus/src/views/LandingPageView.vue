@@ -254,7 +254,7 @@
              (max-width: 900px) 70vw, 
              (max-width: 1200px) 50vw, 
              40vw"
-      type="image/webp">
+      type="image/webp" >
     <source 
       srcset="@/assets/img/EllipseLegalResources_small.webp 960w,
               @/assets/img/EllipseLegalResources.webp 1024w,
@@ -298,10 +298,10 @@
 <script>
 import { useUserStore } from "@/stores/user";
 import nimbusLogo from "@/assets/icons/logo.min.svg";
-import Reviews from '@/components/Reviews.vue';
+
 
 export default {
-  components: { Reviews },
+  components: { Reviews: () => import('@/components/Reviews.vue') },
   data() {
     return {
       nimbusLogo,
@@ -370,7 +370,6 @@ export default {
   align-items: flex-start;
   justify-content: flex-start;
  }
- 
  .first-vp {
   height: 65vh;
   width: 100vw;
@@ -556,11 +555,6 @@ export default {
   cursor: pointer;
  }
  
- #aboutContent button.active {
-  background-color: #E2D8D1; 
-  border: 2px solid var(--main-color);
- }
- 
  .aboutText {
   font-family: var(--font-family-secondary);
   font-size: 1.2rem;
@@ -594,15 +588,6 @@ export default {
  
  .sub-sec-one:hover, .sub-sec-two:hover, .sub-sec-three:hover {
   text-decoration: underline;
- }
- 
- .sub-sec-one.active:hover, .sub-sec-two.active:hover, .sub-sec-three.active:hover {
-  text-decoration: none;
- }
- 
- .sub-sec-one.active, .sub-sec-two.active, .sub-sec-three.active {
-  background-color: pink;
-  border: 1px solid var(--main-color);
  }
  
  .third-vp {
@@ -694,47 +679,6 @@ export default {
   font-size: 1em;
   font-weight: 400;
   line-height: normal;
- }
- 
- hr.solid {
-  border-top: 0.1em solid var(--main-color);
-  position: relative;
-  top: 10em;
- }
- 
- .cardImage {
-  position: relative;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  margin-bottom: -0.75rem;
- }
- 
- .cardData {
-  padding: 0rem 1.5rem 1.5rem 1.5rem;
-  border-radius: 1rem;
-  text-align: start;
-  position: relative;
-  color: var(--main-color);
-  font-family: var(--font-family-secondary);
-  font-size: 20px;
-  font-weight: 500;
-  line-height: normal;
- }
- 
- small {
-  color: #858585;
-  font-family: var(--font-family-secondary);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: normal;
-  display: flex;
-  align-items: start;
- }
- 
- #secondDivider {
-  border-top: 0.1em solid var(--main-color);
-  position: relative;
-  top: 20em;
  }
  
  footer {

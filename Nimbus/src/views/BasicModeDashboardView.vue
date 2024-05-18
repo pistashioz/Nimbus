@@ -662,22 +662,6 @@ export default {
   width: 35%;
 }
 
-#buttonsHeaderNimbusNudges .personalization-arrow:first-child {
- transform: rotate(0deg) !important;
-}
-
-#buttonsHeaderNimbusNudges .personalization-arrow:nth-child(2) {
- transform: rotate(180deg) !important;
-}
-.arrow-button.personalization-arrow {
-background-color: #FAF8ED;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 #buttonsOptionsNimbusNudges{
   width: 100%;
   display: flex;
@@ -733,7 +717,7 @@ background-color: #FAF8ED;
   line-height: normal;
 /*   position: absolute; */
 }
-#feelsLikeData, #ColdOrWarm, #expectedData{
+#feelsLikeData, #expectedData{
   color: var(--Textual-Elements-Stormcloud-Grey, #858585);
   font-family: Asap;
   font-size: 1rem;
@@ -803,13 +787,6 @@ margin-left: 0.8rem;
   line-height: normal;
   align-self: center;
   height: fit-content;
-}
-
-.degress-sub-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0rem 0.2rem;
 }
 #degreesType, #degrees{
   color: var(--textual-elements-20-saturation-midnight-onyx-20-sat, #302727);
@@ -947,7 +924,7 @@ margin-left: 0.8rem;
   margin-top: 0.5em;
 }
 
-#mondayTemp, #tuesdayTemp, #thursdayTemp,  #wednesdayTemp, #fridayTemp{
+#mondayTemp, #tuesdayTemp, #thursdayTemp, #wednesdayTemp, #fridayTemp{
   margin-top: auto; 
   display: flex;
   justify-content: space-around;
