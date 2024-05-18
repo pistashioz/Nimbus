@@ -72,7 +72,6 @@ a, button {
 /* Container Styles */
 #unlogged,
 #logged2 {
-  height: 20vh;
   display: flex;
   justify-content: space-between;
   align-items: center;

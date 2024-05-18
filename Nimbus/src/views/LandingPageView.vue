@@ -273,19 +273,7 @@ export default {
   width: 100%;
   height: 100%;
 }
-body{
-  animation: transitionIn 1.25s;
-}
-@keyframes transitionIn{
-  from {
-    opacity: 0;
-    transform: rotateX('-10deg');
-  }
-  to{
-    opacity: 1;
-    transform: rotateX('0');
-  }
-}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -756,7 +744,6 @@ background: #F2E6DD;
   height:auto;
   margin-right: 80px;
   position:relative;
-  transition-property:transform;
 }
 
 .cardImage{

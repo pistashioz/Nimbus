@@ -1,5 +1,7 @@
 <template>
   <main class="dash-body2">
+    <head><!-- Preload LCP image -->
+      <link rel="preload" href="/src/assets/img/graphAdvancedMode_medium.webp" as="image" type="image/webp" /></head>
     <div class="gridAM">
       <div class="div0AM gridCellAM">
         <HeaderDashboard />
