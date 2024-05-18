@@ -1,3 +1,300 @@
+<template>
+  <main class="landing-page">
+    <head>
+      <link rel="preload" href="/images/photo.jpg" as="image" fetchpriority="high" />
+      <link rel="preload" href="@/assets/img/sunLandingPage.webp" as="image">
+      <link rel="preload" href="@/assets/img/cloud1LandingPage.webp" as="image">
+      <link rel="preload" href="@/assets/img/cloud2LandingPage.webp" as="image">
+      <link rel="preload" href="@/assets/img/graphAdvancedMode_large.webp" as="image">
+    </head>
+    <div class="first-vp">
+      <div id="introText" class="text">
+        Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.
+        <button v-if="isUser" class="accDashboardBtn" @click="navigateToDashboard">
+          Access the Dashboard
+        </button>
+      </div>
+      <div class="first-vp-bg">
+        <picture>
+    <source 
+      srcset="@/assets/img/sunLandingPage_small.webp 960w,
+              @/assets/img/sunLandingPage.webp 1024w,
+              @/assets/img/sunLandingPage_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/sunLandingPage_small.webp 960w,
+              @/assets/img/sunLandingPage.webp 1024w,
+              @/assets/img/sunLandingPage_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/sunLandingPage.webp" id="sunLandingPage" alt="sun Landing Page" width="800" height="400">
+  </picture>
+  <picture>
+    <source 
+      srcset="@/assets/img/cloud1LandingPage_small.webp 960w,
+              @/assets/img/cloud1LandingPage.webp 1024w,
+              @/assets/img/cloud1LandingPage_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/cloud1LandingPage_small.webp 960w,
+              @/assets/img/cloud1LandingPage.webp 1024w,
+              @/assets/img/cloud1LandingPage_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/cloud1LandingPage.webp" id="cloud1LandingPage" alt="Cloud 1" width="800" height="400">
+  </picture>
+  <picture>
+    <source 
+      srcset="@/assets/img/cloud2LandingPage_small.webp 960w,
+              @/assets/img/cloud2LandingPage.webp 1024w,
+              @/assets/img/cloud2LandingPage_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/cloud2LandingPage_small.webp 960w,
+              @/assets/img/cloud2LandingPage.webp 1024w,
+              @/assets/img/cloud2LandingPage_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/cloud2LandingPage.webp" id="cloud2LandingPage" alt="Cloud 2" width="800" height="400">
+  </picture>
+      </div>
+    </div>
+    <div class="second-vp">
+      <div id="aboutTitle">
+        <h1 id="forecasting">Forecasting</h1>
+        <img :src="nimbusLogo" width="100px" height="auto" alt="Nimbus Logo">
+        <h1 id="reimagined">REIMAGINED</h1>
+        <h1 id="welcomeToNimbus">Welcome to Nimbus.</h1>
+      </div>
+      <div id="aboutContent">
+        <div class="aboutButtons">
+          <button id="introductionBtn"
+            :class="{ active: selectedTab === 'introduction' }"
+            @click="selectTab('introduction')">01. INTRODUCTION</button>
+          <button id="featuresBtn"
+            :class="{ active: selectedTab === 'features' }"
+            @click="selectTab('features')">02. FEATURES</button>
+          <button id="teamBtn"
+            :class="{ active: selectedTab === 'team' }"
+            @click="selectTab('team')">03. TEAM</button>
+        </div>
+        <div class="aboutText">
+          <div class="introductionText">
+            {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
+          </div>
+        </div>
+      </div>
+      <div class="about-sub-sec" v-if="selectedTab === 'introduction'">
+        <div class="sub-sec-one"
+          :class="{ 'active': isActiveSubSection('missionAndVision') }"
+          @click="selectSubSection('missionAndVision')">
+          mission and vision
+        </div>
+        <div class="sub-sec-two"
+          :class="{ 'active': isActiveSubSection('benefits') }"
+          @click="selectSubSection('benefits')">
+          benefits
+        </div>
+        <div class="sub-sec-three"
+          :class="{ 'active': isActiveSubSection('impact') }"
+          @click="selectSubSection('impact')">
+          impact
+        </div>
+      </div>
+      <button class="scrollTopBtn">Scroll</button>
+    </div>
+    <div class="third-vp">
+      <div class="nimbusAttributes">
+        <div id="attTitle">
+          <h2 class="attributesTitleText">From Clouds to Clarify: Your Weather Ally.</h2>
+          <picture>
+    <source 
+      srcset="@/assets/img/underline_small.webp 960w,
+              @/assets/img/underline.webp 1024w,
+              @/assets/img/underline_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/underline_small.webp 960w,
+              @/assets/img/underline.webp 1024w,
+              @/assets/img/underline_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/underline.webp" id="underlineImg" alt="Underline" width="500" height="auto">
+  </picture>
+        </div>
+        <div class="attributesContent">
+          <div class="containersAttributes" id="realTimeUpd">
+            <div class="icon-header">   
+              <picture>
+    <source 
+      srcset="@/assets/img/Attribute1Img_small.webp 960w,
+              @/assets/img/Attribute1Img.webp 1024w,
+              @/assets/img/Attribute1Img_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/Attribute1Img_small.webp 960w,
+              @/assets/img/Attribute1Img.webp 1024w,
+              @/assets/img/Attribute1Img_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/Attribute1Img.webp" class="attributesImg" alt="Real-Time Updates" width="100" height="auto">
+  </picture>  
+            </div>
+            <div class="header-text">
+              <h3 class="attributesHeader" id="realTimeUpdHeader">Real-Time Updates</h3>
+              Stay informed with real-time weather updates that ensure you're never caught off guard.
+            </div>
+          </div>
+          <div class="containersAttributes" id="precisionForecast">
+            <div class="icon-header">  
+
+              <picture>
+    <source 
+      srcset="@/assets/img/Attribute2Img_small.webp 960w,
+              @/assets/img/Attribute2Img.webp 1024w,
+              @/assets/img/Attribute2Img_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/Attribute2Img_small.webp 960w,
+              @/assets/img/Attribute2Img.webp 1024w,
+              @/assets/img/Attribute2Img_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/Attribute2Img.webp" class="attributesImg" alt="Precision Forecasting" width="150" height="auto">
+  </picture>  
+            </div>
+            <div class="header-text">
+              <h3 class="attributesHeader" id="presicionForecastHeader">Precision Forecasting</h3>
+              Our state-of-the-art prediction algorithms mean you’re always one step ahead of the weather.
+            </div>
+          </div>
+          <div class="containersAttributes" id="presonalizedWeather">
+            <div class="icon-header"> 
+              <picture>
+    <source 
+      srcset="@/assets/img/Attribute3Img_small.webp 960w,
+              @/assets/img/Attribute3Img.webp 1024w,
+              @/assets/img/Attribute3Img_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/Attribute3Img_small.webp 960w,
+              @/assets/img/Attribute3Img.webp 1024w,
+              @/assets/img/Attribute3Img_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/Attribute3Img.webp" class="attributesImg" alt="Personalized Weather" width="100" height="auto">
+  </picture>  
+            </div>
+            <div class="header-text">
+              <h3 class="attributesHeader">Unique Experience</h3>
+              <p class="attributesText">Customize your alerts to receive the information that matters most to you.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Reviews /> 
+    </div>
+    <footer>
+      <div id="legalRsrc">
+        <picture>
+    <source 
+      srcset="@/assets/img/EllipseLegalResources_small.webp 960w,
+              @/assets/img/EllipseLegalResources.webp 1024w,
+              @/assets/img/EllipseLegalResources_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/EllipseLegalResources_small.webp 960w,
+              @/assets/img/EllipseLegalResources.webp 1024w,
+              @/assets/img/EllipseLegalResources_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/EllipseLegalResources.webp" id="lglRsrcImg" alt="Legal Resources" width="25px" height="auto">
+  </picture>  
+        <RouterLink :to="{ name: '' }" id="legalResourcesBtn">legal resources</RouterLink>
+      </div>
+      <div id="addInfo">
+        <picture>
+    <source 
+      srcset="@/assets/img/EllipseAdditionalInfo_small.webp 960w,
+              @/assets/img/EllipseAdditionalInfo.webp 1024w,
+              @/assets/img/EllipseAdditionalInfo_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/EllipseAdditionalInfo_small.webp 960w,
+              @/assets/img/EllipseAdditionalInfo.webp 1024w,
+              @/assets/img/EllipseAdditionalInfo_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/EllipseAdditionalInfo.webp" id="addInfoImg" alt="Additional Info" width="25px" height="auto">
+  </picture>  
+        <RouterLink :to="{ name: '' }" id="additionalInfoBtn">additional info</RouterLink>
+      </div>
+    </footer> 
+  </main>
+</template>
 <script>
 import { useUserStore } from "@/stores/user";
 import nimbusLogo from "@/assets/icons/logo.min.svg";
@@ -86,123 +383,6 @@ export default {
 };
 </script>
 
-<template>
-  <main class="landing-page">
-    <head>
-      <link rel="preload" href="/images/photo.jpg" as="image" fetchpriority="high" />
-      <link rel="preload" href="@/assets/img/sunLandingPage.webp" as="image">
-      <link rel="preload" href="@/assets/img/cloud1LandingPage.webp" as="image">
-      <link rel="preload" href="@/assets/img/cloud2LandingPage.webp" as="image">
-      <link rel="preload" href="@/assets/img/graphAdvancedMode_large.webp" as="image">
-    </head>
-    <div class="first-vp">
-      <div id="introText" class="text">
-        Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.
-        <button v-if="isUser" class="accDashboardBtn" @click="navigateToDashboard">
-          Access the Dashboard
-        </button>
-      </div>
-      <div class="first-vp-bg">
-        <img :src="sunLandingPage" alt="Sun" id="sunLandingPage">
-        <img :src="cloud1LandingPage" alt="Cloud 1" id="cloud1LandingPage">
-        <img :src="cloud2LandingPage" alt="Cloud 2" id="cloud2LandingPage"> 
-      </div>
-    </div>
-    <div class="second-vp">
-      <div id="aboutTitle">
-        <h1 id="forecasting">Forecasting</h1>
-        <img :src="nimbusLogo" width="100px" height="auto" alt="Nimbus Logo">
-        <h1 id="reimagined">REIMAGINED</h1>
-        <h1 id="welcomeToNimbus">Welcome to Nimbus.</h1>
-      </div>
-      <div id="aboutContent">
-        <div class="aboutButtons">
-          <button id="introductionBtn"
-            :class="{ active: selectedTab === 'introduction' }"
-            @click="selectTab('introduction')">01. INTRODUCTION</button>
-          <button id="featuresBtn"
-            :class="{ active: selectedTab === 'features' }"
-            @click="selectTab('features')">02. FEATURES</button>
-          <button id="teamBtn"
-            :class="{ active: selectedTab === 'team' }"
-            @click="selectTab('team')">03. TEAM</button>
-        </div>
-        <div class="aboutText">
-          <div class="introductionText">
-            {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
-          </div>
-        </div>
-      </div>
-      <div class="about-sub-sec" v-if="selectedTab === 'introduction'">
-        <div class="sub-sec-one"
-          :class="{ 'active': isActiveSubSection('missionAndVision') }"
-          @click="selectSubSection('missionAndVision')">
-          mission and vision
-        </div>
-        <div class="sub-sec-two"
-          :class="{ 'active': isActiveSubSection('benefits') }"
-          @click="selectSubSection('benefits')">
-          benefits
-        </div>
-        <div class="sub-sec-three"
-          :class="{ 'active': isActiveSubSection('impact') }"
-          @click="selectSubSection('impact')">
-          impact
-        </div>
-      </div>
-      <button class="scrollTopBtn">Scroll</button>
-    </div>
-    <div class="third-vp">
-      <div class="nimbusAttributes">
-        <div id="attTitle">
-          <h2 class="attributesTitleText">From Clouds to Clarify: Your Weather Ally.</h2>
-          <img :src="underlineImg" id="underlineImg" width="500px" height="auto" alt="Underline"> 
-        </div>
-        <div class="attributesContent">
-          <div class="containersAttributes" id="realTimeUpd">
-            <div class="icon-header">     
-              <img :src="attributesImg" class="attributesImg" width="100px" height="auto" alt="Real-Time Updates" loading="lazy"> 
-            </div>
-            <div class="header-text">
-              <h3 class="attributesHeader" id="realTimeUpdHeader">Real-Time Updates</h3>
-              Stay informed with real-time weather updates that ensure you're never caught off guard.
-            </div>
-          </div>
-          <div class="containersAttributes" id="precisionForecast">
-            <div class="icon-header">  
-              <img :src="attributes2Img" class="attributesImg" width="150px" height="auto" alt="Precision Forecasting" loading="lazy"> 
-            </div>
-            <div class="header-text">
-              <h3 class="attributesHeader" id="presicionForecastHeader">Precision Forecasting</h3>
-              Our state-of-the-art prediction algorithms mean you’re always one step ahead of the weather.
-            </div>
-          </div>
-          <div class="containersAttributes" id="presonalizedWeather">
-            <div class="icon-header"> 
-              <img :src="attributes3Img" class="attributesImg" width="100px" height="auto" alt="Personalized Weather" loading="lazy"> 
-            </div>
-            <div class="header-text">
-              <h3 class="attributesHeader">Unique Experience</h3>
-              <p class="attributesText">Customize your alerts to receive the information that matters most to you.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Reviews /> 
-    </div>
-    <footer>
-      <div id="legalRsrc">
-        <img :src="lglRsrcImg" id="lglRsrcImg" loading="lazy" width="25px" alt="Legal Resources"> 
-        <RouterLink :to="{ name: '' }" id="legalResourcesBtn">legal resources</RouterLink>
-      </div>
-      <div id="addInfo">
-        <img :src="addInfoImg" id="addInfoImg" loading="lazy" width="25px" alt="Additional Info"> 
-        <RouterLink :to="{ name: '' }" id="additionalInfoBtn">additional info</RouterLink>
-      </div>
-    </footer> 
-  </main>
-</template>
- 
  <style scoped>
  .v-main {
   display: flex;
