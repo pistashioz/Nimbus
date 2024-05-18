@@ -26,7 +26,7 @@
   
   <script>
   import ReviewCard from "./ReviewCard.vue";
-  import quotationMarkReview from '@/assets/img/quotationMarkReview.webp'
+  import quotationMarkReview from '../assets/img/quotationMarkReview.webp'
   
   export default {
     components: {
@@ -101,6 +101,7 @@
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  font-display: swap;
   margin: 0;
 /*   position: relative;
   top: -5em; */
@@ -114,6 +115,7 @@
   font-weight: 700;
   line-height: normal;
   margin: 0;
+  font-display: swap;
 /*   position: relative;
   top: -3em; */
 }
@@ -166,7 +168,7 @@ margin-bottom: -0.75rem;
   display: grid;
   grid-auto-flow: column;
   overflow: auto; 
-  transform: translateX(0px); /* play with this from swipe of the reviews */
+  transform: translateX(0px); 
 }
 
 .cardData{
@@ -180,5 +182,6 @@ margin-bottom: -0.75rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  font-display: swap;
 }
   </style>

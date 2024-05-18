@@ -1,17 +1,18 @@
  <script>
- import { useUserStore } from "@/stores/user";
- import nimbusLogo from "@/assets/icons/logo.svg";
-  import sunLandingPage from '@/assets/img/sunLandingPage.webp'
-  import cloud1LandingPage from '@/assets/img/cloud1LandingPage.webp'
-  import cloud2LandingPage from '@/assets/img/cloud2LandingPage.webp'
-  import underlineImg from '@/assets/img/underline.webp'
-  import attributesImg from '@/assets/img/Attribute1Img.webp'
-  import attributes2Img from '@/assets/img/Attribute2Img.webp'
-  import attributes3Img from '@/assets/img/Attribute3Img.webp'
-  import quotationMarkReview from '@/assets/img/quotationMarkReview.webp'
-  import lglRsrcImg from '@/assets/img/EllipseLegalResources.webp' 
-  import addInfoImg from '@/assets/img/EllipseAdditionalInfo.webp'
-  import Reviews from '@/components/Reviews.vue';
+
+ import { useUserStore } from "../stores/user";
+ import nimbusLogo from "../assets/icons/logo.svg";
+  import sunLandingPage from '../assets/img/sunLandingPage.webp'
+  import cloud1LandingPage from '../assets/img/cloud1LandingPage.webp'
+  import cloud2LandingPage from '../assets/img/cloud2LandingPage.webp'
+  import underlineImg from '../assets/img/underline.webp'
+  import attributesImg from '../assets/img/Attribute1Img.webp'
+  import attributes2Img from '../assets/img/Attribute2Img.webp'
+  import attributes3Img from '../assets/img/Attribute3Img.webp'
+  import quotationMarkReview from '../assets/img/quotationMarkReview.webp'
+  import lglRsrcImg from '../assets/img/EllipseLegalResources.webp' 
+  import addInfoImg from '../assets/img/EllipseAdditionalInfo.webp'
+  import Reviews from '../components/Reviews.vue';
  export default {
   components: {
     Reviews, 
@@ -89,7 +90,7 @@
 <template>
   <main class="landing-page">
     <head>
-      <link rel="preload" href="/images/photo.jpg" as="image" fetchpriority="high" />
+      <link rel="preload" href="/images/photo.jpg" as="image"/>
     </head>
     <div class="first-vp">
       <div id = 'introText' class = 'text'>
@@ -100,7 +101,7 @@
       </div>
       <div class="first-vp-bg">
 
-        <img :src="sunLandingPage" rel="preload" id="sunLandingPage">
+        <img :src="sunLandingPage" rel="preload" id="sunLandingPage" fetchpriority="high">
         <img :src="cloud1LandingPage"  rel="preload" id="cloud1LandingPage">
         <img :src="cloud2LandingPage" rel="preload" id="cloud2LandingPage"> 
       </div>
@@ -156,7 +157,7 @@
     <div class = 'nimbusAttributes'>
       <div id  = 'attTitle'>
         <h2 class = 'attributesTitleText'>From Clouds to Clarify: Your Weather Ally.</h2>
-        <img :src="underlineImg" id = 'underlineImg' width="500px" height="auto"> 
+        <img :src="underlineImg" id = 'underlineImg' width="500px" height="auto" fetchpriority="low"> 
       </div>
       <div class = 'attributesContent'>
         <div class= 'containersAttributes' id = 'realTimeUpd'>
@@ -191,11 +192,11 @@
   </div>
     <footer>
       <div id = 'legalRsrc'>
-        <img :src="lglRsrcImg"  id = 'lglRsrcImg' loading="lazy" width="25px"> 
+        <img :src="lglRsrcImg"  id = 'lglRsrcImg' loading="lazy" width="25px" fetchpriority="low">  
         <RouterLink :to="{ name: 'legalResources' }" id = 'legalResourcesBtn'>legal resources</RouterLink>
       </div>
       <div id = 'addInfo'>
-        <img :src="addInfoImg"  id = 'addInfoImg' loading="lazy" width="25px"> 
+        <img :src="addInfoImg"  id = 'addInfoImg' loading="lazy" width="25px" fetchpriority="low"> 
         <RouterLink :to="{ name: 'additionalInformation' }" id = 'additionalInfoBtn'>additional info</RouterLink>
       </div>
     </footer> 
@@ -334,6 +335,7 @@ font-weight: 600;
 line-height: normal;
 padding: 1rem;
 margin-top: 2rem;
+font-display: swap;
 }
 
 .second-vp{
@@ -351,6 +353,7 @@ margin-top: 2rem;
 .text{
   font-family: Asap;
   font-size:1.2vw;
+  font-display: swap;
 
 }
 #logoImgAbout{
@@ -387,7 +390,7 @@ margin-top: 2rem;
   font-weight: 700;
   line-height: normal;
   margin: 0 2rem 0 0;
-  
+  font-display: swap;
   letter-spacing: 0.2rem;
 }
 #reimagined{
@@ -397,7 +400,7 @@ margin-top: 2rem;
   font-style: normal;
   font-weight: 600;
   margin: 0;
-  
+  font-display: swap;
   letter-spacing: 0.2rem;
 /*   position: relative;
   top: 9vh;
@@ -418,6 +421,7 @@ margin-top: 2rem;
     margin: 0;
     white-space: nowrap;
     justify-content: center;
+    font-display: swap;
 
 }
 .scrollTopBtn{
@@ -439,6 +443,7 @@ margin-top: 2rem;
   max-width: 30vw;
   margin-left: auto;
   margin-right: auto;
+  font-display: swap;
   
 }
 #aboutContent{
@@ -461,6 +466,7 @@ margin-top: 2rem;
     border: 1px solid #303030;
     width: fit-content;
     padding: 1rem 1.2rem;
+    font-display: swap;
     font-family: 'Asap Regular' sans-serif;
     font-size: 1.2rem;
     border-radius: 30px;
@@ -485,6 +491,7 @@ margin-top: 2rem;
   font-size: 1.2rem;
   margin: 0 2rem 0 0;
   width: 39%;
+  font-display: swap;
 }
 
 .introductionText {
@@ -502,7 +509,7 @@ margin-top: 2rem;
   text-align: center;
   font-family: Recoleta;
   font-size: 1.2rem;
-  
+  font-display: swap;
   font-weight: 500;
 }
 
@@ -569,6 +576,7 @@ margin-top: 2rem;
   align-items: center;
     font-weight: 700;
   line-height: normal;
+  font-display: swap;
 }
 .attributesTitleText {
   z-index: 1;
@@ -613,6 +621,7 @@ margin-top: 2rem;
 .attributesHeader {
   color: #303030;
   font-family: Asap;
+  font-display: swap;
   font-size: 22px;
   font-style: normal;
   font-weight: 800;
@@ -637,7 +646,7 @@ margin-top: 2rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-
+  font-display: swap;
 }
 
 hr.solid {
@@ -664,6 +673,7 @@ margin-bottom: -0.75rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  font-display: swap;
 }
 
 small{
@@ -675,6 +685,7 @@ small{
   line-height: normal;
   display: flex;
   align-items: start;
+  font-display: swap;
 }
 #secondDivider{
   border-top: 0.1em solid #303030;
@@ -693,7 +704,7 @@ footer{
     font-weight: 700;
     line-height: normal;
     border-top: 1px solid #303030;
- 
+    font-display: swap;
 }
 
 #legalRsrc,
@@ -702,6 +713,7 @@ footer{
   font-size: 1.3vw;
   display: flex;
   align-items: center;
+  font-display: swap;
 }
 
 #lglRsrcImg,
@@ -719,6 +731,7 @@ font-style: normal;
 font-weight: 700;
 line-height: normal;
 margin-right: 4rem;
+font-display: swap;
 }
 
 #legalRsrc {

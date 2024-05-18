@@ -1,7 +1,7 @@
 <template>
     <article class="cardArticle">
       <div class="cardImage">
-        <img :src="image" width="100px" height="auto" loading="lazy"> 
+        <img :src="image" width="100px" height="auto" loading="lazy" fetchpriority="high"> 
       </div>
       <div class="cardData">
         <p class="cardDescription">{{ description }}</p>
