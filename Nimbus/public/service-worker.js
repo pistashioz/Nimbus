@@ -1,42 +1,44 @@
 const CACHE_NAME = 'weather-data-cache-v1';
-const ICONS_URL = 'https://openweathermap.org/img/wn/';
-const DATA_URL = 'https://api.openweathermap.org/data/2.5/';
-const ASSETS_URL = '/assets/icons/logo.svg'; // Add this line
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/src/main.js',
+  '/src/assets/favicon.ico',
+  '/assets/index-C5jZQUwi.js',
+  '/assets/Recoleta-Regular.woff2',
+  '/assets/Asap-Regular.ttf',
+  '/assets/graphAdvancedMode_large.webp',
+  '/assets/index-BkgL6E5t.css',
+  '/assets/water-waves.min-DopMh3zZ.svg'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('Opened cache');
+      return cache.addAll(ASSETS_TO_CACHE);
     })
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  if (
-    event.request.url.startsWith(ICONS_URL) || 
-    event.request.url.startsWith(DATA_URL) ||
-    event.request.url.includes(ASSETS_URL) // Add this line
-  ) {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        if (response) {
-          console.log(`Serving cached: ${event.request.url}`);
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) {
+        return response;
+      }
+      return fetch(event.request).then((response) => {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-        console.log(`Fetching from network: ${event.request.url}`);
-        return fetch(event.request).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-          return response;
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
         });
-      })
-    );
-  }
+        return response;
+      });
+    })
+  );
 });
 
 self.addEventListener('activate', (event) => {

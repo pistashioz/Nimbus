@@ -1,4 +1,4 @@
-
+// main.js
 
 // Importing essential Vue and Pinia modules
 import { createApp } from 'vue';
@@ -56,7 +56,7 @@ if ('serviceWorker' in navigator) {
           console.error('Service Worker registration failed:', error);
         });
     });
-  }
-  
+}
+
 // Mounting the Vue application to the DOM
 app.mount('#app');

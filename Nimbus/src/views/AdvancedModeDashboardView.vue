@@ -74,40 +74,41 @@
         </section>
       </div>
       <section id="temperatureGraphContainerAdvancedMode" class="div4AM gridCellAM">
-        <picture>
-          <source 
-            srcset="@/assets/img/graphAdvancedMode_small.webp 960w,
-                    @/assets/img/graphAdvancedMode_medium.webp 1024w,
-                    @/assets/img/graphAdvancedMode_large.webp 1920w"
-            sizes="(max-width: 600px) 90vw, 
-                   (max-width: 900px) 70vw, 
-                   (max-width: 1200px) 50vw, 
-                   40vw"
-            type="image/webp">
-          <source 
-            srcset="@/assets/img/graphAdvancedMode_small.png 960w,
-                    @/assets/img/graphAdvancedMode_medium.png 1024w,
-                    @/assets/img/graphAdvancedMode_large.png 1920w"
-            sizes="(max-width: 600px) 90vw, 
-                   (max-width: 900px) 70vw, 
-                   (max-width: 1200px) 50vw, 
-                   80vw"
-            type="image/jpeg">
-          <img src="@/assets/img/graphAdvancedMode_large.png" id="imgGraphAdvancedMode" alt="Graph of temperature over time" width="800" height="400" loading="lazy">
-        </picture>
-      </section>
+  <picture>
+    <source 
+      srcset="@/assets/img/graphAdvancedMode_small.webp 960w,
+              @/assets/img/graphAdvancedMode_medium.webp 1024w,
+              @/assets/img/graphAdvancedMode_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/graphAdvancedMode_small.png 960w,
+              @/assets/img/graphAdvancedMode_medium.png 1024w,
+              @/assets/img/graphAdvancedMode_large.png 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/graphAdvancedMode_large.png" id="imgGraphAdvancedMode" alt="Graph of temperature over time" width="800" height="400">
+  </picture>
+</section>
+
       <section id='weatherInfoAdvancedModeContainer' class="div5AM gridCellAM">
         <div id='windContainerAdvancedMode'>
           <div class='headerContainers'>
             <h2 class='weatherInfoContainerHeader' id='windTitle'>Wind</h2>
-            <img class='weatherInfoIllustrations' src='@/assets/img/windIcon.min.svg' width="24" height="24" alt="Wind" loading="lazy">
+            <img class='weatherInfoIllustrations' src='@/assets/img/windIcon.min.svg' width="24" height="24" alt="Wind" >
           </div>
           <h3 class='dataContainers'>{{ weather.wind?.speed }} m/s</h3>
         </div>
         <div id='rainContainerAdvancedMode'>
           <div class='headerContainers'>
             <h2 class='weatherInfoContainerHeader' id='rainTitle'>Rain</h2>
-            <img class='weatherInfoIllustrations' src='@/assets/img/rainIcon.min.svg' width="24" height="24" alt="Rain" loading="lazy">
+            <img class='weatherInfoIllustrations' src='@/assets/img/rainIcon.min.svg' width="24" height="24" alt="Rain" >
           </div>
           <h3 class='dataContainers'>
             {{ weatherStore.regionWeatherData.fiveDayForecast?.list[0]?.pop !== undefined ? Math.round(weatherStore.regionWeatherData.fiveDayForecast.list[0].pop * 100) : 'N/A' }} %
@@ -116,14 +117,14 @@
         <div id='humidityContainerAdvancedMode'>
           <div class='headerContainers'>
             <h2 class='weatherInfoContainerHeader' id='humidityTitle'>Humidity</h2>
-            <img class='weatherInfoIllustrations' src='@/assets/img/humidityIcon.min.svg' width="18" height="24" alt="Humidity" style="padding-right: 0.2em;" loading="lazy">
+            <img class='weatherInfoIllustrations' src='@/assets/img/humidityIcon.min.svg' width="18" height="24" alt="Humidity" style="padding-right: 0.2em;" >
           </div>
           <h3 class='dataContainers'>{{ weather.main?.humidity }} %</h3>
         </div>
         <div id='wavesContainerAdvancedMode'>
           <div class='headerContainers'>
             <h2 class='weatherInfoContainerHeader' id='wavesTitle'>Sea Levels</h2>
-            <img class='weatherInfoIllustrations' src='@/assets/img/water-waves.min.svg' width="24" height="24" alt="Sea Levels" loading="lazy">
+            <img class='weatherInfoIllustrations' src='@/assets/img/water-waves.min.svg' width="24" height="24" alt="Sea Levels" >
           </div>
           <h3 class='dataContainers' v-if="weather.main?.sea_level">{{ weather.main.sea_level }} hPa</h3>
           <h3 class='dataContainers' v-else>N/A</h3>
@@ -131,14 +132,14 @@
         <div id='visibilityContainerAdvancedMode'>
           <div class='headerContainers'>
             <h2 class='weatherInfoContainerHeader' id='visibilityTitle'>Visibility</h2>
-            <img class='weatherInfoIllustrations' src='@/assets/img/eye.min.svg' width="24" height="24" alt="Visibility" loading="lazy">
+            <img class='weatherInfoIllustrations' src='@/assets/img/eye.min.svg' width="24" height="24" alt="Visibility" >
           </div>
           <h3 class='dataContainers'>{{ weather.visibility ? weather.visibility / 1000 : 'N/A' }} km</h3>
         </div>
         <div id='pressureContainerAdvancedMode'>
           <div class='headerContainers'>
             <h2 class='weatherInfoContainerHeader' id='pressureTitle'>Pressure</h2>
-            <img class='weatherInfoIllustrations' src='@/assets/img/pressureIcon.min.svg' width="20" height="24" alt="Pressure" style="padding-right: 0.1em;" loading="lazy">
+            <img class='weatherInfoIllustrations' src='@/assets/img/pressureIcon.min.svg' width="20" height="24" alt="Pressure" style="padding-right: 0.1em;">
           </div>
           <h3 class='dataContainers'>{{ weather.main?.pressure }} hPa</h3>
         </div>

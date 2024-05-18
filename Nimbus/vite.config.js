@@ -1,21 +1,48 @@
-import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import compression from 'vite-plugin-compression';
+import { fileURLToPath, URL } from 'node:url';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     compression({
-      algorithm: 'brotliCompress', // Use 'brotliCompress' for Brotli compression, or 'gzip' for Gzip compression
-      ext: '.br', // Use '.br' for Brotli compressed files, or '.gz' for Gzip compressed files
-      // Additional configuration options can be added here if needed
+      algorithm: 'gzip', // or 'brotliCompress'
+      ext: '.gz', // or '.br'
     }),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          let extType = assetInfo.name.split('.').at(1);
+          if (/woff|woff2/.test(extType)) {
+            return `assets/fonts/[name]-[hash][extname]`;
+          } else if (/png|jpe?g|webp|svg/.test(extType)) {
+            return `assets/images/[name]-[hash][extname]`;
+          } else {
+            return `assets/[name]-[hash][extname]`;
+          }
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+      },
+    },
+  },
+  server: {
+    configureServer: (server) => {
+      server.middlewares.use((req, res, next) => {
+        const cacheControl = 'public, max-age=31536000, immutable';
+        if (req.url.match(/\.(js|css|png|jpg|jpeg|gif|ico|woff|woff2|ttf|svg|webp)$/)) {
+          res.setHeader('Cache-Control', cacheControl);
+        }
+        next();
+      });
     },
   },
 });
