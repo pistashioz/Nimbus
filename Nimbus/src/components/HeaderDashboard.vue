@@ -1,7 +1,8 @@
 <script>
 import { RouterLink } from "vue-router";
 import { useUserStore } from "@/stores/user";
-import nimbusLogo from "@/assets/icons/logo.svg";
+import nimbusLogo from "@/assets/icons/logo.min.svg";
+
 export default {
   data() {
     return {
@@ -10,59 +11,63 @@ export default {
   },
   computed: {
     name() {
-      return this.store.getUser?.username 
+      return this.store.getUser?.username;
     },
     isUser() {
-      return this.store.isUser
+      return this.store.isUser;
     },
     store() {
       return useUserStore();
-    }
+    },
   },
   mounted() {
-    console.log("mounted");~
+    console.log("mounted");
     console.log(this.store);
   },
   methods: {
     logout() {
-        this.store.logout();
-
-    this.$router.push({ name: "landingPage" });
+      this.store.logout();
+      this.$router.push({ name: "landingPage" });
     },
   },
 };
 </script>
 
 <template>
-      <span v-if="!isUser" id = 'unlogged'>
-      <div id = 'leftNav'>
-        <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><img :src = 'nimbusLogo' alt = 'logo' id = 'logoImg'> nimbus</RouterLink>
-        <RouterLink :to="{ name: 'login' }"  id  ='login'>Login</RouterLink>
-      </div>
-      <div id = 'rightNav'>
-        <RouterLink :to="{ name: 'signUp' }" id = 'signUp'>Sign Up</RouterLink>
-      </div>
-    </span> 
-  
-    <span v-else id = 'logged2'>
-      <RouterLink :to="{ name: 'landingPage' }" id = 'logo'><div id = 'nimbusLogo'><img :src = 'nimbusLogo' alt = 'logo' id = 'logoImg'>nimbus</div></RouterLink>
-      <div class="header-links">
-        <Router-link :to="{name: 'basicModeDashboard'}" id = 'todayBtn'  :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
-      <RouterLink :to="{name: ''}" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
-      <RouterLink :to="{ name: '' }" id='helpAndSupportBtn' :class="{ active: $route.name === '' }">HELP & SUPPORT</RouterLink>
-      <button @click="logout" id = 'logoutBtn'>LOG OUT</button>
-      </div>
-      
-    </span>
-</template>
-<style>
+  <span v-if="!isUser" id="unlogged">
+    <div id="leftNav">
+      <RouterLink :to="{ name: 'landingPage' }" id="logo">
+        <img :src="nimbusLogo" alt="logo" id="logoImg"> nimbus
+      </RouterLink>
+      <RouterLink :to="{ name: 'login' }" id="login">Login</RouterLink>
+    </div>
+    <div id="rightNav">
+      <RouterLink :to="{ name: 'signUp' }" id="signUp">Sign Up</RouterLink>
+    </div>
+  </span>
 
-a{
+  <span v-else id="logged2">
+    <RouterLink :to="{ name: 'landingPage' }" id="logo">
+      <div id="nimbusLogo">
+        <img :src="nimbusLogo" alt="logo" id="logoImg">nimbus
+      </div>
+    </RouterLink>
+    <div class="header-links">
+      <Router-link :to="{ name: 'basicModeDashboard' }" id="todayBtn" :class="{ active: $route.name === 'basicModeDashboard' }">TODAY</Router-link>
+      <RouterLink :to="{ name: '' }" id="myAccBtn" :class="{ active: $route.name === 'myAccount' }">MY ACCOUNT</RouterLink>
+      <RouterLink :to="{ name: '' }" id="helpAndSupportBtn" :class="{ active: $route.name === '' }">HELP & SUPPORT</RouterLink>
+      <button @click="logout" id="logoutBtn">LOG OUT</button>
+    </div>
+  </span>
+</template>
+
+<style>
+a {
   text-decoration: none;
   color: #303030;
   font-family: 'Asap';
-  font-size:1.2vw;
-  }
+  font-size: 1.2vw;
+}
 #unlogged {
   height: 20vh;
   display: flex;
@@ -70,12 +75,11 @@ a{
   align-items: center;
   padding-left: 2vw;
   padding-right: 2vw;
-  max-width: 100vw; 
-  margin: 0 auto; 
-  padding: 0 2vw; 
+  max-width: 100vw;
+  margin: 0 auto;
+  padding: 0 2vw;
 }
-
-#leftNav{
+#leftNav {
   background-color: #ADD8FB;
   display: flex;
   width: 30vw;
@@ -87,27 +91,26 @@ a{
   padding-right: 2vw;
   border: solid #303030 0.5;
 }
-
-#logo{
+#logo {
   font-family: 'Recoleta';
   font-weight: bold;
-  font-size:3.5vw;
+  font-size: 3.5vw;
   color: orange;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 18vw;
 }
-#logoImg{
-  width: 5vw; 
+#logoImg {
+  width: 5vw;
   height: auto;
-  margin-right: 1vw; 
+  margin-right: 1vw;
 }
-#signUp{
+#signUp {
   background-color: #F5CB5B;
   display: flex;
   height: 8vh;
-  border-radius: 20vh; 
+  border-radius: 20vh;
   align-items: center;
   padding: 0 2vw;
   font-family: 'Recoleta';
@@ -116,18 +119,14 @@ a{
   max-width: 10vw;
   border: solid #303030 0.5;
 }
-
-#login{
+#login {
   font-family: 'Recoleta';
   font-weight: bold;
   font-size: 1.5vw;
 }
-#logged2{
+#logged2 {
   width: 100%;
-/*   height: 3.125rem; */
   flex-shrink: 0;
-/*   border-radius: 3.125rem 3.125rem 0.625rem 0.625rem; */
-  /* border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--Primary-Color-Palette-Dawn-Blush, #F2E6DD);
   margin: 0;
   margin-left: auto;
@@ -146,7 +145,7 @@ a{
   width: 40px;
   height: 40px;
 }
-#nimbusLogo{
+#nimbusLogo {
   width: 5.37075rem;
   color: #E65E2A;
   font-family: Recoleta;
@@ -154,10 +153,8 @@ a{
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-   margin-left: 8rem; 
-/*   padding-left: 6rem; */
+  margin-left: 8rem;
 }
-
 .header-links {
   display: flex;
   justify-content: space-around;
@@ -165,7 +162,7 @@ a{
   width: 50%;
   margin-right: 4rem;
 }
-#todayBtn, #myAccBtn, #helpAndSupportBtn, #logoutBtn{
+#todayBtn, #myAccBtn, #helpAndSupportBtn, #logoutBtn {
   display: flex;
   padding: 0.4375rem 1.1875rem;
   color: #9E9E9E;
@@ -175,26 +172,18 @@ a{
   font-weight: 400;
   line-height: normal;
 }
-
 #todayBtn.active {
-  
   color: #303030;
   background: var(--todayBtn-active-background-color, #E15CC8);
 }
-
-
 #myAccBtn.active {
-  
   color: #303030;
   background: var(--myAccBtn-active-background-color, #8874E3);
 }
-
 #helpAndSupportBtn.active {
-  
   color: #303030;
   background: var(--helpAndSupportBtn-active-background-color, #F5CB5B);
 }
-
 .active {
   display: flex;
   justify-content: center;
@@ -202,7 +191,7 @@ a{
   border-radius: 1.25rem;
   border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030);
 }
-button{
+button {
   color: #9E9E9E;
   font-family: Asap;
   font-size: 0.75rem;
@@ -215,7 +204,5 @@ button{
   font: inherit;
   cursor: pointer;
   color: inherit;
-  }
+}
 </style>
-
-

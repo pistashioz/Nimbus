@@ -1,10 +1,10 @@
 <script>
 import { useUserStore } from "@/stores/user";
-import nimbusLogo from "@/assets/icons/logo.svg";
+import nimbusLogo from "@/assets/icons/logo.min.svg";
 import sunLandingPage from '@/assets/img/sunLandingPage.webp';
 import cloud1LandingPage from '@/assets/img/cloud1LandingPage.webp';
 import cloud2LandingPage from '@/assets/img/cloud2LandingPage.webp';
-import underlineImg from '@/assets/img/underline.webp';
+import underlineImg from "@/assets/img/underline.min.svg";
 import attributesImg from '@/assets/img/Attribute1Img.webp';
 import attributes2Img from '@/assets/img/Attribute2Img.webp';
 import attributes3Img from '@/assets/img/Attribute3Img.webp';
