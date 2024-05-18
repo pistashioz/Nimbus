@@ -3,8 +3,8 @@ import moment from 'moment';
 import ArrowButton from '@/components/ArrowButton.vue';
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
-import { reverseGeocode, fetchDataByCityName, fetchAirQuality, fetchFiveDayForecast } from '@/weatherService';
-import { useWeatherStore } from '@/stores/weather'
+import { useWeatherStore } from '@/stores/weather';
+
 export default {
   name: 'basicMode',
   data() {
@@ -20,455 +20,318 @@ export default {
     HeaderDashboard,
   },
   created() {
-    console.log(this.userLocation);
     this.region = this.userLocation.region || '';
-  this.fetchWeather().then(() => {
-    console.log(this.fetchWeather());
-    // Actions to perform after data is fetched
-    console.log("Weather data fetched");
-  }).catch(error => {
-    // Handle errors that occurred during fetchWeather
-    console.error("Error fetching weather data:", error);
-  });
-},
-
+    this.fetchWeather().then(() => {
+      console.log("Weather data fetched");
+    }).catch(error => {
+      console.error("Error fetching weather data:", error);
+    });
+  },
   mounted() {
-/*     this.fetchWeather() */
     this.$nextTick(() => {
       this.calculateSunPosition();
     });
-    console.log(this.store.authenticatedUser);
-    console.log(this.userLocation);   
-/*       this.weatherStore.updateUserWeather(this.userLocation, this.userLocations);
-      this.weatherStore.fetchWeatherForAllLocations();
-      this.weatherStore.fetchRegionWeather(); */
-      
-    
   },
   computed: {
     store() {
-       return useUserStore();
-     },
-     weatherStore() {
-      return useWeatherStore()
-     },
-     weatherData() {
+      return useUserStore();
+    },
+    weatherStore() {
+      return useWeatherStore();
+    },
+    weatherData() {
       return this.weatherStore.weatherData;
     },
-    regionWeatherData(){
+    regionWeatherData() {
       return this.weatherStore.regionWeatherData;
     },
-     isUser() {
-       return this.store.isUser;
-     },
-     getAuthenticatedUser() {
-       return this.store.authenticatedUser;
-     },
-     userLocations() {
-       return this.getAuthenticatedUser.userLocations;
-     },
-     userLocation() {
-       return this.getAuthenticatedUser.userRegion;
-     },
-     
+    isUser() {
+      return this.store.isUser;
+    },
+    getAuthenticatedUser() {
+      return this.store.authenticatedUser;
+    },
+    userLocations() {
+      return this.getAuthenticatedUser.userLocations;
+    },
+    userLocation() {
+      return this.getAuthenticatedUser.userRegion;
+    },
     getWeatherAltText() {
-    const weatherMain = this.weather.weather[0].main.toLowerCase();
-
-    // You can customize the alt text based on the weather main
-    switch (weatherMain) {
-      case 'clear':
-        return 'Clear Sky';
-      case 'clouds':
-        return 'Cloudy';
-      case 'rain':
-        return 'Rainy';
-      case 'thunderstorm':
-        return 'Thunderstorm';
-      case 'snow':
-        return 'Snowy';
-      case 'mist':
-        return 'Misty';
-      default:
-        return 'Unknown Weather';
+      const weatherMain = this.weather.weather[0].main.toLowerCase();
+      switch (weatherMain) {
+        case 'clear':
+          return 'Clear Sky';
+        case 'clouds':
+          return 'Cloudy';
+        case 'rain':
+          return 'Rainy';
+        case 'thunderstorm':
+          return 'Thunderstorm';
+        case 'snow':
+          return 'Snowy';
+        case 'mist':
+          return 'Misty';
+        default:
+          return 'Unknown Weather';
+      }
+    },
+    getWeatherTodayIllustration() {
+      const weatherImg = this.weather.weather[0].main.toLowerCase();
+      switch (weatherImg) {
+        case 'clear':
+          return require('@/assets/img/sunnyImg.png');
+        case 'clouds':
+          return require('@/assets/img/cloudyImg.png');
+        case 'rain':
+          return require('@/assets/img/rainImg.png');
+        case 'thunderstorm':
+          return require('@/assets/img/thunderImg.png');
+        case 'snow':
+          return require('@/assets/img/snowImg.png');
+        case 'mist':
+          return require('@/assets/img/mistImg.png');
+        default:
+          return require('@/assets/img/sunnyImg.png');
+      }
     }
   },
-    getWeatherTodayIllustration(){
-      
-      console.log(this.weather.weather[0].main.toLowerCase())
-      const weatherImg = this.weather.weather[0].main.toLowerCase()
-      switch (weatherImg) {
-      case 'clear':
-        console.log('a')
-        return '../assets/img/sunnyImg.png';
-      case 'clouds':
-      console.log('b')
-        return '../assets/img/cloudyImg.png';
-      case 'rain':
-      console.log('c')
-        return '../assets/img/rainImg.png';
-      case 'thunderstorm':
-      console.log('d')
-        return '../assets/img/thunderImg.png';
-      case 'snow':
-      console.log('e')
-        return '../assets/img/snowImg.png';
-      case 'mist':
-      console.log('f')
-        return '../assets/img/mistImg.png';
-      default:
-      console.log('g')
-        return '../assets/img/sunnyImg.png';
-    }
-  }
-},
   methods: {
-/*     initializeWeatherData() {
-      this.updateWeatherData();
-    }, */
-
-/*   async fetchWeather() {
-    try {
-      await this.updateWeatherData();
-      console.log(this.weatherStore);
-      console.log(this.weatherStore.regionWeatherData);
-      if (this.weatherStore.regionWeatherData) {
-      this.weather = this.weatherStore.regionWeatherData.currentWeather;
-      console.log(this.weather);
-      console.log(this.weather.weather);
-      this.air_quality = this.weatherStore.regionWeatherData.airQuality;
-      this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast;
-    } else {
-      console.error('Region weather data is not available.');
-    }
+    async fetchWeather() {
+      try {
+        if (this.weatherStore.regionWeatherData) {
+          this.weather = this.weatherStore.regionWeatherData.currentWeather || {};
+          this.air_quality = this.weatherStore.regionWeatherData.airQuality || {};
+          this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast || {};
+        } else {
+          this.weather = {};
+          this.air_quality = {};
+          this.five_day_forecast = {};
+        }
       } catch (error) {
         console.error('Error fetching weather data:', error);
+        this.weather = {};
+        this.air_quality = {};
+        this.five_day_forecast = {};
       }
-  }, */
-  async fetchWeather() {
-  try {
-
-    if (this.weatherStore.regionWeatherData) {
-      console.log('Weather data is available.');
-      this.weather = this.weatherStore.regionWeatherData.currentWeather || {};
-      console.log(this.weather);
-      console.log(this.weather.main.feels_like);
-      this.air_quality = this.weatherStore.regionWeatherData.airQuality || {};
-      this.five_day_forecast = this.weatherStore.regionWeatherData.fiveDayForecast || {};
-    } else {
-      console.error('Region weather data is not available.');
-      // Set default values or handle the absence of data
-      this.weather = {};
-      this.air_quality = {};
-      this.five_day_forecast = {};
-    }
-  } catch (error) {
-    console.error('Error fetching weather data:', error);
-    // Handle the error, set default values
-    this.weather = {};
-    this.air_quality = {};
-    this.five_day_forecast = {};
-  }
-}
-,
+    },
     dateBuilder() {
       return moment().format('dddd, D MMMM');
     },
-    warmOrCold(){
+    warmOrCold() {
       const temperature = this.weather.main.temp;
-      switch (true) {
-        case temperature > 16 && temperature <= 25:
-          return 'Warm';
-        case temperature > 25:
-          return 'Hot';
-        default:
-          return 'Cold';
-      }
+      if (temperature > 16 && temperature <= 25) return 'Warm';
+      if (temperature > 25) return 'Hot';
+      return 'Cold';
     },
     getDayOfWeek(index) {
       const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      const today = new Date();
-
       const forecastDate = new Date(this.five_day_forecast.list[index * 8].dt_txt);
-      const dayOfWeek = weekdays[forecastDate.getDay()];
-
-      return dayOfWeek;
+      return weekdays[forecastDate.getDay()];
     },
-
     formatTime(timestamp, timezoneOffset) {
-      const date = new Date(timestamp * 1000 + timezoneOffset * 1000); 
-      const formattedTime = date.toISOString().slice(11, 16);
-      return formattedTime;
+      const date = new Date(timestamp * 1000 + timezoneOffset * 1000);
+      return date.toISOString().slice(11, 16);
     },
-    calculateSunPosition(){
-        const currentTime = new Date();
-
-
+    calculateSunPosition() {
+      const currentTime = new Date();
       const smallLine = document.getElementById('ssSmallLine');
       const sunCircle = document.getElementById('ssCircle');
-    
-        const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
-        const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
-        const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-        const timeStampCurrentTime = Math.round(cityTime / 1000);
-        const sunriseTime = this.weather.sys.sunrise
-        const sunsetTime = this.weather.sys.sunset
-        const daylightDuration = sunsetTime - sunriseTime;
-        const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
-        let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
-        console.log('Percentage of daylight:', percentageOfDaylight);
-        
-          if (percentageOfDaylight < 100 && percentageOfDaylight > 0) {
-            smallLine.style.width = `${percentageOfDaylight}%`;
-            sunCircle.style.left = `${percentageOfDaylight}%`;
-          } else{
-            console.log('menor a 0')
-            smallLine.style.width = '0%'
-            sunCircle.style.left = '0%';
-          }
-
-        return formattedTime;
+      const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
+      const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
+      const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      const timeStampCurrentTime = Math.round(cityTime / 1000);
+      const sunriseTime = this.weather.sys.sunrise;
+      const sunsetTime = this.weather.sys.sunset;
+      const daylightDuration = sunsetTime - sunriseTime;
+      const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
+      let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
       
+      if (percentageOfDaylight < 100 && percentageOfDaylight > 0) {
+        smallLine.style.width = `${percentageOfDaylight}%`;
+        sunCircle.style.left = `${percentageOfDaylight}%`;
+      } else {
+        smallLine.style.width = '0%';
+        sunCircle.style.left = '0%';
+      }
+
+      return formattedTime;
     },
-    getMinAndMaxTemp(index, property){
-      const start = index * 8
-      const end = start + 8
-
-      const temps = this.five_day_forecast.list.slice(start, end).map(item => item.main[property] - 273.15)
-      //console.log(temps)
-      const minTemp = Math.min(...temps);
-      const maxTemp = Math.max(...temps);
-
+    getMinAndMaxTemp(index, property) {
+      const temps = this.five_day_forecast.list.slice(index * 8, index * 8 + 8).map(item => item.main[property] - 273.15);
       return {
-        min: Math.round(minTemp),
-        max: Math.round(maxTemp)
+        min: Math.round(Math.min(...temps)),
+        max: Math.round(Math.max(...temps))
       };
     },
-    
-    getWeatherWeeklyIllustration(i){
-      console.log(this.five_day_forecast?.list?.[i * 8].weather[0].main);
-        const weatherMain = this.five_day_forecast.list[i * 8].weather[0].main
-        const imageUrl = this.mapWeatherToImage(weatherMain);
-        console.log('Image URL:', imageUrl);
-        return imageUrl;
+    getWeatherWeeklyIllustration(i) {
+      const weatherMain = this.five_day_forecast.list[i * 8].weather[0].main;
+      return this.mapWeatherToImage(weatherMain);
     },
     mapWeatherToImage(weatherMain) {
       switch (weatherMain) {
-      case 'Clear':
-        return '../assets/img/sunnyImg.png';
-      case 'Clouds':
-        return '../assets/img/cloudyImg.png';
-      case 'Rain':
-        return '../assets/img/rainImg.png';
-      case 'Thunderstorm':
-        return '../assets/img/thunderImg.png';
-      case 'Snow':
-        return '../assets/img/snowImg.png';
-      case 'Mist':
-        return '../assets/img/mistImg.png';
-      default:
-        return '../assets/img/sunnyImg.png';
+        case 'Clear': return require('@/assets/img/sunnyImg.png');
+        case 'Clouds': return require('@/assets/img/cloudyImg.png');
+        case 'Rain': return require('@/assets/img/rainImg.png');
+        case 'Thunderstorm': return require('@/assets/img/thunderImg.png');
+        case 'Snow': return require('@/assets/img/snowImg.png');
+        case 'Mist': return require('@/assets/img/mistImg.png');
+        default: return require('@/assets/img/sunnyImg.png');
       }
     },
-    refreshingOrDry(){
-      if(this.weather.main.humidity < 30){
-        return 'Dry'
-      }
-      else if (this.weather.main.humidity < 60 && this.weather.main.humidity >= 30){
-        return 'Refreshing'
-      }
-      else{
-        return 'Very Humid'
-      }
+    refreshingOrDry() {
+      const humidity = this.weather.main.humidity;
+      if (humidity < 30) return 'Dry';
+      if (humidity < 60) return 'Refreshing';
+      return 'Very Humid';
     },
     computeFontSize(letterCount) {
-      if (letterCount <= 5) {
-        return "2.75rem"
-      } else if (letterCount <= 6) {
-
-        return "1.8rem"
-      } else {
-        return "1.5rem"
-      }
+      if (letterCount <= 5) return "2.75rem";
+      if (letterCount <= 6) return "1.8rem";
+      return "1.5rem";
     },
-    airQualityMeaning(){
-      let airQuality = this.air_quality.list[0].main.aqi
-      //console.log(airQuality)
-      switch (true){
-        case airQuality == 1:
-          return 'Good air quality, little or no risk'
-        case airQuality == 2:
-          return 'Acceptable air quality'
-        case airQuality == 3:
-          return 'Unhealthy for sensitive groups'
-        case airQuality == 4:
-          return 'Health effects possible for everyone'
-        case airQuality == 5:
-          return 'Health alert; serious effects possible for all'
-          default:
-        return 'Unknown Air Quality';
-      }
+    airQualityMeaning() {
+      const airQuality = this.air_quality.list[0].main.aqi;
+      if (airQuality == 1) return 'Good air quality, little or no risk';
+      if (airQuality == 2) return 'Acceptable air quality';
+      if (airQuality == 3) return 'Unhealthy for sensitive groups';
+      if (airQuality == 4) return 'Health effects possible for everyone';
+      if (airQuality == 5) return 'Health alert; serious effects possible for all';
+      return 'Unknown Air Quality';
     },
-    windSpeed(){
-      let speedPerHour = this.weather.wind.speed
-
-        switch (true) {
-      case speedPerHour >= 1 && speedPerHour <= 3:
-        return 'Light Breeze';
-      case speedPerHour > 3 && speedPerHour <= 7:
-        return 'Gentle Breeze';
-      case speedPerHour > 7 && speedPerHour <= 12:
-        return 'Moderate Breeze';
-      case speedPerHour > 12 && speedPerHour <= 18:
-        return 'Fresh Breeze';
-      case speedPerHour > 18 && speedPerHour <= 24:
-        return 'Strong Breeze';
-      case speedPerHour > 24 && speedPerHour <= 31:
-        return 'High Wind, Near Gale';
-      case speedPerHour > 31 && speedPerHour <= 38:
-        return 'Gale';
-      case speedPerHour > 38 && speedPerHour <= 46:
-        return 'Severe Gale';
-      case speedPerHour > 46 && speedPerHour <= 54:
-        return 'Storm';
-      case speedPerHour > 54:
-        return 'Violent Storm';
-      default:
-        return 'Unknown Wind';
-    }
+    windSpeed() {
+      const speedPerHour = this.weather.wind.speed;
+      if (speedPerHour >= 1 && speedPerHour <= 3) return 'Light Breeze';
+      if (speedPerHour > 3 && speedPerHour <= 7) return 'Gentle Breeze';
+      if (speedPerHour > 7 && speedPerHour <= 12) return 'Moderate Breeze';
+      if (speedPerHour > 12 && speedPerHour <= 18) return 'Fresh Breeze';
+      if (speedPerHour > 18 && speedPerHour <= 24) return 'Strong Breeze';
+      if (speedPerHour > 24 && speedPerHour <= 31) return 'High Wind, Near Gale';
+      if (speedPerHour > 31 && speedPerHour <= 38) return 'Gale';
+      if (speedPerHour > 38 && speedPerHour <= 46) return 'Severe Gale';
+      if (speedPerHour > 46 && speedPerHour <= 54) return 'Storm';
+      if (speedPerHour > 54) return 'Violent Storm';
+      return 'Unknown Wind';
     },
-    sunPosition(){
-      const hour = new Date().getUTCHours()
-      console.log('hora',hour)
+    sunPosition() {
+      const hour = new Date().getUTCHours();
+      console.log('hora', hour);
     },
     capitalizeDescription(description) {
-      return description
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+      return description.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     },
-      getWeatherIcon(iconCode) {
-  const baseUrl = 'https://openweathermap.org/img/wn/';
-  return `${baseUrl}${iconCode}@4x.png`;
-}
+    getWeatherIcon(iconCode) {
+      return `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
+    }
   }
-  
 };
 </script>
 <template>
-  <main class="dash-body"><!-- v-if="(typeof weather.main != 'undefined')" -->
-    <div class="grid" >
-    <div class="div0 gridCell">
-      <HeaderDashboard />
-    </div>
-      <div class="div1 gridCell">
-        <div id = 'containerWeatherToday'>
-          <h3 id = 'date'>{{dateBuilder()}}</h3>
+  <main class="dash-body">
+    <div class="grid">
+      <div class="gridCell div0">
+        <HeaderDashboard />
+      </div>
+      <div class="gridCell div1">
+        <div id="containerWeatherToday">
+          <h3 id="date">{{ dateBuilder() }}</h3>
           <img 
-      id="weatherTodayIllustration" 
-      :src="getWeatherIcon(weather.weather[0].icon)" 
-      :alt="getWeatherAltText"
-    >
-          
-        <div id = 'location' :style="{ fontSize: computeFontSize(weather.name) }">
-
-          <font-awesome-icon icon="location-dot" style="color: #303030;" />
-          <span class = 'locationCity' >{{ weather.name }}</span>
+            id="weatherTodayIllustration" 
+            :src="getWeatherIcon(weather.weather[0].icon)" 
+            :alt="getWeatherAltText" 
+          >
+          <div id="location" :style="{ fontSize: computeFontSize(weather.name) }">
+            <font-awesome-icon icon="location-dot" style="color: #303030;" />
+            <span class="locationCity">{{ weather.name }}</span>
+          </div>
         </div>
       </div>
-      </div>
-      <div class="div2 gridCell">
-      <div id = 'containerWeatherInfoToday'>
-        <div id="feelsLikeContainer">
-  <p id="feelsLikeTitle">Feels Like</p>
-  <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
-</div>
-<div id="expectedContainer">
-  <p id="expectedTitle">Expected</p>
-  <p id="expectedData">{{ capitalizeDescription(weather.weather[0].description) }}</p>
-</div>
-
-        <div id = 'humidityContainer'>
-          <div class = 'humidityContainerHeader'>
-            <img src = '../assets/img/humidityIconBasicMode.svg' class = 'humidityIcon'>
-          <p class = 'humidityTitleBasicMode'>Humidity</p>
+      <div class="gridCell div2">
+        <div id="containerWeatherInfoToday">
+          <div id="feelsLikeContainer">
+            <p id="feelsLikeTitle">Feels Like</p>
+            <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
           </div>
-          <div id = 'humidityData'>
-            <p id = 'humidityPercentage'>{{ weather.main.humidity}}%</p>
-            <p id = 'refreshingOrDry'>{{ refreshingOrDry() }}</p>
+          <div id="expectedContainer">
+            <p id="expectedTitle">Expected</p>
+            <p id="expectedData">{{ capitalizeDescription(weather.weather[0].description) }}</p>
           </div>
-        </div>
-        <div id = 'rainContainer'>
-          <div class = 'rainContainerHeader'>
-            <img src = '../assets/img/rainIconBasicMode.svg' class = 'rainIcon'>
-            <p class = 'rainTitleBasicMode'>Rain</p>
-          </div>
-          <div id = 'rainData'>
-            <p id = 'rainPercentage'>
-              {{ Math.round(this.five_day_forecast.list[0].pop * 100) }} 
-          </p> <p id = 'chance'>% Chance</p></div>
-        </div>
-        <div id = 'windContainer'>
-          <div class = 'windContainerHeader'>
-            <img src = '../assets/img/windIconBasicMode.svg' class = 'windIcon'>
-            <p class = 'windTitleBasicMode'>Wind</p>
-          </div>
-          <p id = 'windData'>{{ windSpeed() }}</p>
-        </div>
-        <RouterLink :to="{ name: 'advancedModeDashboard', params: { city: weather.name }} " id = 'seeMoreBtn'>See more</RouterLink>
-      </div>
-    </div>
-   
-    <div class="div3 gridCell">
-      <div id = 'containerNimbusNudges'>
-        <div id = 'headerNimbusNudges'>
-          <h3 id = 'titleNimbusNudges'>Nimbus Nudges</h3>
-          <div id = 'buttonsHeaderNimbusNudges'>
-            <ArrowButton direction="left" button-class="personalization-arrow" @clickButton="handleUpClick" />
-            <ArrowButton direction="right" button-class="personalization-arrow" @clickButton="handleDownClick" />
-          </div>
-        </div>
-         <div id = 'nimbusNudgesData'>
-          A friendly heads-up – a playful breeze is weaving its way through the city today. It's strong enough to dance with the leaves and turn a regular walk into a refreshing journey. Embrace the fresh air and let it guide you to new experiences.
-         </div>
-         <div id = 'buttonsOptionsNimbusNudges'>
-          <button id = 'allClearBtn'>ALL CLEAR!</button>
-          <button id = 'quietTheSkiesBtn'>QUIET THE SKIES</button>
-         </div>
-      </div>
-    </div>
-    <div class="div4 gridCell">
-      <div id = 'degreesContainer'>
-          <h1 id = 'degreesValue'>{{Math.round(weather.main.temp)}}
-            <div class="degress-sub-wrapper">
-
-              <div id = 'degrees'>degrees</div>
-            <div id = 'degreesType'>celsius</div>
+          <div id="humidityContainer">
+            <div class="humidityContainerHeader">
+              <img src="../assets/img/humidityIconBasicMode.svg" class="humidityIcon" >
+              <p class="humidityTitleBasicMode">Humidity</p>
             </div>
-
+            <div id="humidityData">
+              <p id="humidityPercentage">{{ weather.main.humidity }}%</p>
+              <p id="refreshingOrDry">{{ refreshingOrDry() }}</p>
+            </div>
+          </div>
+          <div id="rainContainer">
+            <div class="rainContainerHeader">
+              <img src="../assets/img/rainIconBasicMode.svg" class="rainIcon">
+              <p class="rainTitleBasicMode">Rain</p>
+            </div>
+            <div id="rainData">
+              <p id="rainPercentage">{{ Math.round(this.five_day_forecast.list[0].pop * 100) }}</p>
+              <p id="chance">% Chance</p>
+            </div>
+          </div>
+          <div id="windContainer">
+            <div class="windContainerHeader">
+              <img src="../assets/img/windIconBasicMode.svg" class="windIcon" >
+              <p class="windTitleBasicMode">Wind</p>
+            </div>
+            <p id="windData">{{ windSpeed() }}</p>
+          </div>
+          <RouterLink :to="{ name: '', params: { city: weather.name } }" id="seeMoreBtn">See more</RouterLink>
+        </div>
+      </div>
+      <div class="gridCell div3">
+        <div id="containerNimbusNudges">
+          <div id="headerNimbusNudges">
+            <h3 id="titleNimbusNudges">Nimbus Nudges</h3>
+            <div id="buttonsHeaderNimbusNudges">
+              <ArrowButton direction="left" button-class="personalization-arrow" @clickButton="handleUpClick" />
+              <ArrowButton direction="right" button-class="personalization-arrow" @clickButton="handleDownClick" />
+            </div>
+          </div>
+          <div id="nimbusNudgesData">
+            A friendly heads-up – a playful breeze is weaving its way through the city today. It's strong enough to dance with the leaves and turn a regular walk into a refreshing journey. Embrace the fresh air and let it guide you to new experiences.
+          </div>
+          <div id="buttonsOptionsNimbusNudges">
+            <button id="allClearBtn">ALL CLEAR!</button>
+            <button id="quietTheSkiesBtn">QUIET THE SKIES</button>
+          </div>
+        </div>
+      </div>
+      <div class="gridCell div4">
+        <div id="degreesContainer">
+          <h1 id="degreesValue">{{ Math.round(weather.main.temp) }}
+            <div class="degrees-sub-wrapper">
+              <div id="degrees">degrees</div>
+              <div id="degreesType">celsius</div>
+            </div>
           </h1>
-        
-          <!-- <p id = 'degreesType'>celsius</p> -->
-      </div>
-</div>
-<div class="div5 gridCell">
-      <div id = 'temperatureGraphContainerBasicMode'>
-        <img src="../assets/img/graphBasicMode.svg" id = 'imgGraphBasicMode'>
-      </div>
-    </div>
-    <div class="div6 gridCell">
-      <div id = 'airQualityContainer'>
-        <div id = 'airQualityHeader'>Air Quality</div>
-        <p id = 'airQualityMeaning'>{{ airQualityMeaning() }}</p>
-        <div id = 'airQualityData'>
-          <div id = 'circleAirQuality'>
-          <h2 id = 'airQualityValue'>{{ air_quality.list[0].main.aqi }}</h2>
-        </div>
-       
         </div>
       </div>
-    </div>
-    <div class="div7 gridCell">
-      <section id = 'thisWeekSection'>
+      <div class="gridCell div5">
+        <div id="temperatureGraphContainerBasicMode">
+          <img src="../assets/img/graphBasicMode.svg" id="imgGraphBasicMode" >
+        </div>
+      </div>
+      <div class="gridCell div6">
+        <div id="airQualityContainer">
+          <div id="airQualityHeader">Air Quality</div>
+          <p id="airQualityMeaning">{{ airQualityMeaning() }}</p>
+          <div id="airQualityData">
+            <div id="circleAirQuality">
+              <h2 id="airQualityValue">{{ air_quality.list[0].main.aqi }}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gridCell div7">
+        <section id = 'thisWeekSection'>
         <div id = 'thisWeekContainer'><p>This Week</p></div>
         <div id = 'mondayContainer'>
           <h3 class = 'dayTitle'>{{ getDayOfWeek(0) }}</h3>
@@ -511,71 +374,67 @@ export default {
           </div>
         </div>
       </section>
-    </div>
-    <div class="div8 gridCell">
-      <div id = 'sunshineInfo'>
-        <span id = 'sunriseSunsetContainer'>
-          <div id = 'sunriseContainer'>
-            <p id = 'sunrise'>Sunrise</p>
-            <p id = 'sunriseTime'>{{ formatTime(weather.sys.sunrise, weather.timezone) }} am</p>
-          </div>
-            <div id = 'sunriseSunsetIllustration'>
-              <div id = 'sunriseSunsetBigLine'></div>
-              <div id='sunriseSunsetBigLine'></div>
-              <div id='ssSmallLine'></div>
-              <div id='ssCircle'></div>
+      </div>
+      <div class="gridCell div8">
+        <div id="sunshineInfo">
+          <span id="sunriseSunsetContainer">
+            <div id="sunriseContainer">
+              <p id="sunrise">Sunrise</p>
+              <p id="sunriseTime">{{ formatTime(weather.sys.sunrise, weather.timezone) }} am</p>
             </div>
-       
-          <div id = 'sunsetContainer'>
-            <p id = 'sunset'>Sunset</p>
-            <p id = 'sunsetTime'>{{ formatTime(weather.sys.sunset, weather.timezone)}} pm</p>
-          </div>
-        </span>
-        <span id = 'uvLightContainer'>
-          <div id = 'uvHeader'>
-            <h3 id = 'uv'>UV</h3>
-            <p id = 'uvRec'>Cover up, stay in shade.</p>
-          </div>
-          <div id = 'uvIllustration'>
-              <div id = 'uvBigLine'></div>
-              <div id = 'uvSmallLine'></div>
-              <div id = 'uvCircle'></div>
-          </div>
-        </span>
+            <div id="sunriseSunsetIllustration">
+              <div id="sunriseSunsetBigLine"></div>
+              <div id="sunriseSunsetBigLine"></div>
+              <div id="ssSmallLine"></div>
+              <div id="ssCircle"></div>
+            </div>
+            <div id="sunsetContainer">
+              <p id="sunset">Sunset</p>
+              <p id="sunsetTime">{{ formatTime(weather.sys.sunset, weather.timezone) }} pm</p>
+            </div>
+          </span>
+          <span id="uvLightContainer">
+            <div id="uvHeader">
+              <h3 id="uv">UV</h3>
+              <p id="uvRec">Cover up, stay in shade.</p>
+            </div>
+            <div id="uvIllustration">
+              <div id="uvBigLine"></div>
+              <div id="uvSmallLine"></div>
+              <div id="uvCircle"></div>
+            </div>
+          </span>
+        </div>
       </div>
     </div>
- 
-  </div>
   </main>
 </template>
+
 <style>
 
 .dash-body {
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* background-color: #01542C; */
-    color: #49ABFB;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
 }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 50px 1fr 1fr; /* Adjust the first value for the header row height */
-  grid-column-gap: 32px;
-  grid-row-gap: 32px;
+  grid-template-rows: 50px 1fr 1fr;
+  gap: 32px;
   height: 850px;
   width: 1260px;
 }
 
 .gridCell {
-  background-color: #F2E6DD;
-  border: 1px solid #303030;
+  border: 1px solid var(--main-color);
   border-radius: 20px;
-/*   padding: 13px 13px; */
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease-in-out; 
@@ -583,71 +442,46 @@ export default {
   justify-content: center;
 }
 
-.div0 { grid-area: 1 / 1 / 2 / 5;
-border-radius: 50px 50px 10px 10px ;}
+.div0 { grid-area: 1 / 1 / 2 / 5; border-radius: 50px 50px 10px 10px; }
+.div1 { grid-area: 2 / 1 / 3 / 2; }
+.div2 { grid-area: 2 / 2 / 3 / 4; }
+.div3 { grid-area: 2 / 4 / 3 / 4; }
+.div4 { grid-area: 3 / 1 / 4 / 2; }
+.div5 { grid-area: 3 / 2 / 4 / 4; }
+.div6 { grid-area: 3 / 4 / 4 / 4; }
+.div7 { grid-area: 4 / 1 / 4 / 4; }
+.div8 { grid-area: 4 / 4 / 5 / 4; }
 
-.div1 { grid-area: 2 / 1 / 3 / 2;}
-
-.div2 { grid-area: 2 / 2 / 3 / 4;}
-
-.div3 { grid-area: 2 / 4 / 3 / 4;}
-
-.div4 { grid-area: 3 / 1 / 4 / 2;}
-
-.div5 { grid-area: 3 / 2 / 4 / 4;}
-
-.div6 { grid-area: 3 / 4 / 4 / 4;}
-
-.div7 { grid-area: 4/ 1/  4 / 4;}
-
-.div8 { grid-area: 4 / 4/ 5 / 4;}
-:root{
-  background-color: #EDDED4;
-}
 #containerWeatherToday {
-    /* width: 245px; */
-    width: 100%;
-    /* height: 248px; */
-    flex-shrink: 0;
-    border-radius: 10px;
-    /* border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
-    background: #C3C3C3;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  background: #C3C3C3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-#weatherTodayIllustration{
+
+#weatherTodayIllustration {
   max-width: 10em;
   height: auto;
 }
 
-.date-icon-header {
-  display: flex;
-  width: fit-content;
-  margin-top: 1rem;
-}
-#date{
+#date {
   color: #F8FAFB;
   margin: 0;
-  font-family: Asap;
+  font-family: var(--font-family-secondary);
   font-size: 1.5625rem;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
-
 }
 
-#location{
+#location {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  color: #303030;
-
+  color: var(--main-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  
 }
 .locationCity {
 

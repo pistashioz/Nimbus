@@ -1,42 +1,52 @@
-// Importing the main stylesheet for the app
-import './assets/main.css'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import App from "./App.vue";
+import router from "./router";
+import "./populateLocalStorage";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faChevronLeft,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-// Importing essential Vue and Pinia modules
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+library.add(faArrowLeft, faArrowRight, faChevronLeft, faLocationDot);
 
-// Importing the persisted state plugin for Pinia
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+const app = createApp(App).component("font-awesome-icon", FontAwesomeIcon);
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
-// Importing the root component and router configuration
-import App from './App.vue'
-import router from './router'
-/* import the fontawesome core */
-import { library } from '@fortawesome/fontawesome-svg-core'
+app.use(pinia);
+app.use(router);
 
+import { useUserStore } from "@/stores/user";
+import { useWeatherStore } from "@/stores/weather";
 
-/* import font awesome icon component */
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+const userStore = useUserStore();
+if (!userStore.isUser) {
+  userStore
+    .login("testUser", "testPassword")
+    .then(() => {
+      const weatherStore = useWeatherStore();
+      weatherStore.updateUserWeather(userStore.user.userRegion, userStore.user.userLocations);
+    })
+    .catch((error) => console.error(error));
+}
 
-/* import specific icons */
-import { faArrowLeft, faArrowRight, faChevronLeft, faLocationDot} from '@fortawesome/free-solid-svg-icons'
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((registration) => {
+        console.log("Service Worker registered with scope:", registration.scope);
+      })
+      .catch((error) => {
+        console.error("Service Worker registration failed:", error);
+      });
+  });
+}
 
-/* add icons to the library */
-library.add(faArrowLeft, faArrowRight, faLocationDot, faChevronLeft)
-
-const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon)
-
-
-
-// Creating a Pinia store instance
-const pinia = createPinia()
-
-// Applying the persisted state plugin to the Pinia store
-pinia.use(piniaPluginPersistedstate)
-
-// Integrating Pinia and router with the Vue application
-app.use(pinia)
-app.use(router)
-
-// Mounting the Vue application to the DOM
-app.mount('#app')
+app.mount("#app");

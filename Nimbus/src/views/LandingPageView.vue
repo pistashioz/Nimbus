@@ -1,21 +1,20 @@
- <script>
- import { useUserStore } from "@/stores/user";
- import nimbusLogo from "@/assets/icons/logo.svg";
-  import sunLandingPage from '@/assets/img/sunLandingPage.webp'
-  import cloud1LandingPage from '@/assets/img/cloud1LandingPage.webp'
-  import cloud2LandingPage from '@/assets/img/cloud2LandingPage.webp'
-  import underlineImg from '@/assets/img/underline.webp'
-  import attributesImg from '@/assets/img/Attribute1Img.webp'
-  import attributes2Img from '@/assets/img/Attribute2Img.webp'
-  import attributes3Img from '@/assets/img/Attribute3Img.webp'
-  import quotationMarkReview from '@/assets/img/quotationMarkReview.webp'
-  import lglRsrcImg from '@/assets/img/EllipseLegalResources.webp' 
-  import addInfoImg from '@/assets/img/EllipseAdditionalInfo.webp'
-  import Reviews from '@/components/Reviews.vue';
- export default {
-  components: {
-    Reviews, 
-  },
+<script>
+import { useUserStore } from "@/stores/user";
+import nimbusLogo from "@/assets/icons/logo.svg";
+import sunLandingPage from '@/assets/img/sunLandingPage.webp';
+import cloud1LandingPage from '@/assets/img/cloud1LandingPage.webp';
+import cloud2LandingPage from '@/assets/img/cloud2LandingPage.webp';
+import underlineImg from '@/assets/img/underline.webp';
+import attributesImg from '@/assets/img/Attribute1Img.webp';
+import attributes2Img from '@/assets/img/Attribute2Img.webp';
+import attributes3Img from '@/assets/img/Attribute3Img.webp';
+import quotationMarkReview from '@/assets/img/quotationMarkReview.webp';
+import lglRsrcImg from '@/assets/img/EllipseLegalResources.webp';
+import addInfoImg from '@/assets/img/EllipseAdditionalInfo.webp';
+import Reviews from '@/components/Reviews.vue';
+
+export default {
+  components: { Reviews },
   data() {
     return {
       nimbusLogo,
@@ -41,37 +40,37 @@
         benefits: 'Content for Benefits...',
         impact: 'Content for Impact...'
       }
+    };
+  },
+  computed: {
+    store() {
+      return useUserStore();
+    },
+    isUser() {
+      return this.store.isUser;
+    },
+    getAuthenticatedUser() {
+      return this.store.authenticatedUser;
+    },
+    userLocations() {
+      return this.getAuthenticatedUser.userLocations;
+    },
+    userLocation() {
+      return this.getAuthenticatedUser.userRegion;
     }
   },
-   computed: {
-     store() {
-       return useUserStore();
-     },
-     isUser() {
-       return this.store.isUser;
-     },
-     getAuthenticatedUser() {
-       return this.store.authenticatedUser;
-     },
-     userLocations() {
-       return this.getAuthenticatedUser.userLocations;
-     },
-     userLocation() {
-       return this.getAuthenticatedUser.userRegion;
-     },
-   },
-   methods: {
-     navigateToDashboard() {
-    if (this.isUser) {
-      const { userLocations } = this.userLocations;
-      if (userLocations && userLocations.length > 0) {
-        this.$router.push({ name: 'basicModeDashboard' });
-      } else {
-        this.$router.push({ name: 'basicModeDashboard' });
+  methods: {
+    navigateToDashboard() {
+      if (this.isUser) {
+        const { userLocations } = this.userLocations;
+        if (userLocations && userLocations.length > 0) {
+          this.$router.push({ name: 'basicModeDashboard' });
+        } else {
+          this.$router.push({ name: 'basicModeDashboard' });
+        }
       }
-    }
-  },
-     selectTab(tabName) {
+    },
+    selectTab(tabName) {
       this.selectedTab = tabName;
       if (tabName === 'introduction') {
         this.selectedSubSection = 'missionAndVision'; // Reset to default when Introduction is selected
@@ -83,460 +82,371 @@
     isActiveSubSection(section) {
       return this.selectedSubSection === section;
     }
-   },
- };
- </script>
+  }
+};
+</script>
+
 <template>
   <main class="landing-page">
     <head>
       <link rel="preload" href="/images/photo.jpg" as="image" fetchpriority="high" />
+      <link rel="preload" href="@/assets/img/sunLandingPage.webp" as="image">
+      <link rel="preload" href="@/assets/img/cloud1LandingPage.webp" as="image">
+      <link rel="preload" href="@/assets/img/cloud2LandingPage.webp" as="image">
+      <link rel="preload" href="@/assets/img/graphAdvancedMode_large.webp" as="image">
     </head>
     <div class="first-vp">
-      <div id = 'introText' class = 'text'>
+      <div id="introText" class="text">
         Embrace the sky's narrative with Nimbus – your dedicated daily weather guide. Our cutting-edge platform merges precision forecasting with user-friendly design, ensuring you stay ahead of the weather, whatever your day holds. Whether you're a planner, an adventurer, or just looking for a sunny spot to relax, Nimbus brings you real-time weather updates with a touch of charm. <br><br> Join us on a journey where each cloud tells a story, and every raindrop is a beat in the rhythm of your day. With Nimbus, you're not just checking the weather; you're syncing your life with the pulse of the planet. So, why wait? Sign up today and transform how you interact with the world around you.
-        <button v-if="isUser" class='accDashboardBtn' @click="navigateToDashboard">
-        Access the Dashboard
-      </button>
+        <button v-if="isUser" class="accDashboardBtn" @click="navigateToDashboard">
+          Access the Dashboard
+        </button>
       </div>
       <div class="first-vp-bg">
-
-        <img :src="sunLandingPage" rel="preload" id="sunLandingPage">
-        <img :src="cloud1LandingPage"  rel="preload" id="cloud1LandingPage">
-        <img :src="cloud2LandingPage" rel="preload" id="cloud2LandingPage"> 
+        <img :src="sunLandingPage" alt="Sun" id="sunLandingPage">
+        <img :src="cloud1LandingPage" alt="Cloud 1" id="cloud1LandingPage">
+        <img :src="cloud2LandingPage" alt="Cloud 2" id="cloud2LandingPage"> 
       </div>
     </div>
-<div class="second-vp">
-
-      <div id = 'aboutTitle'>
-        <h1 id = 'forecasting'>Forecasting</h1>
-        <img rel="preload" :src="nimbusLogo" width="100px" height="auto">
-        <h1 id = 'reimagined'>REIMAGINED</h1>
-        <h1 id = 'welcomeToNimbus'>Welcome to Nimbus.</h1>
+    <div class="second-vp">
+      <div id="aboutTitle">
+        <h1 id="forecasting">Forecasting</h1>
+        <img :src="nimbusLogo" width="100px" height="auto" alt="Nimbus Logo">
+        <h1 id="reimagined">REIMAGINED</h1>
+        <h1 id="welcomeToNimbus">Welcome to Nimbus.</h1>
       </div>
-      <div id = 'aboutContent'>
+      <div id="aboutContent">
         <div class="aboutButtons">
-    <button id="introductionBtn"
+          <button id="introductionBtn"
             :class="{ active: selectedTab === 'introduction' }"
             @click="selectTab('introduction')">01. INTRODUCTION</button>
-    <button id="featuresBtn"
+          <button id="featuresBtn"
             :class="{ active: selectedTab === 'features' }"
             @click="selectTab('features')">02. FEATURES</button>
-    <button id="teamBtn"
+          <button id="teamBtn"
             :class="{ active: selectedTab === 'team' }"
             @click="selectTab('team')">03. TEAM</button>
-  </div>
-
-  <div class="aboutText">
-    <div class="introductionText">
-      {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
-    </div>
-  </div>
+        </div>
+        <div class="aboutText">
+          <div class="introductionText">
+            {{ selectedTab === 'introduction' ? subSectionContent[selectedSubSection] : tabContent[selectedTab] }}
+          </div>
+        </div>
       </div>
       <div class="about-sub-sec" v-if="selectedTab === 'introduction'">
-    <div class="sub-sec-one"
-         :class="{ 'active': isActiveSubSection('missionAndVision') }"
-         @click="selectSubSection('missionAndVision')">
-      mission and vision
-    </div>
-    <div class="sub-sec-two"
-         :class="{ 'active': isActiveSubSection('benefits') }"
-         @click="selectSubSection('benefits')">
-      benefits
-    </div>
-    <div class="sub-sec-three"
-         :class="{ 'active': isActiveSubSection('impact') }"
-         @click="selectSubSection('impact')">
-      impact
-    </div>
-  </div>
-      <button class = 'scrollTopBtn'>Scroll</button>
-
-  </div>
-  <div class="third-vp">
-    <div class = 'nimbusAttributes'>
-      <div id  = 'attTitle'>
-        <h2 class = 'attributesTitleText'>From Clouds to Clarify: Your Weather Ally.</h2>
-        <img :src="underlineImg" id = 'underlineImg' width="500px" height="auto"> 
-      </div>
-      <div class = 'attributesContent'>
-        <div class= 'containersAttributes' id = 'realTimeUpd'>
-          <div class="icon-header">     
-            <img :src="attributesImg" class = 'attributesImg' width="100px" height="auto" loading="lazy"> 
+        <div class="sub-sec-one"
+          :class="{ 'active': isActiveSubSection('missionAndVision') }"
+          @click="selectSubSection('missionAndVision')">
+          mission and vision
         </div>
-          <div class = 'header-text'>
-            <h3 class = 'attributesHeader' id = 'realTimeUpdHeader'>Real-Time Updates</h3>
-            Stay informed with real-time weather updates that ensure you're never caught off guard.</div>
+        <div class="sub-sec-two"
+          :class="{ 'active': isActiveSubSection('benefits') }"
+          @click="selectSubSection('benefits')">
+          benefits
         </div>
-        <div class= 'containersAttributes' id = 'precisionForecast'>
-          <div class="icon-header">  
-            <img :src="attributes2Img" class = 'attributesImg' width="150px" height="auto" loading="lazy"> 
-          </div>
-          <div class = 'header-text'>
-          <h3 class = 'attributesHeader' id = 'presicionForecastHeader'>Precision Forecasting</h3>
-         Our state-of-the-art prediction algorithms mean you’re always one step ahead of the weather.
-          </div>
-        </div>
-        <div class= 'containersAttributes' id = 'presonalizedWeather'>
-          <div class="icon-header"> 
-            <img :src="attributes3Img" class = 'attributesImg' width="100px" height="auto" loading="lazy"> 
-          </div>
-          <div class = 'header-text'>
-          <h3 class = 'attributesHeader'>Unique Experience</h3>
-          <p class = 'attributesText'>Customize your alerts to receive the information that matters most to you.</p>
-          </div>
+        <div class="sub-sec-three"
+          :class="{ 'active': isActiveSubSection('impact') }"
+          @click="selectSubSection('impact')">
+          impact
         </div>
       </div>
+      <button class="scrollTopBtn">Scroll</button>
     </div>
-    <Reviews /> 
-  </div>
+    <div class="third-vp">
+      <div class="nimbusAttributes">
+        <div id="attTitle">
+          <h2 class="attributesTitleText">From Clouds to Clarify: Your Weather Ally.</h2>
+          <img :src="underlineImg" id="underlineImg" width="500px" height="auto" alt="Underline"> 
+        </div>
+        <div class="attributesContent">
+          <div class="containersAttributes" id="realTimeUpd">
+            <div class="icon-header">     
+              <img :src="attributesImg" class="attributesImg" width="100px" height="auto" alt="Real-Time Updates" loading="lazy"> 
+            </div>
+            <div class="header-text">
+              <h3 class="attributesHeader" id="realTimeUpdHeader">Real-Time Updates</h3>
+              Stay informed with real-time weather updates that ensure you're never caught off guard.
+            </div>
+          </div>
+          <div class="containersAttributes" id="precisionForecast">
+            <div class="icon-header">  
+              <img :src="attributes2Img" class="attributesImg" width="150px" height="auto" alt="Precision Forecasting" loading="lazy"> 
+            </div>
+            <div class="header-text">
+              <h3 class="attributesHeader" id="presicionForecastHeader">Precision Forecasting</h3>
+              Our state-of-the-art prediction algorithms mean you’re always one step ahead of the weather.
+            </div>
+          </div>
+          <div class="containersAttributes" id="presonalizedWeather">
+            <div class="icon-header"> 
+              <img :src="attributes3Img" class="attributesImg" width="100px" height="auto" alt="Personalized Weather" loading="lazy"> 
+            </div>
+            <div class="header-text">
+              <h3 class="attributesHeader">Unique Experience</h3>
+              <p class="attributesText">Customize your alerts to receive the information that matters most to you.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Reviews /> 
+    </div>
     <footer>
-      <div id = 'legalRsrc'>
-        <img :src="lglRsrcImg"  id = 'lglRsrcImg' loading="lazy" width="25px"> 
-        <RouterLink :to="{ name: 'legalResources' }" id = 'legalResourcesBtn'>legal resources</RouterLink>
+      <div id="legalRsrc">
+        <img :src="lglRsrcImg" id="lglRsrcImg" loading="lazy" width="25px" alt="Legal Resources"> 
+        <RouterLink :to="{ name: '' }" id="legalResourcesBtn">legal resources</RouterLink>
       </div>
-      <div id = 'addInfo'>
-        <img :src="addInfoImg"  id = 'addInfoImg' loading="lazy" width="25px"> 
-        <RouterLink :to="{ name: 'additionalInformation' }" id = 'additionalInfoBtn'>additional info</RouterLink>
+      <div id="addInfo">
+        <img :src="addInfoImg" id="addInfoImg" loading="lazy" width="25px" alt="Additional Info"> 
+        <RouterLink :to="{ name: '' }" id="additionalInfoBtn">additional info</RouterLink>
       </div>
     </footer> 
   </main>
-
 </template>
-<style>
-/* .v-main {
-  position: absolute;
-  top: 0;
-} */
-
-#realTimeUpd {
-  margin-left:  5rem;
-}
-#presonalizedWeather {
-  margin-right:  5rem;
-}
-.v-main {
+ 
+ <style scoped>
+ .v-main {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-}
-/* .landing-page{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-} */
-.first-vp{
+ }
+ 
+ .first-vp {
   height: 65vh;
-/*   background-color: aqua; */
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   z-index: -1;
-}
-
-.first-vp-bg{
+ }
+ 
+ .first-vp-bg {
   width: 100%;
   height: 100%;
-}
-body{
-  animation: transitionIn 1.25s;
-}
-@keyframes transitionIn{
-  from {
-    opacity: 0;
-    transform: rotateX('-10deg');
-  }
-  to{
-    opacity: 1;
-    transform: rotateX('0');
-  }
-}
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-}
-:root{
-  background-color: #EDDED4;
-}
-button{
-  cursor: pointer;
-}
-/*  #intro{
- width: 100%;
-  height: 532px; 
-  margin:0;
-   position: absolute;
-  top: 50%; 
-  display: flex;
-flex-direction: column;
-}  */
-#sunLandingPage{
+ }
+ 
+ #sunLandingPage {
   width: 25em;
   height: auto;
   z-index: 2;
   position: absolute;
   left: 5em;
-  
-}
-@keyframes drift {
-  from {
-    transform: translateX(300px);
-  }
-  to {
-    transform: translateX(-1350px);
-  }
-}
-
-#cloud1LandingPage{
+ }
+ 
+ #cloud1LandingPage {
   width: 28em;
   height: auto;
   z-index: 2;
   position: absolute;
   right: 5em;
   animation: drift 50s ease infinite;
-}
-#cloud2LandingPage{
+ }
+ 
+ #cloud2LandingPage {
   width: 35em;
   height: auto;
-  z-index:2;
+  z-index: 2;
   position: absolute;
   right: -7em;
   top: 25em;
   animation: drift 90s ease infinite;
-}
-#introText {
+ }
+ 
+ #introText {
   max-width: 30vw;
-    height: fit-content;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translate(-45%, 0%);
-    align-items: center;
-    justify-content: space-around;
-}
-
-.accDashboardBtn {
-  border: 1px solid #303030;
+  height: fit-content;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-45%, 0%);
+  align-items: center;
+  justify-content: space-around;
+ }
+ 
+ .accDashboardBtn {
+  border: 1px solid var(--main-color);
   background-color: #D8C5B6;
   width: fit-content;
   height: fit-content;
-  border-radius:30px;
-  font-family: Recoleta;
-font-size: 20px;
-font-style: normal;
-font-weight: 600;
-line-height: normal;
-padding: 1rem;
-margin-top: 2rem;
-}
-
-.second-vp{
+  border-radius: 30px;
+  font-family: var(--font-family-primary);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: normal;
+  padding: 1rem;
+  margin-top: 2rem;
+ }
+ 
+ .second-vp {
   height: 85vh;
-/*   background-color: red; */
-  /* width: 100vw; */
   display: flex;
   padding-left: 5rem;
   padding-right: 5rem;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-}
-
-.text{
-  font-family: Asap;
-  font-size:1.2vw;
-
-}
-#logoImgAbout{
-  width: 8vw; 
-  height: auto;
-  margin: 0 2rem 0 0;
-/*   position: relative;
-  margin-top: -160vh;
-  margin-right: 3vw;
-  margin-left: 3vw;  */
-}
-
-#aboutTitle {
+ }
+ 
+ .text {
+  font-family: var(--font-family-secondary);
+  font-size: 1.2vw;
+ }
+ 
+ #aboutTitle {
   display: flex;
-    height: fit-content;
-    /* width: 100%; */
-    /* max-width: 80vw; */
-    /* position: relative; */
-    /* transform: translate(15%, 0); */
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    align-content: flex-start;
-    justify-content: center;
-    /* margin-left: 10%; */
-    margin-top: 1rem;
-    margin-bottom: 0;
-}
-#forecasting{
-  font-family: 'Recoleta';
-  color: #303030;
+  height: fit-content;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 0;
+ }
+ 
+ #forecasting {
+  font-family: var(--font-family-primary);
+  color: var(--main-color);
   font-size: 100px;
-  font-style: normal;
   font-weight: 700;
   line-height: normal;
   margin: 0 2rem 0 0;
-  
   letter-spacing: 0.2rem;
-}
-#reimagined{
-  font-family: asap;
-  color: #303030;
+ }
+ 
+ #reimagined {
+  font-family: var(--font-family-secondary);
+  color: var(--main-color);
   font-size: 60px;
-  font-style: normal;
   font-weight: 600;
   margin: 0;
-  
   letter-spacing: 0.2rem;
-/*   position: relative;
-  top: 9vh;
+ }
+ 
+ #welcomeToNimbus {
+  color: var(--main-color);
+  font-family: var(--font-family-primary);
+  font-size: 112px;
+  font-weight: 700;
   line-height: normal;
-  height: 0; */
-}
-#welcomeToNimbus{
-  color: #303030;
-    font-family: Recoleta;
-    font-size: 112px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    display: flex;
-    justify-items: center;
-    letter-spacing: 0.2rem;
-    width: 100%;
-    margin: 0;
-    white-space: nowrap;
-    justify-content: center;
-
-}
-.scrollTopBtn{
+  display: flex;
+  justify-items: center;
+  letter-spacing: 0.2rem;
+  width: 100%;
+  margin: 0;
+  white-space: nowrap;
+  justify-content: center;
+ }
+ 
+ .scrollTopBtn {
   z-index: 10;
   position: fixed;
-  border: solid #303030 0.5;
-  background-color: #FAF8ED;
+  border: solid var(--main-color) 0.5;
+  background-color: var(--secondary-background-color);
   display: none;
   height: 8vh;
-  position: fixed;
   right: 2em;
   border-radius: 20vh; 
   align-items: center;
   padding: 0 2vw;
-  font-family: 'Recoleta';
+  font-family: var(--font-family-primary);
   font-weight: bold;
   font-size: 1.3vw;
   bottom: 1.5em;
   max-width: 30vw;
   margin-left: auto;
   margin-right: auto;
-  
-}
-#aboutContent{
-
-    height: 40%;
-    box-sizing: border-box;
-    width: 100%;
-    margin-left: 7%;
-    margin-top: 1%;
-    display: flex;
-
-}
-.aboutButtons {
+ }
+ 
+ #aboutContent {
+  height: 40%;
+  box-sizing: border-box;
+  width: 100%;
+  margin-left: 7%;
+  margin-top: 1%;
+  display: flex;
+ }
+ 
+ .aboutButtons {
   width: 50%;
   height: fit-content;
   display: flex;
   flex-direction: column;
-}
-#aboutContent button {
-    border: 1px solid #303030;
-    width: fit-content;
-    padding: 1rem 1.2rem;
-    font-family: 'Asap Regular' sans-serif;
-    font-size: 1.2rem;
-    border-radius: 30px;
-    background: #E2D8D1;
-    margin-bottom: 1.2rem;
-    display: flex;
-    justify-self: center;
-}
-
-#aboutContent button:hover {
-    background-color: #F0E6D2; /* Change as per your color scheme */
-    cursor: pointer;
-}
-
-#aboutContent button.active {
-    background-color: #E2D8D1; /* Change as per your color scheme */
-    border: 2px solid #303030;
-}
-
-.aboutText {
-  font-family: 'Asap Regular' sans-serif;
+ }
+ 
+ #aboutContent button {
+  border: 1px solid var(--main-color);
+  width: fit-content;
+  padding: 1rem 1.2rem;
+  font-family: var(--font-family-secondary);
+  font-size: 1.2rem;
+  border-radius: 30px;
+  background: #E2D8D1;
+  margin-bottom: 1.2rem;
+  display: flex;
+  justify-self: center;
+ }
+ 
+ #aboutContent button:hover {
+  background-color: #F0E6D2; 
+  cursor: pointer;
+ }
+ 
+ #aboutContent button.active {
+  background-color: #E2D8D1; 
+  border: 2px solid var(--main-color);
+ }
+ 
+ .aboutText {
+  font-family: var(--font-family-secondary);
   font-size: 1.2rem;
   margin: 0 2rem 0 0;
   width: 39%;
-}
-
-.introductionText {
+ }
+ 
+ .introductionText {
   text-align: right;
-}
-
-.about-sub-sec {
+ }
+ 
+ .about-sub-sec {
   display: flex;
   width: 50%;
   justify-content: space-around;
   margin-top: 1%;
-  color: #303030;
-  color: #303030;
-  
+  color: var(--main-color);
   text-align: center;
-  font-family: Recoleta;
+  font-family: var(--font-family-primary);
   font-size: 1.2rem;
-  
   font-weight: 500;
-}
-
-.sub-sec-one, .sub-sec-two, .sub-sec-three {
+ }
+ 
+ .sub-sec-one, .sub-sec-two, .sub-sec-three {
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 0.5;
-  padding-bottom: 0.5;
-  /* Add common styles for sub-sec buttons here */
-}
-
-.sub-sec-one:hover, .sub-sec-two:hover, .sub-sec-three:hover {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+ }
+ 
+ .sub-sec-one:hover, .sub-sec-two:hover, .sub-sec-three:hover {
   text-decoration: underline;
-  /* Add more hover styles as needed */
-}
-
-.sub-sec-one.active:hover, .sub-sec-two.active:hover, .sub-sec-three.active:hover {
+ }
+ 
+ .sub-sec-one.active:hover, .sub-sec-two.active:hover, .sub-sec-three.active:hover {
   text-decoration: none;
-  /* Add more hover styles as needed */
-}
-
-
-.sub-sec-one.active, .sub-sec-two.active, .sub-sec-three.active {
-  background-color: pink; /* Example active state style */
-  border: 1px solid #303030;
-  /* Add more active styles as needed */
-}
-
-
-
-.third-vp{
+ }
+ 
+ .sub-sec-one.active, .sub-sec-two.active, .sub-sec-three.active {
+  background-color: pink;
+  border: 1px solid var(--main-color);
+ }
+ 
+ .third-vp {
   height: fit-content;
-/*   background-color: green; */
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -544,184 +454,138 @@ margin-top: 2rem;
   align-items: center;
   padding-bottom: 2rem;
   z-index: -1;
-}
-.nimbusAttributes {
-   width: 100%;
- /* height: 800px;
-  flex-shrink: 0; */
+ }
+ 
+ .nimbusAttributes {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-#attTitle {
-/*   top: 22em;
-  position: relative; */
-  color: #303030;
+ }
+ 
+ #attTitle {
+  color: var(--main-color);
   height: 6rem;
   text-align: center;
-  font-family: Recoleta;
+  font-family: var(--font-family-primary);
   font-size: 1em;
-  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
   display: flex;
   flex-direction: column;
   align-items: center;
-    font-weight: 700;
-  line-height: normal;
-}
-.attributesTitleText {
+ }
+ 
+ .attributesTitleText {
   z-index: 1;
-}
-#underlineImg {
-/*   position: absolute;
-  bottom: -1.8em;
-  left: 50%;*/
+ }
+ 
+ #underlineImg {
   transform: translateY(-90%); 
-
-
-}
-
-.attributesContent{
+ }
+ 
+ .attributesContent {
   width: 90%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    height: 15vh;
-}
-
-.icon-header {
   display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-right: 1rem;
-}
-.containersAttributes{
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  height: 15vh;
+ }
+ 
+ .icon-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 1rem;
+ }
+ 
+ .containersAttributes {
   display: flex;
   align-items: center;
   flex-direction: row;
-}
-
-.containersAttributes:nth-child(2) {
+ }
+ 
+ .containersAttributes:nth-child(2) {
   transform: translateX(-3%);
-}
-
-.containersAttributes:nth-child(2) .icon-header {
+ }
+ 
+ .containersAttributes:nth-child(2) .icon-header {
   margin-right: 0.8rem;
-}
-.attributesHeader {
-  color: #303030;
-  font-family: Asap;
+ }
+ 
+ .attributesHeader {
+  color: var(--main-color);
+  font-family: var(--font-family-secondary);
   font-size: 22px;
-  font-style: normal;
   font-weight: 800;
   line-height: normal;
-/*   position: relative; */
   white-space: normal;
-
   width: fit-content;
   margin-top: 0;
   margin-bottom: 0.5rem;
-}
-/*   left: 3em; */
-
-
-
-
-.header-text {
+ }
+ 
+ .header-text {
   width: 13em;
-  color: #303030;
-  font-family: Asap;
+  color: var(--main-color);
+  font-family: var(--font-family-secondary);
   font-size: 1em;
-  font-style: normal;
   font-weight: 400;
   line-height: normal;
-
-}
-
-hr.solid {
-  border-top: 0.1em solid #303030;
+ }
+ 
+ hr.solid {
+  border-top: 0.1em solid var(--main-color);
   position: relative;
   top: 10em;
-}
-
-
-.cardImage{
+ }
+ 
+ .cardImage {
   position: relative;
-padding-top: 1rem;
-padding-left: 1rem;
-margin-bottom: -0.75rem;
-}
-.cardData{
+  padding-top: 1rem;
+  padding-left: 1rem;
+  margin-bottom: -0.75rem;
+ }
+ 
+ .cardData {
   padding: 0rem 1.5rem 1.5rem 1.5rem;
   border-radius: 1rem;
   text-align: start;
   position: relative;
-  color: #303030;
-  font-family: Asap;
+  color: var(--main-color);
+  font-family: var(--font-family-secondary);
   font-size: 20px;
-  font-style: normal;
   font-weight: 500;
   line-height: normal;
-}
-
-small{
+ }
+ 
+ small {
   color: #858585;
-  font-family: Asap;
+  font-family: var(--font-family-secondary);
   font-size: 15px;
-  font-style: normal;
   font-weight: 600;
   line-height: normal;
   display: flex;
   align-items: start;
-}
-#secondDivider{
-  border-top: 0.1em solid #303030;
+ }
+ 
+ #secondDivider {
+  border-top: 0.1em solid var(--main-color);
   position: relative;
   top: 20em;
-}
-
-footer{
-  color: #303030;
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    height: 4em;
-    font-size: 25px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    border-top: 1px solid #303030;
+ }
  
-}
-
-#legalRsrc,
-#addInfo {
-  font-weight: bold;
-  font-size: 1.3vw;
+ footer {
+  color: var(--main-color);
   display: flex;
-  align-items: center;
-}
-
-#lglRsrcImg,
-#addInfoImg {
-  height: auto;
-  margin-right: 0.5em;
-}
-
-#legalResourcesBtn, #additionalInfoBtn{
-  color: #303030;
-text-align: center;
-font-family: Recoleta;
-font-size: 25px;
-font-style: normal;
-font-weight: 700;
-line-height: normal;
-margin-right: 4rem;
-}
-
-#legalRsrc {
-  margin-left: 3rem;
-}
-</style>
+  justify-content: flex-start;
+  width: 100%;
+  height: 4em;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: normal;
+  border-top: 1px solid var(--main-color);
+ }
+ </style>

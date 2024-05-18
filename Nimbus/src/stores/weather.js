@@ -1,59 +1,62 @@
-import { defineStore } from 'pinia';
-import { fetchWeatherDataByCoordinates, fetchFiveDayForecastByCoordinates, fetchAirQualityByCoordinates } from '@/weatherService';
+import { defineStore } from "pinia";
+import { fetchWeatherDataByCoordinates, fetchFiveDayForecastByCoordinates, fetchAirQualityByCoordinates } from "@/weatherService";
 
+// Ensure that the initial state is properly initialized
 export const useWeatherStore = defineStore("weather", {
   state: () => ({
-    userWeather: {
-      region: '',
-      locations: [],
+    userWeather: { region: { latitude: null, longitude: null }, locations: [] },
+    weatherData: { locations: [] },
+    regionWeatherData: {
+      currentWeather: null,
+      fiveDayForecast: null,
+      airQuality: null,
     },
-    weatherData: {},
-    regionWeatherData: {},
   }),
   actions: {
     updateUserWeather(region, locations) {
-        this.userWeather.region = region;
-        this.userWeather.locations = locations;
-     
-        // Fetch weather data for the region
-        this.fetchRegionWeather();
-  
-        // Fetch weather data for all locations
-        this.fetchWeatherForAllLocations();
-      },
-      async fetchRegionWeather() {
-      
-      // Use coordinates for fetching weather data
+      this.userWeather.region = region;
+      this.userWeather.locations = locations;
+      this.fetchRegionWeather();
+      this.fetchWeatherForAllLocations();
+    },
+    async fetchRegionWeather() {
       const { latitude, longitude } = this.userWeather.region;
-      console.log(this.userWeather.region);
-      console.log(latitude);
-      console.log(longitude);
-      const currentWeather = await fetchWeatherDataByCoordinates(latitude, longitude);
-      const fiveDayForecast = await fetchFiveDayForecastByCoordinates(latitude, longitude);
-      const airQuality = await fetchAirQualityByCoordinates(latitude, longitude);
-
-      // Update regionWeatherData
-      this.regionWeatherData = { currentWeather, fiveDayForecast, airQuality };
-  
-      },
-
-      async fetchWeatherForAllLocations() {
-        // Fetch weather data for each location using their coordinates
-        const weatherDataPromises = this.userWeather.locations.map(async (location) => {
-          console.log(location);
-          const { lat, lng } = location; // Use lat and lng instead of main_text
-          console.log(lat);
-          console.log(lng);
-          const currentWeather = await fetchWeatherDataByCoordinates(lat, lng);
-          const fiveDayForecast = await fetchFiveDayForecastByCoordinates(lat, lng);
-          const airQuality = await fetchAirQualityByCoordinates(lat, lng);
-  
+      if (latitude && longitude) {
+        try {
+          const [currentWeather, fiveDayForecast, airQuality] = await Promise.all([
+            fetchWeatherDataByCoordinates(latitude, longitude),
+            fetchFiveDayForecastByCoordinates(latitude, longitude),
+            fetchAirQualityByCoordinates(latitude, longitude),
+          ]);
+          this.regionWeatherData = { currentWeather, fiveDayForecast, airQuality };
+        } catch (error) {
+          console.error("Error fetching region weather data:", error);
+        }
+      } else {
+        console.error("Region coordinates are undefined");
+      }
+    },
+    async fetchWeatherForAllLocations() {
+      try {
+        const weatherDataPromises = this.userWeather.locations.map(async ({ latitude, longitude }) => {
+          if (!latitude || !longitude) {
+            console.error("Location coordinates are undefined");
+            return { currentWeather: null, fiveDayForecast: null, airQuality: null };
+          }
+          const [currentWeather, fiveDayForecast, airQuality] = await Promise.all([
+            fetchWeatherDataByCoordinates(latitude, longitude),
+            fetchFiveDayForecastByCoordinates(latitude, longitude),
+            fetchAirQualityByCoordinates(latitude, longitude),
+          ]);
           return { currentWeather, fiveDayForecast, airQuality };
         });
-  
-        // Await all promises and update weatherData
-        this.weatherData = { region: this.userWeather.region, locations: await Promise.all(weatherDataPromises) };
-      },
+
+        const weatherData = await Promise.all(weatherDataPromises);
+        this.weatherData.locations = weatherData;
+      } catch (error) {
+        console.error("Error fetching weather data for all locations:", error);
+      }
     },
-  persist: true, 
+  },
+  persist: true,
 });
