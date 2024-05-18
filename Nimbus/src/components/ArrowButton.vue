@@ -1,5 +1,5 @@
 <template>
-    <button type="button" :class="['arrow-button', buttonClass]" @click="onClick" :style="buttonStyle">
+    <button type="button" :class="['arrow-button', buttonClass]" @click="onClick" :style="buttonStyle"  :aria-label="direction === 'left' ? 'Move Left' : 'Move Right'">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 14.73 21" class="arrow-icon">
         <path d="M6.66,20.71c.39.39,1.02.39,1.41,0l6.36-6.36c.39-.39.39-1.02,0-1.41-.39-.39-1.02-.39-1.41,0l-5.66,5.66L1.71,12.93c-.39-.39-1.02-.39-1.41,0-.39.39-.39,1.02,0,1.41l6.36,6.36ZM6.36,1v18c0,.55.45,1,1,1h0c.55,0,1-.45,1-1V1C8.36.45,7.92,0,7.36,0h0c-.55,0-1,.45-1,1Z"/>
       </svg>

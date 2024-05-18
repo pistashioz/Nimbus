@@ -1,18 +1,18 @@
 <script>
-import moment from 'moment';
-import ArrowButton from '@/components/ArrowButton.vue';
+import moment from "moment";
+import ArrowButton from "@/components/ArrowButton.vue";
 import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
-import { useWeatherStore } from '@/stores/weather';
+import { useWeatherStore } from "@/stores/weather";
 
 export default {
-  name: 'basicMode',
+  name: "basicMode",
   data() {
     return {
       weather: {},
       five_day_forecast: {},
       air_quality: {},
-      region: ''
+      region: "",
     };
   },
   components: {
@@ -20,12 +20,14 @@ export default {
     HeaderDashboard,
   },
   created() {
-    this.region = this.userLocation.region || '';
-    this.fetchWeather().then(() => {
-      console.log("Weather data fetched");
-    }).catch(error => {
-      console.error("Error fetching weather data:", error);
-    });
+    this.region = this.userLocation.region || "";
+    this.fetchWeather()
+      .then(() => {
+        console.log("Weather data fetched");
+      })
+      .catch((error) => {
+        console.error("Error fetching weather data:", error);
+      });
   },
   mounted() {
     this.$nextTick(() => {
@@ -33,12 +35,8 @@ export default {
     });
   },
   computed: {
-    store() {
-      return useUserStore();
-    },
-    weatherStore() {
-      return useWeatherStore();
-    },
+    store: () => useUserStore(),
+    weatherStore: () => useWeatherStore(),
     weatherData() {
       return this.weatherStore.weatherData;
     },
@@ -58,43 +56,42 @@ export default {
       return this.getAuthenticatedUser.userRegion;
     },
     getWeatherAltText() {
-      const weatherMain = this.weather.weather[0].main.toLowerCase();
+      let weatherMain = this.weather.weather[0].main.toLowerCase();
       switch (weatherMain) {
-        case 'clear':
-          return 'Clear Sky';
-        case 'clouds':
-          return 'Cloudy';
-        case 'rain':
-          return 'Rainy';
-        case 'thunderstorm':
-          return 'Thunderstorm';
-        case 'snow':
-          return 'Snowy';
-        case 'mist':
-          return 'Misty';
+        case "clear":
+          return "Clear Sky";
+        case "clouds":
+          return "Cloudy";
+        case "rain":
+          return "Rainy";
+        case "thunderstorm":
+          return "Thunderstorm";
+        case "snow":
+          return "Snowy";
+        case "mist":
+          return "Misty";
         default:
-          return 'Unknown Weather';
+          return "Unknown Weather";
       }
     },
     getWeatherTodayIllustration() {
-      const weatherImg = this.weather.weather[0].main.toLowerCase();
-      switch (weatherImg) {
-        case 'clear':
-          return require('@/assets/img/sunnyImg.png');
-        case 'clouds':
-          return require('@/assets/img/cloudyImg.png');
-        case 'rain':
-          return require('@/assets/img/rainImg.png');
-        case 'thunderstorm':
-          return require('@/assets/img/thunderImg.png');
-        case 'snow':
-          return require('@/assets/img/snowImg.png');
-        case 'mist':
-          return require('@/assets/img/mistImg.png');
+      let weatherMain = this.weather.weather[0].main.toLowerCase();
+      switch (weatherMain) {
+        case "clear":
         default:
-          return require('@/assets/img/sunnyImg.png');
+          return require("@/assets/img/sunnyImg.png");
+        case "clouds":
+          return require("@/assets/img/cloudyImg.png");
+        case "rain":
+          return require("@/assets/img/rainImg.png");
+        case "thunderstorm":
+          return require("@/assets/img/thunderImg.png");
+        case "snow":
+          return require("@/assets/img/snowImg.png");
+        case "mist":
+          return require("@/assets/img/mistImg.png");
       }
-    }
+    },
   },
   methods: {
     async fetchWeather() {
@@ -109,125 +106,154 @@ export default {
           this.five_day_forecast = {};
         }
       } catch (error) {
-        console.error('Error fetching weather data:', error);
+        console.error("Error fetching weather data:", error);
         this.weather = {};
         this.air_quality = {};
         this.five_day_forecast = {};
       }
     },
-    dateBuilder() {
-      return moment().format('dddd, D MMMM');
-    },
+    dateBuilder: () => moment().format("dddd, D MMMM"),
     warmOrCold() {
-      const temperature = this.weather.main.temp;
-      if (temperature > 16 && temperature <= 25) return 'Warm';
-      if (temperature > 25) return 'Hot';
-      return 'Cold';
+      let temp = this.weather.main.temp;
+      if (temp > 16 && temp <= 25) return "Warm";
+      if (temp > 25) return "Hot";
+      return "Cold";
     },
     getDayOfWeek(index) {
-      const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      const forecastDate = new Date(this.five_day_forecast.list[index * 8].dt_txt);
-      return weekdays[forecastDate.getDay()];
+      let date = new Date(this.five_day_forecast.list[8 * index].dt_txt);
+      return ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][date.getDay()];
     },
-    formatTime(timestamp, timezoneOffset) {
-      const date = new Date(timestamp * 1000 + timezoneOffset * 1000);
+    formatTime(unixTime, timezone) {
+      let date = new Date((unixTime + timezone) * 1000);
       return date.toISOString().slice(11, 16);
     },
     calculateSunPosition() {
-      const currentTime = new Date();
-      const smallLine = document.getElementById('ssSmallLine');
-      const sunCircle = document.getElementById('ssCircle');
-      const timezoneOffsetInMilliseconds = this.weather.timezone * 1000;
-      const cityTime = new Date(currentTime.getTime() + timezoneOffsetInMilliseconds);
-      const formattedTime = cityTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-      const timeStampCurrentTime = Math.round(cityTime / 1000);
-      const sunriseTime = this.weather.sys.sunrise;
-      const sunsetTime = this.weather.sys.sunset;
-      const daylightDuration = sunsetTime - sunriseTime;
-      const timeSinceSunrise = timeStampCurrentTime - sunriseTime;
-      let percentageOfDaylight = (timeSinceSunrise / daylightDuration) * 100;
-      
-      if (percentageOfDaylight < 100 && percentageOfDaylight > 0) {
-        smallLine.style.width = `${percentageOfDaylight}%`;
-        sunCircle.style.left = `${percentageOfDaylight}%`;
+      let now = new Date();
+      let smallLine = document.getElementById("ssSmallLine");
+      let circle = document.getElementById("ssCircle");
+      let timezoneOffset = this.weather.timezone * 1000;
+      let localTime = new Date(now.getTime() + timezoneOffset);
+      let localTimeString = localTime.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      let sunrise = this.weather.sys.sunrise;
+      let sunset = this.weather.sys.sunset;
+      let sunPosition = ((Math.round(localTime / 1000) - sunrise) / (sunset - sunrise)) * 100;
+      if (sunPosition < 100 && sunPosition > 0) {
+        smallLine.style.width = `${sunPosition}%`;
+        circle.style.left = `${sunPosition}%`;
       } else {
-        smallLine.style.width = '0%';
-        sunCircle.style.left = '0%';
+        smallLine.style.width = "0%";
+        circle.style.left = "0%";
       }
-
-      return formattedTime;
+      return localTimeString;
     },
-    getMinAndMaxTemp(index, property) {
-      const temps = this.five_day_forecast.list.slice(index * 8, index * 8 + 8).map(item => item.main[property] - 273.15);
+    getMinAndMaxTemp(index, type) {
+      let temps = this.five_day_forecast.list.slice(8 * index, 8 * index + 8).map((entry) => entry.main[type] - 273.15);
       return {
         min: Math.round(Math.min(...temps)),
-        max: Math.round(Math.max(...temps))
+        max: Math.round(Math.max(...temps)),
       };
     },
-    getWeatherWeeklyIllustration(i) {
-      const weatherMain = this.five_day_forecast.list[i * 8].weather[0].main;
+    getWeatherWeeklyIllustration(index) {
+      let weatherMain = this.five_day_forecast.list[8 * index].weather[0].main;
       return this.mapWeatherToImage(weatherMain);
     },
     mapWeatherToImage(weatherMain) {
       switch (weatherMain) {
-        case 'Clear': return require('@/assets/img/sunnyImg.png');
-        case 'Clouds': return require('@/assets/img/cloudyImg.png');
-        case 'Rain': return require('@/assets/img/rainImg.png');
-        case 'Thunderstorm': return require('@/assets/img/thunderImg.png');
-        case 'Snow': return require('@/assets/img/snowImg.png');
-        case 'Mist': return require('@/assets/img/mistImg.png');
-        default: return require('@/assets/img/sunnyImg.png');
+        case "Clear":
+        default:
+          return require("@/assets/img/sunnyImg.png");
+        case "Clouds":
+          return require("@/assets/img/cloudyImg.png");
+        case "Rain":
+          return require("@/assets/img/rainImg.png");
+        case "Thunderstorm":
+          return require("@/assets/img/thunderImg.png");
+        case "Snow":
+          return require("@/assets/img/snowImg.png");
+        case "Mist":
+          return require("@/assets/img/mistImg.png");
       }
     },
     refreshingOrDry() {
-      const humidity = this.weather.main.humidity;
-      if (humidity < 30) return 'Dry';
-      if (humidity < 60) return 'Refreshing';
-      return 'Very Humid';
+      let humidity = this.weather.main.humidity;
+      if (humidity < 30) return "Dry";
+      if (humidity < 60) return "Refreshing";
+      return "Very Humid";
     },
-    computeFontSize(letterCount) {
-      if (letterCount <= 5) return "2.75rem";
-      if (letterCount <= 6) return "1.8rem";
+    computeFontSize(location) {
+      if (location.length <= 5) return "2.75rem";
+      if (location.length <= 6) return "1.8rem";
       return "1.5rem";
     },
     airQualityMeaning() {
-      const airQuality = this.air_quality.list[0].main.aqi;
-      if (airQuality == 1) return 'Good air quality, little or no risk';
-      if (airQuality == 2) return 'Acceptable air quality';
-      if (airQuality == 3) return 'Unhealthy for sensitive groups';
-      if (airQuality == 4) return 'Health effects possible for everyone';
-      if (airQuality == 5) return 'Health alert; serious effects possible for all';
-      return 'Unknown Air Quality';
+      let aqi = this.air_quality.list[0].main.aqi;
+      switch (aqi) {
+        case 1:
+          return "Good air quality, little or no risk";
+        case 2:
+          return "Acceptable air quality";
+        case 3:
+          return "Unhealthy for sensitive groups";
+        case 4:
+          return "Health effects possible for everyone";
+        case 5:
+          return "Health alert; serious effects possible for all";
+        default:
+          return "Unknown Air Quality";
+      }
     },
     windSpeed() {
-      const speedPerHour = this.weather.wind.speed;
-      if (speedPerHour >= 1 && speedPerHour <= 3) return 'Light Breeze';
-      if (speedPerHour > 3 && speedPerHour <= 7) return 'Gentle Breeze';
-      if (speedPerHour > 7 && speedPerHour <= 12) return 'Moderate Breeze';
-      if (speedPerHour > 12 && speedPerHour <= 18) return 'Fresh Breeze';
-      if (speedPerHour > 18 && speedPerHour <= 24) return 'Strong Breeze';
-      if (speedPerHour > 24 && speedPerHour <= 31) return 'High Wind, Near Gale';
-      if (speedPerHour > 31 && speedPerHour <= 38) return 'Gale';
-      if (speedPerHour > 38 && speedPerHour <= 46) return 'Severe Gale';
-      if (speedPerHour > 46 && speedPerHour <= 54) return 'Storm';
-      if (speedPerHour > 54) return 'Violent Storm';
-      return 'Unknown Wind';
+      let speed = this.weather.wind.speed;
+      if (speed >= 1 && speed <= 3) return "Light Breeze";
+      if (speed > 3 && speed <= 7) return "Gentle Breeze";
+      if (speed > 7 && speed <= 12) return "Moderate Breeze";
+      if (speed > 12 && speed <= 18) return "Fresh Breeze";
+      if (speed > 18 && speed <= 24) return "Strong Breeze";
+      if (speed > 24 && speed <= 31) return "High Wind, Near Gale";
+      if (speed > 31 && speed <= 38) return "Gale";
+      if (speed > 38 && speed <= 46) return "Severe Gale";
+      if (speed > 46 && speed <= 54) return "Storm";
+      if (speed > 54) return "Violent Storm";
+      return "Unknown Wind";
     },
     sunPosition() {
-      const hour = new Date().getUTCHours();
-      console.log('hora', hour);
+      let currentHour = new Date().getUTCHours();
+      console.log("Current Hour:", currentHour);
     },
     capitalizeDescription(description) {
-      return description.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      return description
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
     },
-    getWeatherIcon(iconCode) {
-      return `https://openweathermap.org/img/wn/${iconCode}@4x.png`;
-    }
-  }
+    getWeatherIcon(icon) {
+      return `https://openweathermap.org/img/wn/${icon}@4x.png`;
+    },
+    // Add missing methods
+    handleUpClick() {
+      console.log("Up button clicked");
+    },
+    handleDownClick() {
+      console.log("Down button clicked");
+    },
+  },
 };
 </script>
+
+
 <template>
   <main class="dash-body">
+    <head>
+  <!-- Preload images correctly -->
+  <link rel="preload" href="@/assets/img/sunLandingPage.webp" as="image">
+  <link rel="preload" href="@/assets/img/cloud1LandingPage.webp" as="image">
+  <link rel="preload" href="@/assets/img/cloud2LandingPage.webp" as="image">
+</head>
+
     <div class="grid">
       <div class="gridCell div0">
         <HeaderDashboard />
@@ -316,7 +342,7 @@ export default {
       </div>
       <div class="gridCell div5">
         <div id="temperatureGraphContainerBasicMode">
-          <img src="../assets/img/graphBasicMode.svg" id="imgGraphBasicMode" >
+          <img src="../assets/img/graphBasicMode.svg" id="imgGraphBasicMode" alt="Temperature Graph">
         </div>
       </div>
       <div class="gridCell div6">
@@ -331,49 +357,49 @@ export default {
         </div>
       </div>
       <div class="gridCell div7">
-        <section id = 'thisWeekSection'>
-        <div id = 'thisWeekContainer'><p>This Week</p></div>
-        <div id = 'mondayContainer'>
-          <h3 class = 'dayTitle'>{{ getDayOfWeek(0) }}</h3>
-          <img id = 'mondayImg' src='../assets/img/cloudImg.svg'>
-          <div id = 'mondayTemp'>
-            <p id = 'minTempMonday'>{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
-            <p id = 'maxTempMonday'>/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
+        <section id="thisWeekSection">
+          <div id="thisWeekContainer"><p>This Week</p></div>
+          <div id="mondayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(0) }}</h3>
+            <img id="mondayImg" src="../assets/img/cloudImg.svg" alt="Cloudy">
+            <div id="mondayTemp">
+              <p id="minTempMonday">{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
+              <p id="maxTempMonday">/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
+            </div>
           </div>
-        </div>
-        <div id = 'tuesdayContainer'>
-          <h3 class = 'dayTitle'>{{ getDayOfWeek(1) }}</h3>
-          <img id = 'tuesdayImg' src='../assets/img/cloudImg.svg'>
-          <div id = 'tuesdayTemp'>
-            <p id = 'minTempTuesday'>{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
-            <p id = 'maxTempTuesday'>/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
+          <div id="tuesdayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(1) }}</h3>
+            <img id="tuesdayImg" src="../assets/img/cloudImg.svg" alt="Cloudy">
+            <div id="tuesdayTemp">
+              <p id="minTempTuesday">{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
+              <p id="maxTempTuesday">/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
+            </div>
           </div>
-        </div>
-        <div id = 'wednesdayContainer'>
-          <h3 class = 'dayTitle'>{{ getDayOfWeek(2) }}</h3>
-          <img id = 'wednesdayImg' src='../assets/img/sunnyImg.svg'>
-          <div id = 'wednesdayTemp'>
-            <p id = 'minTempWednesday'>{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
-            <p id = 'maxTempWednesday'>/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
+          <div id="wednesdayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(2) }}</h3>
+            <img id="wednesdayImg" src="../assets/img/sunnyImg.svg" alt="Sunny">
+            <div id="wednesdayTemp">
+              <p id="minTempWednesday">{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
+              <p id="maxTempWednesday">/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
+            </div>
           </div>
-        </div>
-        <div id = 'thursdayContainer'>
-          <h3 class = 'dayTitle'>{{ getDayOfWeek(3) }}</h3>
-          <img id = 'thursdayImg' src='../assets/img/sunnyImg.svg'>
-          <div id = 'thursdayTemp'>
-            <p id = 'minTempThursday'>{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
-            <p id = 'maxTempThursday'>/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
+          <div id="thursdayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(3) }}</h3>
+            <img id="thursdayImg" src="../assets/img/sunnyImg.svg" alt="Sunny">
+            <div id="thursdayTemp">
+              <p id="minTempThursday">{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
+              <p id="maxTempThursday">/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
+            </div>
           </div>
-        </div>
-        <div id="fridayContainer">
-          <h3 class = 'dayTitle'>{{ getDayOfWeek(4) }}</h3>
-          <img id="fridayImg" src='../assets/img/sunnyImg.svg'>
-          <div id="fridayTemp">
-            <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
-            <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
+          <div id="fridayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(4) }}</h3>
+            <img id="fridayImg" src="../assets/img/sunnyImg.svg" alt="Sunny">
+            <div id="fridayTemp">
+              <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
+              <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </div>
       <div class="gridCell div8">
         <div id="sunshineInfo">
@@ -553,9 +579,6 @@ export default {
 }
 
 #rainContainer{
-/*   position: absolute;
-  left: 13.5em;
-  top: 7.44em; */
   width: 8.1875rem;
   height: 5.1875rem;
   flex-shrink: 0;
@@ -564,9 +587,6 @@ export default {
   background: #D9D5EE;
 }
 #windContainer{
-/*   position: absolute;
-  left:23.56em;
-  top: 7.44em; */
   width: 8.9375rem;
   height: 5.1875rem;
   flex-shrink: 0;
@@ -589,7 +609,6 @@ export default {
 #containerNimbusNudges{
   width: 100%;
   border-radius: 1.25rem;
- /*  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: var(--Secondary-Color-Palette-Sky-Wash, #ADD8FB);
   display: flex;
   flex-direction: column;
@@ -642,18 +661,7 @@ background-color: #FAF8ED;
   justify-content: center;
   align-items: center;
 }
-/* .arrow-button.personalization-arrow .arrow-icon {
-  width: 30px;
-  height: 30px;
-} */
-/* #buttonsHeaderNimbusNudges button{
-  width: 1.4375rem;
-  height: 1.4375rem;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background-color: #FAF8ED;
-  border: solid 0.05em #303030;
-} */
+
 #buttonsOptionsNimbusNudges{
   width: 100%;
   display: flex;
@@ -716,12 +724,8 @@ background-color: #FAF8ED;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-/*   position: absolute; */
 }
-/* #ColdOrWarm{
-  transform: translateX(-32%);
-}
- */
+
 .humidityIcon, .rainIcon, .windIcon{
 margin-left: 0.8rem;
 margin-top: 0.8rem; 
@@ -768,9 +772,7 @@ margin-left: 0.8rem;
 #degreesContainer{
   width: 100%;
   border-radius: 1.25rem;
- /*  border: 1px solid #000; */
   background: rgba(156, 200, 161, 0.80);
-
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -809,26 +811,18 @@ margin-left: 0.8rem;
   width: 100%;
   flex-shrink: 0;
   border-radius: 1.25rem;
- /*  border: 1px solid #000; */
   background: #F2E6DD;
 
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* #imgGraphBasicMode{
-  margin-top: 0.5em;
-} */
 
 #airQualityContainer{
   width: 100%;
   flex-shrink: 0;
   border-radius: 1.25rem;
- /*  border: 1px solid var(--Textual-Elements-Midnight-Onyx, #303030); */
   background: #FF87AB;
-/*   position: absolute;
-  right: 11.44em;
-  top: 24em; */
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -975,10 +969,8 @@ line-height: normal;
 
 #sunshineInfo{
   width: 100%;
-    /* height: 8.3125rem; */
     flex-shrink: 0;
     border-radius: 1.25rem;
-  /*   border: 1px solid #303030; */
     background: var(--primary-color-palette-40-saturation-sunbeam-gold-40-sat, #FAE3AF);
     display: flex;
     align-items: center;
@@ -1072,12 +1064,9 @@ line-height: normal;
 
 }
 #uvHeader{
-
-    /* align-self: baseline; */
     width: 100%;
     height: 1rem;
     padding-top: 0.4em;
-    /* flex-shrink: 0; */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1118,7 +1107,6 @@ line-height: normal;
 #uvBigLine{
   width: 100%;
   height: 0.25rem;
-/*   flex-shrink: 0; */
   border-radius: 0.625rem;
   background: #D9D9D9;
   z-index: 2;
@@ -1128,7 +1116,7 @@ line-height: normal;
   justify-self: flex-end;
   height: 0.25rem;
   transform: translateY(-0.25rem);
- /*  flex-shrink: 0; */
+
   z-index: 4;
   border-radius: 0.625rem;
   background: var(--secondary-color-palette-20-saturation-autumn-blaze-20-sat, #E64000);
@@ -1140,9 +1128,9 @@ line-height: normal;
   height: 0.9rem;
   top: -0.40rem;
   left: 30%;
-  /* transform: translateY(-0.3rem); */
+
   border-radius: 50%;
-/*   flex-shrink: 0; */
+
   background-color: #FABE32;
   z-index: 5;
 }

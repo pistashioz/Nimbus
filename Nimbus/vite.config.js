@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
     compression({
-      algorithm: 'brotliCompress', // 'brotliCompress' can also be used for better compression
+      algorithm: 'gzip', // 'brotliCompress' can also be used for better compression
       ext: '.gz', // Extension for compressed files
       deleteOriginalAssets: false, // Do not delete the original files
     }),
