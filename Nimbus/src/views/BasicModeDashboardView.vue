@@ -95,7 +95,27 @@
       </div>
       <div class="gridCell div5">
         <div id="temperatureGraphContainerBasicMode">
-          <img src="../assets/img/graphBasicMode.svg" id="imgGraphBasicMode" alt="Temperature Graph">
+          <picture>
+    <source 
+      srcset="@/assets/img/graphBasicMode_small.webp 960w,
+              @/assets/img/graphBasicMode_medium.webp 1024w,
+              @/assets/img/graphBasicMode_large.webp 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             40vw"
+      type="image/webp">
+    <source 
+      srcset="@/assets/img/graphBasicMode_small.png 960w,
+              @/assets/img/graphBasicMode_medium.png 1024w,
+              @/assets/img/graphBasicMode_large.png 1920w"
+      sizes="(max-width: 600px) 90vw, 
+             (max-width: 900px) 70vw, 
+             (max-width: 1200px) 50vw, 
+             80vw"
+      type="image/jpeg">
+    <img src="@/assets/img/graphBasicMode_large.png" id="imgGraphBasicMode" alt="Temperature Graph" width="800" height="400">
+  </picture>
         </div>
       </div>
       <div class="gridCell div6">
@@ -114,7 +134,7 @@
           <div id="thisWeekContainer"><p>This Week</p></div>
           <div id="mondayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(0) }}</h3>
-            <img id="mondayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
+            <img id="mondayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy" width="50" height="auto">
             <div id="mondayTemp">
               <p id="minTempMonday">{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
               <p id="maxTempMonday">/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
@@ -122,7 +142,7 @@
           </div>
           <div id="tuesdayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(1) }}</h3>
-            <img id="tuesdayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
+            <img id="tuesdayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy"  width="50" height="auto">
             <div id="tuesdayTemp">
               <p id="minTempTuesday">{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
               <p id="maxTempTuesday">/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
@@ -130,7 +150,7 @@
           </div>
           <div id="wednesdayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(2) }}</h3>
-            <img id="wednesdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
+            <img id="wednesdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny"  width="50" height="auto">
             <div id="wednesdayTemp">
               <p id="minTempWednesday">{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
               <p id="maxTempWednesday">/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
@@ -138,7 +158,7 @@
           </div>
           <div id="thursdayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(3) }}</h3>
-            <img id="thursdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
+            <img id="thursdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny"  width="50" height="auto">
             <div id="thursdayTemp">
               <p id="minTempThursday">{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
               <p id="maxTempThursday">/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
@@ -146,7 +166,7 @@
           </div>
           <div id="fridayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(4) }}</h3>
-            <img id="fridayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
+            <img id="fridayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny"  width="50" height="auto">
             <div id="fridayTemp">
               <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
               <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
@@ -190,11 +210,9 @@
 </template>
 <script>
 import moment from "moment";
-import ArrowButton from "@/components/ArrowButton.vue";
-import HeaderDashboard from "@/components/HeaderDashboard.vue";
 import { useUserStore } from "@/stores/user";
 import { useWeatherStore } from "@/stores/weather";
-
+import { memoize } from 'lodash'; 
 export default {
   name: "basicMode",
   data() {
@@ -206,8 +224,8 @@ export default {
     };
   },
   components: {
-    ArrowButton,
-    HeaderDashboard,
+    ArrowButton: () => import('@/components/ArrowButton.vue'),
+    HeaderDashboard: () => import('@/components/HeaderDashboard.vue')
   },
   created() {
     this.region = this.userLocation.region || "";
@@ -245,7 +263,7 @@ export default {
     userLocation() {
       return this.getAuthenticatedUser.userRegion;
     },
-    getWeatherAltText() {
+    getWeatherAltText: memoize(function() {
       let weatherMain = this.weather.weather[0].main.toLowerCase();
       switch (weatherMain) {
         case "clear":
@@ -263,8 +281,8 @@ export default {
         default:
           return "Unknown Weather";
       }
-    },
-    getWeatherTodayIllustration() {
+    }),
+    getWeatherTodayIllustration: memoize(function() {
       let weatherMain = this.weather.weather[0].main.toLowerCase();
       switch (weatherMain) {
         case "clear":
@@ -281,7 +299,7 @@ export default {
         case "mist":
           return require("@/assets/img/mistImg.png");
       }
-    },
+    }),
   },
   methods: {
     async fetchWeather() {
@@ -303,12 +321,12 @@ export default {
       }
     },
     dateBuilder: () => moment().format("dddd, D MMMM"),
-    warmOrCold() {
-      let temp = this.weather.main.temp;
-      if (temp > 16 && temp <= 25) return "Warm";
-      if (temp > 25) return "Hot";
-      return "Cold";
-    },
+    warmOrCold: memoize(function() {
+            let temp = this.weather.main.temp;
+            if (temp > 16 && temp <= 25) return "Warm";
+            if (temp > 25) return "Hot";
+            return "Cold";
+        }),
     getDayOfWeek(index) {
       let date = new Date(this.five_day_forecast.list[8 * index].dt_txt);
       return ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][date.getDay()];
@@ -368,18 +386,18 @@ export default {
           return require("@/assets/img/mistImg.png");
       }
     },
-    refreshingOrDry() {
+    refreshingOrDry:  memoize(function() {
       let humidity = this.weather.main.humidity;
       if (humidity < 30) return "Dry";
       if (humidity < 60) return "Refreshing";
       return "Very Humid";
-    },
+    }),
     computeFontSize(location) {
       if (location.length <= 5) return "2.75rem";
       if (location.length <= 6) return "1.8rem";
       return "1.5rem";
     },
-    airQualityMeaning() {
+    airQualityMeaning: memoize(function() {
       let aqi = this.air_quality.list[0].main.aqi;
       switch (aqi) {
         case 1:
@@ -395,8 +413,8 @@ export default {
         default:
           return "Unknown Air Quality";
       }
-    },
-    windSpeed() {
+    }),
+    windSpeed: memoize(function() {
       let speed = this.weather.wind.speed;
       if (speed >= 1 && speed <= 3) return "Light Breeze";
       if (speed > 3 && speed <= 7) return "Gentle Breeze";
@@ -409,7 +427,7 @@ export default {
       if (speed > 46 && speed <= 54) return "Storm";
       if (speed > 54) return "Violent Storm";
       return "Unknown Wind";
-    },
+    }),
     sunPosition() {
       let currentHour = new Date().getUTCHours();
       console.log("Current Hour:", currentHour);

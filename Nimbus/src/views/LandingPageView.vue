@@ -442,7 +442,6 @@ export default {
  
  .second-vp {
   height: 85vh;
-  background-color: red;
   display: flex;
   margin-top: 3rem;
   padding-left: 5rem;
