@@ -284,7 +284,7 @@ export default {
           </div>
           <div id="humidityContainer">
             <div class="humidityContainerHeader">
-              <img src="../assets/img/humidityIconBasicMode.svg" class="humidityIcon" >
+              <img src="../assets/img/humidityIconBasicMode.min.svg" class="humidityIcon" alt="Humidity Icon">
               <p class="humidityTitleBasicMode">Humidity</p>
             </div>
             <div id="humidityData">
@@ -294,7 +294,7 @@ export default {
           </div>
           <div id="rainContainer">
             <div class="rainContainerHeader">
-              <img src="../assets/img/rainIconBasicMode.svg" class="rainIcon">
+              <img src="../assets/img/rainIconBasicMode.min.svg" class="rainIcon" alt="Rain Icon">
               <p class="rainTitleBasicMode">Rain</p>
             </div>
             <div id="rainData">
@@ -304,7 +304,7 @@ export default {
           </div>
           <div id="windContainer">
             <div class="windContainerHeader">
-              <img src="../assets/img/windIconBasicMode.svg" class="windIcon" >
+              <img src="../assets/img/windIconBasicMode.min.svg" class="windIcon" alt="Wind Icon">
               <p class="windTitleBasicMode">Wind</p>
             </div>
             <p id="windData">{{ windSpeed() }}</p>
@@ -361,7 +361,7 @@ export default {
           <div id="thisWeekContainer"><p>This Week</p></div>
           <div id="mondayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(0) }}</h3>
-            <img id="mondayImg" src="../assets/img/cloudImg.svg" alt="Cloudy">
+            <img id="mondayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
             <div id="mondayTemp">
               <p id="minTempMonday">{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
               <p id="maxTempMonday">/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
@@ -369,7 +369,7 @@ export default {
           </div>
           <div id="tuesdayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(1) }}</h3>
-            <img id="tuesdayImg" src="../assets/img/cloudImg.svg" alt="Cloudy">
+            <img id="tuesdayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
             <div id="tuesdayTemp">
               <p id="minTempTuesday">{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
               <p id="maxTempTuesday">/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
@@ -377,7 +377,7 @@ export default {
           </div>
           <div id="wednesdayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(2) }}</h3>
-            <img id="wednesdayImg" src="../assets/img/sunnyImg.svg" alt="Sunny">
+            <img id="wednesdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
             <div id="wednesdayTemp">
               <p id="minTempWednesday">{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
               <p id="maxTempWednesday">/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
@@ -385,7 +385,7 @@ export default {
           </div>
           <div id="thursdayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(3) }}</h3>
-            <img id="thursdayImg" src="../assets/img/sunnyImg.svg" alt="Sunny">
+            <img id="thursdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
             <div id="thursdayTemp">
               <p id="minTempThursday">{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
               <p id="maxTempThursday">/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
@@ -393,7 +393,7 @@ export default {
           </div>
           <div id="fridayContainer">
             <h3 class="dayTitle">{{ getDayOfWeek(4) }}</h3>
-            <img id="fridayImg" src="../assets/img/sunnyImg.svg" alt="Sunny">
+            <img id="fridayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
             <div id="fridayTemp">
               <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
               <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
