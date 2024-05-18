@@ -1,3 +1,193 @@
+<template>
+  <main class="dash-body">
+    <head>
+  <!-- Preload images correctly -->
+  <link rel="preload" href="@/assets/img/sunLandingPage.webp" as="image">
+  <link rel="preload" href="@/assets/img/cloud1LandingPage.webp" as="image">
+  <link rel="preload" href="@/assets/img/cloud2LandingPage.webp" as="image">
+</head>
+
+    <div class="grid">
+      <div class="gridCell div0">
+        <HeaderDashboard />
+      </div>
+      <div class="gridCell div1">
+        <div id="containerWeatherToday">
+          <h3 id="date">{{ dateBuilder() }}</h3>
+          <img 
+            id="weatherTodayIllustration" 
+            :src="getWeatherIcon(weather.weather[0].icon)" 
+            :alt="getWeatherAltText" 
+          >
+          <div id="location" :style="{ fontSize: computeFontSize(weather.name) }">
+            <font-awesome-icon icon="location-dot" style="color: #303030;" />
+            <span class="locationCity">{{ weather.name }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="gridCell div2">
+        <div id="containerWeatherInfoToday">
+          <div id="feelsLikeContainer">
+            <p id="feelsLikeTitle">Feels Like</p>
+            <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
+          </div>
+          <div id="expectedContainer">
+            <p id="expectedTitle">Expected</p>
+            <p id="expectedData">{{ capitalizeDescription(weather.weather[0].description) }}</p>
+          </div>
+          <div id="humidityContainer">
+            <div class="humidityContainerHeader">
+              <img src="../assets/img/humidityIconBasicMode.min.svg" class="humidityIcon" alt="Humidity Icon">
+              <p class="humidityTitleBasicMode">Humidity</p>
+            </div>
+            <div id="humidityData">
+              <p id="humidityPercentage">{{ weather.main.humidity }}%</p>
+              <p id="refreshingOrDry">{{ refreshingOrDry() }}</p>
+            </div>
+          </div>
+          <div id="rainContainer">
+            <div class="rainContainerHeader">
+              <img src="../assets/img/rainIconBasicMode.min.svg" class="rainIcon" alt="Rain Icon">
+              <p class="rainTitleBasicMode">Rain</p>
+            </div>
+            <div id="rainData">
+              <p id="rainPercentage">{{ Math.round(this.five_day_forecast.list[0].pop * 100) }}</p>
+              <p id="chance">% Chance</p>
+            </div>
+          </div>
+          <div id="windContainer">
+            <div class="windContainerHeader">
+              <img src="../assets/img/windIconBasicMode.min.svg" class="windIcon" alt="Wind Icon">
+              <p class="windTitleBasicMode">Wind</p>
+            </div>
+            <p id="windData">{{ windSpeed() }}</p>
+          </div>
+          <RouterLink :to="{ name: '', params: { city: weather.name } }" id="seeMoreBtn">See more</RouterLink>
+        </div>
+      </div>
+      <div class="gridCell div3">
+        <div id="containerNimbusNudges">
+          <div id="headerNimbusNudges">
+            <h3 id="titleNimbusNudges">Nimbus Nudges</h3>
+            <div id="buttonsHeaderNimbusNudges">
+              <ArrowButton direction="left" button-class="personalization-arrow" @clickButton="handleUpClick" />
+              <ArrowButton direction="right" button-class="personalization-arrow" @clickButton="handleDownClick" />
+            </div>
+          </div>
+          <div id="nimbusNudgesData">
+            A friendly heads-up – a playful breeze is weaving its way through the city today. It's strong enough to dance with the leaves and turn a regular walk into a refreshing journey. Embrace the fresh air and let it guide you to new experiences.
+          </div>
+          <div id="buttonsOptionsNimbusNudges">
+            <button id="allClearBtn">ALL CLEAR!</button>
+            <button id="quietTheSkiesBtn">QUIET THE SKIES</button>
+          </div>
+        </div>
+      </div>
+      <div class="gridCell div4">
+        <div id="degreesContainer">
+          <h1 id="degreesValue">{{ Math.round(weather.main.temp) }}
+            <div class="degrees-sub-wrapper">
+              <div id="degrees">degrees</div>
+              <div id="degreesType">celsius</div>
+            </div>
+          </h1>
+        </div>
+      </div>
+      <div class="gridCell div5">
+        <div id="temperatureGraphContainerBasicMode">
+          <img src="../assets/img/graphBasicMode.svg" id="imgGraphBasicMode" alt="Temperature Graph">
+        </div>
+      </div>
+      <div class="gridCell div6">
+        <div id="airQualityContainer">
+          <div id="airQualityHeader">Air Quality</div>
+          <p id="airQualityMeaning">{{ airQualityMeaning() }}</p>
+          <div id="airQualityData">
+            <div id="circleAirQuality">
+              <h2 id="airQualityValue">{{ air_quality.list[0].main.aqi }}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gridCell div7">
+        <section id="thisWeekSection">
+          <div id="thisWeekContainer"><p>This Week</p></div>
+          <div id="mondayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(0) }}</h3>
+            <img id="mondayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
+            <div id="mondayTemp">
+              <p id="minTempMonday">{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
+              <p id="maxTempMonday">/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
+            </div>
+          </div>
+          <div id="tuesdayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(1) }}</h3>
+            <img id="tuesdayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
+            <div id="tuesdayTemp">
+              <p id="minTempTuesday">{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
+              <p id="maxTempTuesday">/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
+            </div>
+          </div>
+          <div id="wednesdayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(2) }}</h3>
+            <img id="wednesdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
+            <div id="wednesdayTemp">
+              <p id="minTempWednesday">{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
+              <p id="maxTempWednesday">/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
+            </div>
+          </div>
+          <div id="thursdayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(3) }}</h3>
+            <img id="thursdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
+            <div id="thursdayTemp">
+              <p id="minTempThursday">{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
+              <p id="maxTempThursday">/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
+            </div>
+          </div>
+          <div id="fridayContainer">
+            <h3 class="dayTitle">{{ getDayOfWeek(4) }}</h3>
+            <img id="fridayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
+            <div id="fridayTemp">
+              <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
+              <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="gridCell div8">
+        <div id="sunshineInfo">
+          <span id="sunriseSunsetContainer">
+            <div id="sunriseContainer">
+              <p id="sunrise">Sunrise</p>
+              <p id="sunriseTime">{{ formatTime(weather.sys.sunrise, weather.timezone) }} am</p>
+            </div>
+            <div id="sunriseSunsetIllustration">
+              <div id="sunriseSunsetBigLine"></div>
+              <div id="sunriseSunsetBigLine"></div>
+              <div id="ssSmallLine"></div>
+              <div id="ssCircle"></div>
+            </div>
+            <div id="sunsetContainer">
+              <p id="sunset">Sunset</p>
+              <p id="sunsetTime">{{ formatTime(weather.sys.sunset, weather.timezone) }} pm</p>
+            </div>
+          </span>
+          <span id="uvLightContainer">
+            <div id="uvHeader">
+              <h3 id="uv">UV</h3>
+              <p id="uvRec">Cover up, stay in shade.</p>
+            </div>
+            <div id="uvIllustration">
+              <div id="uvBigLine"></div>
+              <div id="uvSmallLine"></div>
+              <div id="uvCircle"></div>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
 <script>
 import moment from "moment";
 import ArrowButton from "@/components/ArrowButton.vue";
@@ -243,198 +433,6 @@ export default {
   },
 };
 </script>
-
-
-<template>
-  <main class="dash-body">
-    <head>
-  <!-- Preload images correctly -->
-  <link rel="preload" href="@/assets/img/sunLandingPage.webp" as="image">
-  <link rel="preload" href="@/assets/img/cloud1LandingPage.webp" as="image">
-  <link rel="preload" href="@/assets/img/cloud2LandingPage.webp" as="image">
-</head>
-
-    <div class="grid">
-      <div class="gridCell div0">
-        <HeaderDashboard />
-      </div>
-      <div class="gridCell div1">
-        <div id="containerWeatherToday">
-          <h3 id="date">{{ dateBuilder() }}</h3>
-          <img 
-            id="weatherTodayIllustration" 
-            :src="getWeatherIcon(weather.weather[0].icon)" 
-            :alt="getWeatherAltText" 
-          >
-          <div id="location" :style="{ fontSize: computeFontSize(weather.name) }">
-            <font-awesome-icon icon="location-dot" style="color: #303030;" />
-            <span class="locationCity">{{ weather.name }}</span>
-          </div>
-        </div>
-      </div>
-      <div class="gridCell div2">
-        <div id="containerWeatherInfoToday">
-          <div id="feelsLikeContainer">
-            <p id="feelsLikeTitle">Feels Like</p>
-            <p id="feelsLikeData">{{ `${Math.round(weather.main.feels_like)}°C ${warmOrCold()}` }}</p>
-          </div>
-          <div id="expectedContainer">
-            <p id="expectedTitle">Expected</p>
-            <p id="expectedData">{{ capitalizeDescription(weather.weather[0].description) }}</p>
-          </div>
-          <div id="humidityContainer">
-            <div class="humidityContainerHeader">
-              <img src="../assets/img/humidityIconBasicMode.min.svg" class="humidityIcon" alt="Humidity Icon">
-              <p class="humidityTitleBasicMode">Humidity</p>
-            </div>
-            <div id="humidityData">
-              <p id="humidityPercentage">{{ weather.main.humidity }}%</p>
-              <p id="refreshingOrDry">{{ refreshingOrDry() }}</p>
-            </div>
-          </div>
-          <div id="rainContainer">
-            <div class="rainContainerHeader">
-              <img src="../assets/img/rainIconBasicMode.min.svg" class="rainIcon" alt="Rain Icon">
-              <p class="rainTitleBasicMode">Rain</p>
-            </div>
-            <div id="rainData">
-              <p id="rainPercentage">{{ Math.round(this.five_day_forecast.list[0].pop * 100) }}</p>
-              <p id="chance">% Chance</p>
-            </div>
-          </div>
-          <div id="windContainer">
-            <div class="windContainerHeader">
-              <img src="../assets/img/windIconBasicMode.min.svg" class="windIcon" alt="Wind Icon">
-              <p class="windTitleBasicMode">Wind</p>
-            </div>
-            <p id="windData">{{ windSpeed() }}</p>
-          </div>
-          <RouterLink :to="{ name: '', params: { city: weather.name } }" id="seeMoreBtn">See more</RouterLink>
-        </div>
-      </div>
-      <div class="gridCell div3">
-        <div id="containerNimbusNudges">
-          <div id="headerNimbusNudges">
-            <h3 id="titleNimbusNudges">Nimbus Nudges</h3>
-            <div id="buttonsHeaderNimbusNudges">
-              <ArrowButton direction="left" button-class="personalization-arrow" @clickButton="handleUpClick" />
-              <ArrowButton direction="right" button-class="personalization-arrow" @clickButton="handleDownClick" />
-            </div>
-          </div>
-          <div id="nimbusNudgesData">
-            A friendly heads-up – a playful breeze is weaving its way through the city today. It's strong enough to dance with the leaves and turn a regular walk into a refreshing journey. Embrace the fresh air and let it guide you to new experiences.
-          </div>
-          <div id="buttonsOptionsNimbusNudges">
-            <button id="allClearBtn">ALL CLEAR!</button>
-            <button id="quietTheSkiesBtn">QUIET THE SKIES</button>
-          </div>
-        </div>
-      </div>
-      <div class="gridCell div4">
-        <div id="degreesContainer">
-          <h1 id="degreesValue">{{ Math.round(weather.main.temp) }}
-            <div class="degrees-sub-wrapper">
-              <div id="degrees">degrees</div>
-              <div id="degreesType">celsius</div>
-            </div>
-          </h1>
-        </div>
-      </div>
-      <div class="gridCell div5">
-        <div id="temperatureGraphContainerBasicMode">
-          <img src="../assets/img/graphBasicMode.svg" id="imgGraphBasicMode" alt="Temperature Graph">
-        </div>
-      </div>
-      <div class="gridCell div6">
-        <div id="airQualityContainer">
-          <div id="airQualityHeader">Air Quality</div>
-          <p id="airQualityMeaning">{{ airQualityMeaning() }}</p>
-          <div id="airQualityData">
-            <div id="circleAirQuality">
-              <h2 id="airQualityValue">{{ air_quality.list[0].main.aqi }}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="gridCell div7">
-        <section id="thisWeekSection">
-          <div id="thisWeekContainer"><p>This Week</p></div>
-          <div id="mondayContainer">
-            <h3 class="dayTitle">{{ getDayOfWeek(0) }}</h3>
-            <img id="mondayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
-            <div id="mondayTemp">
-              <p id="minTempMonday">{{getMinAndMaxTemp(0, 'temp_min').min}}°</p>
-              <p id="maxTempMonday">/{{getMinAndMaxTemp(0, 'temp_max').max}}°</p>
-            </div>
-          </div>
-          <div id="tuesdayContainer">
-            <h3 class="dayTitle">{{ getDayOfWeek(1) }}</h3>
-            <img id="tuesdayImg" src="../assets/img/cloudImg.min.svg" alt="Cloudy">
-            <div id="tuesdayTemp">
-              <p id="minTempTuesday">{{getMinAndMaxTemp(1, 'temp_min').min}}°</p>
-              <p id="maxTempTuesday">/{{getMinAndMaxTemp(1, 'temp_max').max}}°</p>
-            </div>
-          </div>
-          <div id="wednesdayContainer">
-            <h3 class="dayTitle">{{ getDayOfWeek(2) }}</h3>
-            <img id="wednesdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
-            <div id="wednesdayTemp">
-              <p id="minTempWednesday">{{getMinAndMaxTemp(2, 'temp_min').min}}°</p>
-              <p id="maxTempWednesday">/{{getMinAndMaxTemp(2, 'temp_max').max}}°</p>
-            </div>
-          </div>
-          <div id="thursdayContainer">
-            <h3 class="dayTitle">{{ getDayOfWeek(3) }}</h3>
-            <img id="thursdayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
-            <div id="thursdayTemp">
-              <p id="minTempThursday">{{getMinAndMaxTemp(3, 'temp_min').min}}°</p>
-              <p id="maxTempThursday">/{{getMinAndMaxTemp(3, 'temp_max').max}}°</p>
-            </div>
-          </div>
-          <div id="fridayContainer">
-            <h3 class="dayTitle">{{ getDayOfWeek(4) }}</h3>
-            <img id="fridayImg" src="../assets/img/sunnyImg.min.svg" alt="Sunny">
-            <div id="fridayTemp">
-              <p id="minTempFriday">{{getMinAndMaxTemp(4, 'temp_min').min}}°</p>
-              <p id="maxTempFriday">/{{getMinAndMaxTemp(4, 'temp_max').max}}°</p>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="gridCell div8">
-        <div id="sunshineInfo">
-          <span id="sunriseSunsetContainer">
-            <div id="sunriseContainer">
-              <p id="sunrise">Sunrise</p>
-              <p id="sunriseTime">{{ formatTime(weather.sys.sunrise, weather.timezone) }} am</p>
-            </div>
-            <div id="sunriseSunsetIllustration">
-              <div id="sunriseSunsetBigLine"></div>
-              <div id="sunriseSunsetBigLine"></div>
-              <div id="ssSmallLine"></div>
-              <div id="ssCircle"></div>
-            </div>
-            <div id="sunsetContainer">
-              <p id="sunset">Sunset</p>
-              <p id="sunsetTime">{{ formatTime(weather.sys.sunset, weather.timezone) }} pm</p>
-            </div>
-          </span>
-          <span id="uvLightContainer">
-            <div id="uvHeader">
-              <h3 id="uv">UV</h3>
-              <p id="uvRec">Cover up, stay in shade.</p>
-            </div>
-            <div id="uvIllustration">
-              <div id="uvBigLine"></div>
-              <div id="uvSmallLine"></div>
-              <div id="uvCircle"></div>
-            </div>
-          </span>
-        </div>
-      </div>
-    </div>
-  </main>
-</template>
 
 <style>
 

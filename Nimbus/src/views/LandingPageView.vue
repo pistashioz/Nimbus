@@ -298,16 +298,6 @@
 <script>
 import { useUserStore } from "@/stores/user";
 import nimbusLogo from "@/assets/icons/logo.min.svg";
-import sunLandingPage from '@/assets/img/sunLandingPage.webp';
-import cloud1LandingPage from '@/assets/img/cloud1LandingPage.webp';
-import cloud2LandingPage from '@/assets/img/cloud2LandingPage.webp';
-import underlineImg from "@/assets/img/underline.min.svg";
-import attributesImg from '@/assets/img/Attribute1Img.webp';
-import attributes2Img from '@/assets/img/Attribute2Img.webp';
-import attributes3Img from '@/assets/img/Attribute3Img.webp';
-import quotationMarkReview from '@/assets/img/quotationMarkReview.webp';
-import lglRsrcImg from '@/assets/img/EllipseLegalResources.webp';
-import addInfoImg from '@/assets/img/EllipseAdditionalInfo.webp';
 import Reviews from '@/components/Reviews.vue';
 
 export default {
@@ -317,16 +307,6 @@ export default {
       nimbusLogo,
       selectedTab: 'introduction', // Default tab
       selectedSubSection: 'missionAndVision', // Default sub-section
-      sunLandingPage,
-      cloud1LandingPage,
-      cloud2LandingPage,
-      underlineImg,
-      attributesImg,
-      attributes2Img,
-      attributes3Img,
-      quotationMarkReview,
-      lglRsrcImg,
-      addInfoImg,
       tabContent: {
         introduction: 'Introduction content here...',
         features: 'Features content here...',
@@ -458,12 +438,13 @@ export default {
   font-weight: 600;
   line-height: normal;
   padding: 1rem;
-  margin-top: 2rem;
  }
  
  .second-vp {
   height: 85vh;
+  background-color: red;
   display: flex;
+  margin-top: 3rem;
   padding-left: 5rem;
   padding-right: 5rem;
   flex-direction: column;
